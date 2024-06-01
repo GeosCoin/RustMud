@@ -1,0 +1,18 @@
+[package]
+name = "channel"
+version = "1.0.0"
+edition = "2021"
+authors = ["theng <youngup.2018@protonmail.com>"]
+description = "Mud tcp channel"
+publish = true
+readme = "README.md"
+homepage = "https://github.com/GeosCoin/RustMud.git"
+repository = "https://github.com/GeosCoin/RustMud.git"
+license = "MIT"
+keywords = ["tcp", "mud", "server"]
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+serde_json = "1.0.85"
+serde = { version = "1.0.144", features = ["derive"] }

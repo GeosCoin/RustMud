@@ -1,27 +1,8 @@
-[package]
-name = "mudbase"
-version = "1.0.0"
-edition = "2021"
-authors = ["Caleb Rutland <caleb@thedevious.dev>"]
-description = "A library to help make developing MUDs in Rust a breeze"
-publish = true
-readme = "README.md"
-homepage = "https://github.com/DrVonDevious/mudbase"
-repository = "https://github.com/DrVonDevious/mudbase"
-changelog = "CHANGELOG.md"
-license = "MIT"
-keywords = ["game-engine", "tcp", "mud"]
-
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
-
-[dependencies]
-mudbase_server = { path = "./mudbase_server", version = "1.0.0" }
-mudbase_parser = { path = "./mudbase_parser", version = "1.0.0" }
-serde_json = "1.0.85"
-serde = { version = "1.0.144", features = ["derive"] }
-
-[workspaces]
+[workspace]
+resolver = "2"
 members = [
-  "mudbase_server",
-  "mudbase_parser"
+  "main",
+  "avatar",
+  "channel",
+  "utils"
 ]

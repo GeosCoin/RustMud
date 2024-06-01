@@ -1,0 +1,10 @@
+[package]
+name = "RustMud"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+utils = {path = "../utils"}
+tokio = { version = "1.38.0", features = ["full"] }
+chrono = {version = "0.4.38"}
+crossbeam = "0.8.4"

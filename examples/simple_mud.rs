@@ -48,7 +48,7 @@ impl ServerHandler for Server {
     }
 
     fn on_message(session: &mut SessionType, message: &str, address: &str) {
-      print!("Got message from {}: {}", address, message);
+      println!("Got message from {}: {}", address, message);
 
       // echos back the message
       Self::send(session, message);
