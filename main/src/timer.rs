@@ -13,11 +13,12 @@ pub fn _handle_timer(
 
             let start = Instant::now();
             let mut intv = time::interval_at(start,
-                Duration::from_secs(2));
+                Duration::from_secs(10));
 
             loop{
                 intv.tick().await;
-                s_rt.send("just one timer to service".to_string()).unwrap();
+                let now = utils::now();
+                s_rt.send(now).unwrap();
             }
         });
     });

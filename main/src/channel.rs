@@ -41,46 +41,6 @@
             return listener;
         }
 
-        fn _handle_service(
-            sessions: SessionsType,  //共享在线数据
-            s_service: Sender<String>,  //发送到socket       
-            r_service: Receiver<String>   //service接收数据
-        ){
-            loop {
-                match r_service.recv() {
-                    Ok(a) => {
-                        println!("service: {}", a);
-                        let s_service_clone = s_service.clone();
-                        service::on_service(&a, s_service_clone);
-                    },
-                    Err(s) => {
-                        println!("{:?}", s);
-                        thread::sleep(Duration::from_secs(5000));
-                    }
-                }
-            }
-        }
-
-        
-
-        fn _handle_sender(
-            sessions: SessionsType,  //共享在线数据
-            r_sender: Receiver<String>  //接收发送到socket的数据
-        ){
-            loop {
-                match r_sender.recv() {
-                    Ok(a) => {
-                        println!("sender: {}", a);
-                        crate::sender::on_sender(&sessions, a);
-                    },
-                    Err(s) => {
-                        println!("{:?}", s);
-                        thread::sleep(Duration::from_secs(5000));
-                    }
-                }
-            }
-        }
-
         fn listen(&self, listener: TcpListener, 
             sessions: SessionsType, run_start_time: SystemTime) {
             let mut threads = vec![];
@@ -97,10 +57,9 @@
             let service_sessions = Arc::clone(&sessions);
             let sender_sessions = Arc::clone(&sessions);
 
-            //service线程
-            // let (s_to_service1, r_service1) = (s_to_service.clone(), r_service.clone());
+            //service线程            
             threads.push(thread::spawn(move || {
-                Self::_handle_service(
+                crate::service::_handle_service(
                     service_sessions,
                     s_service,
                     r_service);
@@ -115,7 +74,7 @@
 
             //sender线程
             threads.push(thread::spawn(move || {
-                Self::_handle_sender(
+                crate::sender::_handle_sender(
                     sender_sessions,
                     r_sender
                 );
@@ -145,7 +104,6 @@
         ) {
             let mut session: SessionType = (stream.try_clone().unwrap(), addr);
             let mut reader = BufReader::new(stream.try_clone().unwrap());
-
 
             Self::on_connect(&mut session, &sessions, run_start_time);
 

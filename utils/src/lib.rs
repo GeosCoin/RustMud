@@ -1,5 +1,6 @@
 
 use std::{path::Path, fs::File};
+use chrono::Local;
 
 pub enum Color {
     RED,  //[1;31m
@@ -50,3 +51,6 @@ pub fn show_color(content: &str, color: Color) -> String {
     };
 }
 
+pub fn now() -> String {
+    Local::now().format("%F %T").to_string()
+}

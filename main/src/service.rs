@@ -1,24 +1,45 @@
 use crossbeam::channel::Receiver;
 use crossbeam::channel::Sender;
+use crate::{channel::{ServerHandler, SessionType, Sessions, SessionContext, SessionsType}, player};
+use std::time::Duration;
+use std::thread;
+
+pub fn _handle_service(
+    sessions: SessionsType,  //共享在线数据
+    s_service: Sender<String>,  //发送到socket       
+    r_service: Receiver<String>   //service接收数据
+){
+    loop {
+        match r_service.recv() {
+            Ok(a) => {
+                let s_service_clone = s_service.clone();
+                on_service(&a, s_service_clone, &sessions);
+            },
+            Err(s) => {
+                println!("{:?}", s);
+                thread::sleep(Duration::from_secs(5000));
+            }
+        }
+    }
+}
 
 //业务处理入口
-pub fn on_service(message: &str, s_service: Sender<String>){
+pub fn on_service(message: &str, s_service: Sender<String>, sessions: &SessionsType){
 
-    println!("in service, I got {}", message);
+    println!("on_service: {}", message);
 
     if message.trim() == "lxz" {
-        s_service.send("此ID档案已存在,请输入密码:".to_string()).unwrap();
-        // Self::send(session,  "此ID档案已存在,请输入密码:");
+        s_service.send("此ID档案已存在,请输入密码:".to_string()).unwrap();        
         return;
     }
 
-    // if message.trim() == "abc123" {
-    //     Self::send(session,  "重新连线完毕。");
-    //     return;
-    // }
+    if message.trim() == "abc123" {
+        s_service.send("重新连线完毕。".to_string()).unwrap();        
+        return;
+    }
 
-    // //新用户登录
-    // let mut sessions_ok = sessions.lock().unwrap();
+    //新用户登录
+    let mut sessions_ok = sessions.lock().unwrap();
     
     // if message.trim() == "upgrade" {
     //     sessions_ok.entry(addr)
