@@ -1,19 +1,47 @@
 use crossbeam::channel::Receiver;
 use crossbeam::channel::Sender;
+use crate::channel::wrap_message;
+use crate::channel::Message;
+use crate::player::Player;
 use crate::{channel::{ServerHandler, SessionType, Sessions, SessionContext, SessionsType}, player};
+use std::collections::HashMap;
+use std::fmt::Error;
+use std::hash::Hash;
+use std::net::SocketAddr;
 use std::time::Duration;
 use std::thread;
+use serde::{Serialize, Deserialize};
+
+#[derive(Serialize, Deserialize, Debug, PartialEq)]
+pub struct Login {
+    login_name: String,
+    password: String,
+    b_login:bool,
+}
+
+impl Login {
+    fn new() -> Self{
+        Login {
+            login_name: "".to_string(),
+            password: "".to_string(),
+            b_login: false,
+        }
+    }
+}
 
 pub fn _handle_service(
     sessions: SessionsType,  //共享在线数据
     s_service: Sender<String>,  //发送到socket       
     r_service: Receiver<String>   //service接收数据
 ){
+    let mut logins: HashMap<SocketAddr, Login> = HashMap::new();
+    let mut players: HashMap<SocketAddr, Player> = HashMap::new();
+
     loop {
         match r_service.recv() {
-            Ok(a) => {
+            Ok(a) => {                
                 let s_service_clone = s_service.clone();
-                on_service(&a, s_service_clone, &sessions);
+                on_service(&a, s_service_clone, &sessions, &mut logins);
             },
             Err(s) => {
                 println!("{:?}", s);
@@ -23,20 +51,87 @@ pub fn _handle_service(
     }
 }
 
+fn do_login(
+    s_service: Sender<String>, 
+    login: &mut Login,
+    msg: Message
+) -> Result<u32, Error>
+{
+    //登录名还未赋值
+    if login.login_name.is_empty() {
+
+        //从文件中读取用户
+        let user_file = utils::load_file("users.json");
+        let logins: Vec<Login> = serde_json::from_reader(user_file).expect("Error: failed to read json file");
+        let filter: Vec<&Login> = logins.iter()
+            .filter(|item| item.login_name == msg.content)
+            .collect();
+
+        //用户存在
+        if filter.len() > 0 {
+            login.login_name = msg.content;
+            let val = wrap_message(msg.addr, "此ID档案已存在,请输入密码:".to_string());
+            s_service.send(val).unwrap(); 
+            return Ok(1);
+        } else { //用户不存在
+            let val = wrap_message(msg.addr, "用户不存在".to_string());
+            s_service.send(val).unwrap();
+            return Ok(2);
+        }
+    } else {
+        //直接就是密码
+        login.password = msg.content;
+
+        let user_file = utils::load_file("users.json");
+        let logins: Vec<Login> = serde_json::from_reader(user_file).expect("Error: failed to read json file");
+        let filter: Vec<&Login> = logins.iter()
+            .filter(|item| 
+                item.login_name == login.login_name &&
+                item.password == login.password
+            )
+            .collect();
+        
+        // println!("{} {}", login.login_name, login.password);
+        if filter.len() > 0 {
+            login.b_login = true;
+            let val = wrap_message(msg.addr, "重新连线完毕。".to_string());
+            s_service.send(val).unwrap(); 
+        } else { //用户不存在
+            let val = wrap_message(msg.addr, "密码错误！".to_string());
+            s_service.send(val).unwrap();
+            return Ok(4);
+        }
+    }
+
+    Ok(0)
+}
+
 //业务处理入口
-pub fn on_service(message: &str, s_service: Sender<String>, sessions: &SessionsType){
+pub fn on_service(
+    message: &str, 
+    s_service: Sender<String>, 
+    sessions: &SessionsType,
+    logins: &mut HashMap<SocketAddr, Login>
+){
+    let msg: Message = serde_json::from_str(&message).unwrap();
+
+    let login = logins.entry(msg.addr)
+                .or_insert(Login::new());
+    
+    if !login.b_login {
+        match (do_login(s_service, login, msg)){
+            Ok(a) => {
+                if a != 0 {
+                    return;
+                }
+            },
+            Err(_) => {
+                return;
+            }
+        };
+    }
 
     println!("on_service: {}", message);
-
-    if message.trim() == "lxz" {
-        s_service.send("此ID档案已存在,请输入密码:".to_string()).unwrap();        
-        return;
-    }
-
-    if message.trim() == "abc123" {
-        s_service.send("重新连线完毕。".to_string()).unwrap();        
-        return;
-    }
 
     //新用户登录
     let mut sessions_ok = sessions.lock().unwrap();

@@ -7,6 +7,7 @@ use std::io::BufReader;
 use std::thread;
 use std::time::Duration;
 use crossbeam::channel::Receiver;
+use crate::channel::Message;
 
 pub fn _handle_sender(
     sessions: SessionsType,  //共享在线数据
@@ -27,10 +28,15 @@ pub fn _handle_sender(
 }
 
 pub fn on_sender(sessions: &SessionsType, message: String){
-    for session in sessions.lock().unwrap().iter_mut() {
-        println!("Send message to {:?}: {}", session.0, message);
-        
-        let _ = session.1.cur_session.0.write(message.as_bytes());
-    }
+    let msg: Message = serde_json::from_str(&message).unwrap();
+    let sessions_ok = sessions.lock().unwrap();
+    let ctx = sessions_ok.get(&msg.addr).unwrap();
+    let mut stream = &ctx.cur_session.0;
+    
+    let _ = stream.write(msg.content.as_bytes());
+
+    // for session in sessions.lock().unwrap().iter_mut() {
+    //     println!("Send message to {:?}: {}", session.0, message);        
+    // }
 }
 

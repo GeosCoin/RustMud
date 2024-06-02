@@ -1,5 +1,5 @@
 
-use std::{path::Path, fs::File};
+use std::{fs::File, net::SocketAddr, path::Path};
 use chrono::Local;
 
 pub enum Color {
@@ -13,13 +13,45 @@ pub enum Color {
     WHITEBGRED,
 }
 
-/// Loads a file from the given path
-///
-/// ### Arguments
-/// * `filepath` - The path to the desired file to be loaded
+// Use Example: 
+// use serde::{Serialize, Deserialize};
+// #[derive(Serialize, Deserialize, Debug, PartialEq)]
+// struct Exit {
+//     name: String,
+//     room: u32,
+// }
+// let mut w_rooms: Vec<Exit> = Vec::new();
+// let rooms_file = utils::load_file("users.json");
+// let mut rooms: Vec<Exit> = serde_json::from_reader(rooms_file).expect("Error: failed to read json file");
+// let exist = rooms.contains(&Exit{
+//     name:"lxz".to_string(),room:3234
+// });
+// println!("{}", exist);
+// rooms[0].room = 3234;
+// w_rooms = rooms;
+// let w_file = utils::create_file("users.json"); 
+// serde_json::to_writer(w_file, &w_rooms).unwrap();
+
+//read only
 pub fn load_file(filepath: &str) -> File {
     let path = Path::new(filepath);
     return File::open(path).expect("Error: failed to load file");
+}
+
+//write only
+pub fn create_file(filepath: &str) -> File {
+    let path = Path::new(filepath);
+    return File::create(path).expect("Error: failed to create file");
+}
+
+//append
+pub fn append_file(filepath: &str) -> File {
+    let path = Path::new(filepath);
+    return File::options()
+        .read(true)
+        .write(true)
+        .open(path)
+        .expect("Error: failed to append file");
 }
 
 pub fn show_color(content: &str, color: Color) -> String {

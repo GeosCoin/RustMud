@@ -1,47 +1,53 @@
 
-pub enum PowerType {
-    Warrior,
-    Ranger,
-    Magician
+
+//角色
+pub enum Role {
+    Warrior,  //战士
+    Ranger,  //游骑兵
+    Magician   //法师
 }
 
+//技能
 pub struct Powers {
 
 }
 
+//箱子
 pub struct Inventory {
-    goods: Vec<u32>
+    pub goods: Vec<u32>  //物品
 }
 
+//装备
 pub struct Equipment {
-    head: u32,
-    hands: u32,
-    torso: u32,
-    artifact: u32,
-    ring_left: u32,
-    ring_right: u32,
-    main_hand: u32,
-    off_hand: u32,
-    feet: u32,
+    pub head: u32,      //头部
+    pub hands: u32,     //手
+    pub torso: u32,     //躯干
+    pub artifact: u32,      //手工品 例如：珠宝
+    pub ring_left: u32,     //左手戒指
+    pub ring_right: u32,    //右手戒指
+    pub main_hand: u32,     //右手
+    pub off_hand: u32,      //左手
+    pub feet: u32,          //脚
 }
 
 pub struct Player {
-    pub name: String,   
-    pub level: u32,  
-    physical: u32,
-    mental: u32,
-    offense: u32,
-    defence: u32,
-    hp: u32,
-    mp: u32,    
-    xp: u32,    
-    max_hp: u32,
-    max_mp: u32,
-    max_xp: u32,    
-    hp_regen: u32,    
-    mp_regen: u32,
-    accuracy: u32,
-    avoidance: u32,
+    pub name: String,   //名称
+    pub level: u32,     //等级
+    pub role: Role, //角色
+    pub physical: u32,  //物理输出
+    pub mental: u32,    //魔法输出
+    pub offense: u32,   //攻击，使用武器限制
+    pub defence: u32,   //防御，使用盾牌限制
+    pub hp: u32,    //血量
+    pub mp: u32,    //精神
+    pub xp: u32,    //经验
+    pub max_hp: u32,    //最大血量
+    pub max_mp: u32,    //最大精神
+    pub max_xp: u32,    //最大经验
+    pub hp_regen: u32,  //血量增量
+    pub mp_regen: u32,  //精神增量
+    pub accuracy: u32,  //准确度  
+    pub avoidance: u32, //规避力
 }
 
 impl Player {
@@ -49,6 +55,7 @@ impl Player {
         Player{
             name: String::from("成王败寇"),   
             level: 1,  
+            role: Role::Magician,
             physical: 0,
             mental: 0,
             offense: 0,
