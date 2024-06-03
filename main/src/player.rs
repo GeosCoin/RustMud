@@ -1,6 +1,7 @@
-
+use serde::{Serialize, Deserialize};
 
 //角色
+#[derive(Serialize, Deserialize, Debug, PartialEq, Clone, Copy)]
 pub enum Role {
     Warrior,  //战士
     Ranger,  //游骑兵
@@ -30,6 +31,7 @@ pub struct Equipment {
     pub feet: u32,          //脚
 }
 
+#[derive(Serialize, Deserialize, Debug, PartialEq, Clone)]
 pub struct Player {
     pub name: String,   //名称
     pub level: u32,     //等级
@@ -49,6 +51,7 @@ pub struct Player {
     pub accuracy: u32,  //准确度  
     pub avoidance: u32, //规避力
 }
+
 
 impl Player {
     pub fn new() -> Self {

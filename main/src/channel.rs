@@ -198,6 +198,7 @@
             let (s_rt, r_service) = unbounded::<String>();
             let (s_service, r_sender) = unbounded::<String>();            
             let s_rt_clone = s_rt.clone();
+            let (s_timer, r_timer) = unbounded::<String>();
 
             let service_sessions = Arc::clone(&sessions);
             let sender_sessions = Arc::clone(&sessions);
@@ -207,13 +208,15 @@
                 crate::service::_handle_service(
                     service_sessions,
                     s_service,
-                    r_service);
+                    r_service,
+                    s_timer);
             }));
 
             //timer线程
             threads.push(thread::spawn(move || {
                 crate::timer::_handle_timer(
-                    s_rt
+                    s_rt,
+                    r_timer
                 );
             }));
 

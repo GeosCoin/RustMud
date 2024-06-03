@@ -16,7 +16,7 @@ pub fn _handle_sender(
     loop {
         match r_sender.recv() {
             Ok(a) => {
-                println!("sender: {}", a);
+                // println!("sender: {}", a);
                 crate::sender::on_sender(&sessions, a);
             },
             Err(s) => {
@@ -30,7 +30,10 @@ pub fn _handle_sender(
 pub fn on_sender(sessions: &SessionsType, message: String){
     let msg: Message = serde_json::from_str(&message).unwrap();
     let sessions_ok = sessions.lock().unwrap();
-    let ctx = sessions_ok.get(&msg.addr).unwrap();
+    let ctx = match sessions_ok.get(&msg.addr) {
+        Some(a) => a,
+        None => {return;}
+    };
     let mut stream = &ctx.cur_session.0;
     
     let _ = stream.write(msg.content.as_bytes());

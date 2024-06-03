@@ -4,3 +4,6 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
+utils = {path = "../utils"}
+serde_json = "1.0.85"
+serde = { version = "1.0.144", features = ["derive"] }
