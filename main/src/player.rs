@@ -40,7 +40,7 @@ pub struct Player {
     pub mental: u32,    //魔法输出
     pub offense: u32,   //攻击，使用武器限制
     pub defence: u32,   //防御，使用盾牌限制
-    pub hp: u32,    //血量
+    pub hp: i32,    //血量
     pub mp: u32,    //精神
     pub xp: u32,    //经验
     pub max_hp: u32,    //最大血量

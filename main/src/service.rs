@@ -16,6 +16,7 @@ use utils;
 use std::cell::RefCell;
 use std::rc::Rc;
 use std::net::{SocketAddrV4, Ipv4Addr};
+use core::sync::atomic::{AtomicUsize, Ordering};
 
 #[derive(Serialize, Deserialize, Debug, PartialEq)]
 pub struct Login {
@@ -54,6 +55,7 @@ pub fn _handle_service(
 ){
     let mut login_infos: HashMap<SocketAddr, LoginInfo> = HashMap::new();
     let mut players: HashMap<SocketAddr, Player> = HashMap::new();
+    let mut timers: HashMap<SocketAddr, usize> = HashMap::new();
 
     loop {
         match r_service.recv() {
@@ -70,6 +72,11 @@ pub fn _handle_service(
             }
         }
     }
+}
+
+fn get_id() -> usize {
+    static COUNTER : AtomicUsize = AtomicUsize::new(1);
+    COUNTER.fetch_add(1, Ordering::Relaxed) 
 }
 
 //业务处理入口
@@ -170,6 +177,10 @@ pub fn on_service(
                 return;
             }
         };
+        let timer = match multi.get(2) {
+            Some(a) => a,
+            None => "0"
+        };
 
         print!("{}", opponent);
 
@@ -187,24 +198,38 @@ pub fn on_service(
             }
         }
         
+        //计算伤害
         player.hp = player.hp - 7;
         o_player.hp = o_player.hp - 10;
 
-        //向对手叫板
-        let val = wrap_message(msg.addr,
-                "你对着".to_owned() + &o_player.name +"吼道：「畜生！你死期已到，今天就让小爷我送你上西天吧！」");
-        s_service.send(val).unwrap();
+        if timer == "0" {
+            //向对手叫板
+            let val = wrap_message(msg.addr,
+                    "你对着".to_owned() + &o_player.name +"吼道：「畜生！你死期已到，今天就让小爷我送你上西天吧！」");
+            s_service.send(val).unwrap();
 
-        //对手收到叫板
-        let val = wrap_message(*addr,
-            player.name.to_owned() + "对着你吼道：「畜生！你死期已到，今天就让小爷我送你上西天吧！」");
-        s_service.send(val).unwrap();
-        
-        //启动定时器
-        let val = wrap_message(*addr,
-            "0".to_string());
-        s_timer.send(val).unwrap();
-        
+            //对手收到叫板
+            let val = wrap_message(*addr,
+                player.name.to_owned() + "对着你吼道：「畜生！你死期已到，今天就让小爷我送你上西天吧！」");
+            s_service.send(val).unwrap();
+            
+            //启动定时器
+            //todo: 每个用户一个定时器，已有定时器，需要先关闭，然后再修改原定时器
+            
+            let val = wrap_message(msg.addr,
+                get_id().to_string());
+            s_timer.send(val).unwrap();
+        } else {
+            //向对手叫板
+            let val = wrap_message(msg.addr,
+                "你对着".to_owned() + &o_player.name +"你在攻击中不断积蓄攻势。(气势：8%)");
+            s_service.send(val).unwrap();
+
+            //对手收到叫板
+            let val = wrap_message(*addr,
+            player.name.to_owned() + "( 野兔动作似乎开始有点不太灵光，但是仍然有条不紊。 )");
+            s_service.send(val).unwrap();
+        }
         
     }
 

@@ -8,7 +8,7 @@ use crate::channel::{wrap_message, Message};
 
 use core::sync::atomic::{AtomicUsize, Ordering};
 
-static MY_VALUE: AtomicUsize = AtomicUsize::new(0);
+static MY_VALUE: AtomicUsize = AtomicUsize::new(10000000);
 
 fn on_timer (message: &String, s_rt: Sender<String>){
 
@@ -32,12 +32,9 @@ fn on_timer (message: &String, s_rt: Sender<String>){
                     return;
                 }
 
-                intv.tick().await;
+                intv.tick().await;                
                 
-                let addr = SocketAddr::V4(SocketAddrV4::new(
-                    Ipv4Addr::new(0,0,0,0), 
-                    0));
-                let msg = wrap_message(addr, utils::now());
+                let msg = wrap_message(msg.addr, "fight b timer".to_string());
                 s_rt.send(msg).unwrap();
             }
         });
