@@ -1,7 +1,13 @@
 use crossbeam::channel::Receiver;
 use crossbeam::channel::Sender;
 use crate::channel::wrap_message;
+use crate::channel::wrap_message_ext;
 use crate::channel::Message;
+use crate::channel::MessageType;
+use crate::command::Invoker;
+use crate::command_fight::FightCommand;
+use crate::command_hp::HpCommand;
+use crate::command_look::LookCommand;
 use crate::player::Player;
 use crate::{channel::{ServerHandler, SessionType, Sessions, SessionContext, SessionsType}, player};
 use std::collections::HashMap;
@@ -47,6 +53,10 @@ impl LoginInfo {
     }
 }
 
+fn tryit(players: &HashMap<SocketAddr, Player>) {
+    
+}
+
 pub fn _handle_service(
     sessions: SessionsType,  //共享在线数据
     s_service: Sender<String>,  //发送到socket       
@@ -90,7 +100,15 @@ pub fn on_service(
 ){
     println!("on_service: {}", message);
 
+    let ps  =  players.clone();
+
     let msg: Message = serde_json::from_str(&message).unwrap();
+
+    let ms = msg.clone();
+
+    if msg.msg_type == MessageType::Timer {
+        return;
+    }
 
     let login_info = login_infos.entry(msg.addr)
                 .or_insert(LoginInfo::new());    
@@ -110,132 +128,54 @@ pub fn on_service(
         };
     }
 
-    //显示用户信息    
-    if msg.content == "hp" {
-        let player = players.entry(msg.addr)
-            .or_insert(Player::new());
-        let hpframe = r"
-    ┌─── ".to_owned() + &utils::show_color(&player.name, utils::Color::YELLOW) + "状态────────────┬───────────────────┐
-    │【精神】 "+ &utils::show_color(&player.level.to_string(), utils::Color::RED) +"     / 125      [100%]    │【精力】 100     / 100     (+   0)    │
-    │【气血】 "+&utils::show_color(&player.hp.to_string(), utils::Color::YELLOW) +"      / 127      [100%]    │【内力】 141     / 71      (+   0)    │
-    │【真气】 0       / 0        [  0%]    │【战意】 100%               [正常]    │
-    │【食物】 0       / 300      [饥饿]    │【潜能】 5075                         │
-    │【饮水】 0       / 300      [饥渴]    │【经验】 830                          │
-    ├───────────────────┴───────────────────┤
-    │【状态】 健康                                                                 │
-    └──────────────────────────────北大侠客行────┘\n>";
-
-        let val = wrap_message(msg.addr, hpframe);
-        s_service.send(val).unwrap();        
-        return;
+    let mut invoker = Invoker::new(&ms.content);
+    {
+        invoker.add("hp".to_string(),  Box::new(
+            HpCommand::new(&ps, &s_service, &ms)));
+        invoker.add("l".to_string(), Box::new(
+            LookCommand::new(&ps, &s_service, &ms)));
+        invoker.add("ls".to_string(), Box::new(
+            LookCommand::new(&ps, &s_service, &ms)));
+        invoker.add("look".to_string(), Box::new(
+            LookCommand::new(&ps, &s_service, &ms)));
+        invoker.add("fight".to_string(), Box::new(
+            FightCommand::new(&ps, &s_service, &ms, &s_timer)));
     }
+    let ret_str = invoker.execute();
 
-    //显示周边环境
-    if msg.content == "l" || msg.content == "look" {
-        // let player = players.entry(msg.addr)
-        //     .or_insert(Player::new());
-        let mut l_view = r"
-        未明谷 -  
-                    树林----未明谷----乱石阵    
-                              ｜     
-                           青石桥头             
-    山谷中绿树成荫，却不见有多么明媚的花开于此，但你仍能闻见了远远飘来的花香。耳边听到了溪
-水叮咚的声音，原来不远处有一条蜿蜒的小溪(river)，岸边似乎散落了一些物什。在山谷的北侧有条陡
-峭的山坡(path)隐隐可以通向外界。
-    你可以看看(look):river,path，。
-    「初春」: 太阳无奈地缓缓挂向西边的才露新芽的树梢。
-
-    这里明显的方向有 south、east 和 west。
-
-    二个葫芦(Hu lu)
-    二枚野果(Ye guo)
-    普通百姓 博迪鸟(Birddy) 
-    普通百姓 翻炒西瓜拌面(Esther) 
-    ".to_string();
-
-        let others: Vec<(&SocketAddr, &Player)> = players.iter()
-            .filter(|p| p.1.name != login_info.login.login_name)
-            .collect();
-        let mut names = String::from("");
-        for p in others {
-            names = names
-                 + "普通百姓 " + &p.1.name + "\n";
-        }
-        l_view = l_view + &names;
-        let val = wrap_message(msg.addr, l_view.to_string());
-        s_service.send(val).unwrap();        
-        return;
-    }
-
-    //Fight指定玩家
-    if msg.content.contains("fight") {
-        let multi = msg.content.split(" ").collect::<Vec<&str>>();
-        let opponent = match multi.get(1) {
+    if ret_str.contains("fight") {
+        let ret_str = ret_str.split(" ").collect::<Vec<&str>>();
+        let opponent = match ret_str.get(1){
             Some(a) => a,
-            None => {
-                println!("Do not know fight who?");
-                return;
-            }
+            None => return,
         };
-        let timer = match multi.get(2) {
+        let p_hp = match ret_str.get(2){
             Some(a) => a,
-            None => "0"
+            None => return,
         };
-
-        print!("{}", opponent);
-
-        let mut player = &mut Player::new();
-        let mut o_player = &mut Player::new();
-        let mut addr = &SocketAddr::V4(SocketAddrV4::new(
-            Ipv4Addr::new(0,0,0,0), 
-            0));
+        let o_hp = match ret_str.get(3){
+            Some(a) => a,
+            None => return,
+        };
         for item in players.iter_mut() {
             if item.1.name == login_info.login.login_name {
-                player = item.1;
+                item.1.hp = p_hp.parse().unwrap();
             }else if item.1.name == opponent.to_string() {
-                o_player = item.1;
-                addr = item.0;
+                item.1.hp = o_hp.parse().unwrap();
             }
         }
-        
-        //计算伤害
-        player.hp = player.hp - 7;
-        o_player.hp = o_player.hp - 10;
+    }
 
-        if timer == "0" {
-            //向对手叫板
-            let val = wrap_message(msg.addr,
-                    "你对着".to_owned() + &o_player.name +"吼道：「畜生！你死期已到，今天就让小爷我送你上西天吧！」");
-            s_service.send(val).unwrap();
-
-            //对手收到叫板
-            let val = wrap_message(*addr,
-                player.name.to_owned() + "对着你吼道：「畜生！你死期已到，今天就让小爷我送你上西天吧！」");
-            s_service.send(val).unwrap();
-            
-            //启动定时器
-            //todo: 每个用户一个定时器，已有定时器，需要先关闭，然后再修改原定时器
-            
-            let val = wrap_message(msg.addr,
-                get_id().to_string());
-            s_timer.send(val).unwrap();
-        } else {
-            //向对手叫板
-            let val = wrap_message(msg.addr,
-                "你对着".to_owned() + &o_player.name +"你在攻击中不断积蓄攻势。(气势：8%)");
-            s_service.send(val).unwrap();
-
-            //对手收到叫板
-            let val = wrap_message(*addr,
-            player.name.to_owned() + "( 野兔动作似乎开始有点不太灵光，但是仍然有条不紊。 )");
-            s_service.send(val).unwrap();
-        }
-        
+    if ret_str == "none" {
+        let nomatch = "There is no match command.";
+        let val = wrap_message(msg.addr, nomatch.to_string());
+        s_service.send(val).unwrap();
+        return;
     }
 
     if msg.content.contains("close") {
-        let val = wrap_message(msg.addr,
-            "10".to_string());
+        let val = wrap_message_ext(MessageType::Timer,
+            msg.addr, "10".to_string());
         s_timer.send(val).unwrap();
     }
 

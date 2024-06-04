@@ -30,9 +30,19 @@
         }
     }
 
+    #[derive(Serialize, Deserialize, Debug, PartialEq, Clone)]
+    pub enum MessageType {
+        Timer,      //定时消息 
+        Combat,     //战斗
+        Command,    //命令
+        Sender,     //发送
+        Normal,     //一般消息
+    }
+
     //线程间消息
-    #[derive(Serialize, Deserialize, Debug)]
+    #[derive(Serialize, Deserialize, Debug, Clone)]
     pub struct Message {
+        pub msg_type:  MessageType,    //消息类型
         pub content: String,  //消息内容
         pub addr: SocketAddr    //消息地址，用于获取用户信息
     }
@@ -198,6 +208,7 @@
             let (s_rt, r_service) = unbounded::<String>();
             let (s_service, r_sender) = unbounded::<String>();            
             let s_rt_clone = s_rt.clone();
+            let s_rt_clone2 = s_rt_clone.clone();
             let (s_timer, r_timer) = unbounded::<String>();
 
             let service_sessions = Arc::clone(&sessions);
@@ -215,7 +226,14 @@
             //timer线程
             threads.push(thread::spawn(move || {
                 crate::timer::_handle_timer(
-                    s_rt,
+                    s_rt
+                );
+            }));
+
+            //combat线程
+            threads.push(thread::spawn(move || {
+                crate::combat::_handle_timer(
+                    s_rt_clone2,
                     r_timer
                 );
             }));
@@ -278,7 +296,8 @@
                 }
 
                 //分发消息到service模块                
-                let msg = wrap_message(addr, message);
+                let msg = wrap_message_ext(MessageType::Command,
+                    addr, message);
                 s_rt.send(msg).unwrap();
             }
         }
@@ -333,8 +352,18 @@
         fn on_message(session: &mut SessionType, message: &str, addr: SocketAddr, sessions: &SessionsType);
     }
 
+    pub fn wrap_message_ext(msg_type: MessageType, addr: SocketAddr, message: String) -> String {
+        let msg = serde_json::to_string(&Message {
+            msg_type: msg_type,
+            content: message.trim().to_string(),
+            addr: addr,
+        }).unwrap();
+        msg
+    }
+
     pub fn wrap_message(addr: SocketAddr, message: String) -> String {
         let msg = serde_json::to_string(&Message {
+            msg_type: MessageType::Normal,
             content: message.trim().to_string(),
             addr: addr,
         }).unwrap();

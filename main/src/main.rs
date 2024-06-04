@@ -7,9 +7,14 @@ mod channel;
 mod service;
 mod sender;
 mod timer;
+mod combat;
 mod player;
 mod quest;
 mod login;
+mod command;
+mod command_hp;
+mod command_look;
+mod command_fight;
 
 fn main() {
 
