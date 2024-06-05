@@ -1,3 +1,5 @@
+#![allow(warnings)]
+
 use serde::{Serialize, Deserialize};
 
 #[derive(Serialize, Deserialize, Debug, PartialEq)]

@@ -29,9 +29,13 @@ impl<'a>  Command for WalkCommand<'a>  {
     fn execute(&self) -> String {
         let player = self.players.get(&self.msg.addr).unwrap();
 
-        let val = wrap_message_timer(MessageType::CombatStop,
-            self.msg.addr, "stop".to_string(), player.timer_id.to_string());
-        self.s_combat.send(val).unwrap();
+        //如果timer_id不为0,则关闭
+        if player.timer_id != 0 {
+            let val = wrap_message_timer(MessageType::CombatStop,
+                self.msg.addr, "stop".to_string(), player.timer_id.to_string());
+            self.s_combat.send(val).unwrap();
+        }
+
         self.msg.content.to_string()
     }
 }

@@ -1,3 +1,4 @@
+#![allow(warnings)]
 
 use std::{fs::File, net::SocketAddr, path::Path, sync::atomic::{AtomicUsize, Ordering}};
 use chrono::Local;

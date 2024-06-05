@@ -19,7 +19,7 @@
 
     pub struct SessionContext {
         pub cur_session: SessionType,
-        pub player: Player
+        pub player_name: String
     }
 
     pub struct Sessions {}
@@ -118,76 +118,7 @@
     fn on_disconnect(session: &mut SessionType) {
         println!("Client disconnected! {}", session.1);
     }
-
-    fn on_message(
-        session: &mut SessionType, 
-        message: &str, 
-        addr: SocketAddr, 
-        sessions: &SessionsType
-    ) {
-
-        println!("on_message: {} {:?}", message, addr);
-
-        if message.trim() == "lxz" {
-            Self::send(session,  "此ID档案已存在,请输入密码:");
-            return;
-        }
-
-        if message.trim() == "abc123" {
-            Self::send(session,  "重新连线完毕。");
-            return;
-        }
-
-        //新用户登录
-        let mut sessions_ok = sessions.lock().unwrap();
-
-        if message.trim() == "upgrade" {
-            sessions_ok.entry(addr)
-                .and_modify(|ctx| {
-                    ctx.player.name = "龙年".to_string();
-                    ctx.player.level = 30;
-                });
-        } 
-
-        let player = &sessions_ok.get(&addr).unwrap().player;
-
-        let hpframe = r"
-        ┌─── ".to_owned() + &utils::show_color(&player.name, Color::YELLOW) + "状态────────────┬───────────────────┐
-        │【精神】 "+ &utils::show_color(&player.level.to_string(), Color::RED) +"     / 125      [100%]    │【精力】 100     / 100     (+   0)    │
-        │【气血】 17      / 127      [100%]    │【内力】 141     / 71      (+   0)    │
-        │【真气】 0       / 0        [  0%]    │【战意】 100%               [正常]    │
-        │【食物】 0       / 300      [饥饿]    │【潜能】 5075                         │
-        │【饮水】 0       / 300      [饥渴]    │【经验】 830                          │
-        ├───────────────────┴───────────────────┤
-        │【状态】 健康                                                                 │
-        └──────────────────────────────北大侠客行────┘\n>";
-
-        if message.trim() == "hp" {
-            Self::send(session,  &hpframe);
-            return;
-        }
-
-        if message.trim() == "l" {
-
-            let mut other = 
-                sessions_ok
-                .iter()
-                .filter(|p| !(p.0.to_string() == addr.to_string())) ;
-
-            println!("{:?}", other.next().unwrap().1.player.name);
-        }
-
-        // echos back the message
-        // let x = show_color(message, Color::PINK);
-        // Self::send(session,  &x);
-
-        //全局通知
-        // let mut all = Arc::clone(&sessions);
-        // let msg = address.to_string() + ":" + &message;
-        // Self::send_all(&mut all, &msg);
-        }
     }
-
     pub trait ServerHandler {
         
         fn start(&self, addr: &str, port: &str) -> TcpListener {
@@ -215,10 +146,12 @@
             let (s_combat, r_combat) = unbounded::<String>();
 
             let sender_sessions = Arc::clone(&sessions);
+            let srv_sessions = Arc::clone(&sessions);
 
             //service线程            
             threads.push(thread::spawn(move || {
                 crate::service::_handle_service(
+                    srv_sessions,
                     s_service,
                     r_service,
                     s_combat);
@@ -289,7 +222,7 @@
                             return;
                         }
                     },
-                    Err(_e) => {                        
+                    Err(_e) => {                     
                         Self::on_disconnect(&mut session);
                         Self::del_connect(addr, &sessions);
                         return;
@@ -326,7 +259,7 @@
             sessions_ok.entry(addr)                   
                 .or_insert(SessionContext{
                     cur_session: session_cur,
-                    player: Player::new(),
+                    player_name: String::new(),
                 });
             println!(" Connect count = {}", sessions_ok.len());
         }
@@ -335,6 +268,7 @@
             addr: SocketAddr, 
             sessions: &SessionsType
         ){
+            
             let mut sessions_err = sessions.lock().unwrap();
             sessions_err.remove(&addr);
             println!(" Connect count = {}", sessions_err.len());
@@ -350,7 +284,6 @@
 
         fn on_disconnect(session: &mut SessionType);
 
-        fn on_message(session: &mut SessionType, message: &str, addr: SocketAddr, sessions: &SessionsType);
     }
 
     pub fn wrap_message_timer(msg_type: MessageType, addr: SocketAddr, message: String, timer_id: String) -> String {
@@ -382,4 +315,3 @@
         }).unwrap();
         msg
     }
-    

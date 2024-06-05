@@ -28,7 +28,10 @@ impl<'a> FightCommand<'a> {
 
 impl<'a>  Command for FightCommand<'a>  {
     fn execute(&self) -> String {
-        let player = self.players.get(&self.msg.addr).unwrap();
+        let player = match self.players.get(&self.msg.addr){
+            Some(a) => a,
+            None => {return "none".to_string()},
+        };
 
         let multi = self.msg.content.split(" ").collect::<Vec<&str>>();
         let opponent = match multi.get(1) {

@@ -4,16 +4,28 @@ use crate::service::LoginInfo;
 use crossbeam::channel::Sender;
 use crate::channel::Message;
 use crate::channel::wrap_message;
-use std::io::Error;
+use std::collections::HashMap;
+use std::net::SocketAddr;
+use std::num::ParseIntError;
 
 pub fn do_login(
     s_service: &Sender<String>, 
     login_info: &mut LoginInfo,
     player: &mut Player,
-    msg: &Message
-) -> Result<u32, Error>
+    msg: &Message,
+    players: &HashMap<SocketAddr, Player>,
+) -> Result<u32, ParseIntError>
 {
-    //todo: 重复用户登录判断
+    // //todo: 重复用户登录判断
+    // let p_vec : Vec<(&SocketAddr, &Player)> = players.iter()
+    //     .filter(|p| p.1.name == login_info.login.login_name)
+    //     .collect();
+    // if !p_vec.is_empty() {
+    //     let val = wrap_message(msg.addr, 
+    //         "此用户已在服务器上登录".to_string());
+    //     s_service.send(val).unwrap(); 
+    //     return Ok(404);
+    // }
 
     //登录名还未赋值
     if login_info.login.login_name.is_empty() {
@@ -67,7 +79,7 @@ pub fn do_login(
 
         } else { //用户不存在
             let val = wrap_message(msg.addr, "密码错误！".to_string());
-            s_service.send(val).unwrap();
+            s_service.send(val).unwrap();            
             return Ok(4);
         }
     }

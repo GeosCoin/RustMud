@@ -1,4 +1,4 @@
-
+#![allow(warnings)]
 
 use crate::channel::Server;
 use crate::channel::ServerHandler;

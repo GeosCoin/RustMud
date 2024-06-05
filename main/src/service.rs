@@ -1,5 +1,6 @@
 use crossbeam::channel::Receiver;
 use crossbeam::channel::Sender;
+use tokio::stream;
 use crate::channel::wrap_message;
 use crate::channel::wrap_message_ext;
 use crate::channel::wrap_message_timer;
@@ -18,6 +19,7 @@ use std::hash::Hash;
 use std::io::Empty;
 use std::net::SocketAddr;
 use std::ops::Add;
+use std::sync::Arc;
 use std::time::Duration;
 use std::thread;
 use serde::{Serialize, Deserialize};
@@ -57,6 +59,7 @@ impl LoginInfo {
 }
 
 pub fn _handle_service(
+    sessions:  SessionsType,
     s_service: Sender<String>,  //发送到socket       
     r_service: Receiver<String>,   //service接收数据
     s_combat: Sender<String>, //发送到fight模块
@@ -69,11 +72,14 @@ pub fn _handle_service(
             Ok(a) => {                
                 let s_service_clone = s_service.clone();
                 let s_combat_clone = s_combat.clone();
+                let srv_sessions = Arc::clone(&sessions);
+
                 on_service(&a, 
                     s_service_clone, 
                     s_combat_clone, 
                     &mut login_infos,
-                    &mut players);
+                    &mut players,
+                    srv_sessions);                
             },
             Err(s) => {
                 println!("{:?}", s);
@@ -91,8 +97,9 @@ pub fn on_service(
     s_service: Sender<String>, 
     s_combat: Sender<String>,
     login_infos: &mut HashMap<SocketAddr, LoginInfo>,
-    players: &mut HashMap<SocketAddr, Player>
-){
+    players: &mut HashMap<SocketAddr, Player>,
+    sessions: SessionsType
+) -> u32 {
     println!("on_service: {}", message);
 
     let ps  =  players.clone();
@@ -102,18 +109,51 @@ pub fn on_service(
     let ms = msg.clone();
 
     if msg.msg_type == MessageType::Timer {
-        return;
+        return 0;
     }
 
     let login_info = login_infos.entry(msg.addr)
                 .or_insert(LoginInfo::new());    
     
     if !login_info.b_login {
+
         let player = players.entry(msg.addr)
             .or_insert(Player::new());
-        match crate::login::do_login(&s_service, login_info, player, &msg) {
-            Ok(_) => return,
-            Err(_) => return
+        match crate::login::do_login(&s_service, login_info, player, &msg, &ps) {
+            Ok(a) => {
+                //重复用户登录判断  
+                if a == 0 {
+                    let p_vec : Vec<(&SocketAddr, &Player)> = ps.iter()
+                        .filter(|p| p.1.name == login_info.login.login_name)
+                        .collect();
+                    if !p_vec.is_empty() {
+                        let val = wrap_message(msg.addr, 
+                            "此用户已在服务器上登录，将会强".to_string());
+                        s_service.send(val).unwrap(); 
+
+                        //删除已登录用户
+                        let sessions_login = sessions.lock().unwrap();
+                        
+                        for p in p_vec.iter() {
+                            let stream = match sessions_login.get(p.0) {
+                                Some(a) => a,
+                                None => continue
+                            };
+                            let _ = stream.cur_session.0.shutdown(std::net::Shutdown::Both); 
+                            
+                            let addr = stream.cur_session.1;
+                            players.remove(&addr);
+                        }
+                        println!(" Connect count = {}", sessions_login.len());
+
+                        return 99;
+                    }
+
+                    
+                }
+                return 0;
+            },
+            Err(_) => {return 99;}
         };
     }
 
@@ -132,7 +172,7 @@ pub fn on_service(
             let nomatch = "There is no match command.";
             let val = wrap_message(msg.addr, nomatch.to_string());
             s_service.send(val).unwrap();
-            return;
+            return 0;
         }
     }    
     let ret_str = invoker.execute();
@@ -142,19 +182,19 @@ pub fn on_service(
         let ret_str = ret_str.split(" ").collect::<Vec<&str>>();
         let opponent = match ret_str.get(1){
             Some(a) => a,
-            None => return,
+            None => return 0,
         };
         let p_hp = match ret_str.get(2){
             Some(a) => a,
-            None => return,
+            None => return 0,
         };
         let o_hp = match ret_str.get(3){
             Some(a) => a,
-            None => return,
+            None => return 0,
         };
         let timer_id = match ret_str.get(4){
             Some(a) => a,
-            None => return,
+            None => return 0,
         };
         for item in players.iter_mut() {
             if item.1.name == login_info.login.login_name {
@@ -181,7 +221,8 @@ pub fn on_service(
         let nomatch = "There is no match command.";
         let val = wrap_message(msg.addr, nomatch.to_string());
         s_service.send(val).unwrap();
-        return;
+        return 0;
     }
 
+    return 0;
 }
