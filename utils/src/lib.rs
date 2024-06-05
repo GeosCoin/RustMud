@@ -1,5 +1,5 @@
 
-use std::{fs::File, net::SocketAddr, path::Path};
+use std::{fs::File, net::SocketAddr, path::Path, sync::atomic::{AtomicUsize, Ordering}};
 use chrono::Local;
 
 pub enum Color {
@@ -85,4 +85,9 @@ pub fn show_color(content: &str, color: Color) -> String {
 
 pub fn now() -> String {
     Local::now().format("%F %T").to_string()
+}
+
+pub fn get_id() -> usize {
+    static COUNTER : AtomicUsize = AtomicUsize::new(1);
+    COUNTER.fetch_add(1, Ordering::Relaxed) 
 }

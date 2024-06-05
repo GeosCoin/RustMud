@@ -42,6 +42,8 @@ pub struct Player {
     pub mp_regen: u32,  //精神增量
     pub accuracy: u32,  //准确度  
     pub avoidance: u32, //规避力
+    
+    pub timer_id: usize, //定时器ID
 }
 
 
@@ -65,6 +67,7 @@ impl Player {
             mp_regen: 0,
             accuracy: 0,
             avoidance: 0,
+            timer_id:0
         }
     }
 }
@@ -74,11 +77,11 @@ fn create_login(){
     let mut login1 = Login::new();
     let mut login2 = Login::new();
 
-    login1.login_name = "lxz".to_string();
-    login1.password = "abc123".to_string();
+    login1.login_name = "a".to_string();
+    login1.password = "1".to_string();
 
-    login2.login_name = "pirate".to_string();
-    login2.password = "111".to_string();
+    login2.login_name = "b".to_string();
+    login2.password = "1".to_string();
 
     logins.push(login1);
     logins.push(login2);
@@ -91,16 +94,16 @@ fn create_user(){
     let mut players: Vec<Player> = Vec::new();
     
     let mut player1 = Player::new();
-    player1.name = "lxz".to_string();
+    player1.name = "a".to_string();
     player1.level = 2;
     player1.hp = 100;
     player1.mp = 100;
     players.push(player1);
 
     let mut player2 = Player::new();
-    player2.name = "pirate".to_string();
+    player2.name = "b".to_string();
     player2.level = 7;
-    player2.hp = 100;
+    player2.hp = 10000;
     player2.mp = 90;
     players.push(player2);
     

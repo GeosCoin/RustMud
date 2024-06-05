@@ -15,6 +15,7 @@ mod command;
 mod command_hp;
 mod command_look;
 mod command_fight;
+mod command_walk;
 
 fn main() {
 

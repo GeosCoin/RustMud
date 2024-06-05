@@ -29,7 +29,7 @@ pub fn _handle_timer(
                     0));
                 let msg = wrap_message_ext(MessageType::Timer,
                     addr, utils::now());
-                s_rt.send(msg).unwrap();
+                // s_rt.send(msg).unwrap();
             }
         });
     });

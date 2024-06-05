@@ -35,11 +35,8 @@ pub fn on_sender(sessions: &SessionsType, message: String){
         None => {return;}
     };
     let mut stream = &ctx.cur_session.0;
-    
-    let _ = stream.write(msg.content.as_bytes());
+    let val = msg.content + "\n>";
+    let _ = stream.write(val.as_bytes());
 
-    // for session in sessions.lock().unwrap().iter_mut() {
-    //     println!("Send message to {:?}: {}", session.0, message);        
-    // }
 }
 

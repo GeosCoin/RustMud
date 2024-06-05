@@ -50,6 +50,7 @@ pub struct Player {
     pub mp_regen: u32,  //精神增量
     pub accuracy: u32,  //准确度  
     pub avoidance: u32, //规避力
+    pub timer_id: usize, //定时器ID
 }
 
 
@@ -73,6 +74,7 @@ impl Player {
             mp_regen: 0,
             accuracy: 0,
             avoidance: 0,
+            timer_id: 0,
         }
     }
 }
