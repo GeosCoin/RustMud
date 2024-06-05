@@ -128,7 +128,7 @@ pub fn on_service(
                         .collect();
                     if !p_vec.is_empty() {
                         let val = wrap_message(msg.addr, 
-                            "此用户已在服务器上登录，将会强".to_string());
+                            "此用户已在服务器上登录过，其将被强制退出。".to_string());
                         s_service.send(val).unwrap(); 
 
                         //删除已登录用户
