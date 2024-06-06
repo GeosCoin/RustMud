@@ -73,6 +73,20 @@ impl<'a>  Command for WalkCommand<'a>  {
         let mut l_view = String::new();
         read.read_to_string(&mut l_view);
 
+        for p in self.players.iter() {
+            println!("pos: {} player.pos: {}", p.1.pos, new_pos);
+        }
+
+        let others: Vec<(&SocketAddr, &Player)> = self.players.iter()
+            .filter(|p| p.1.name != player.name && p.1.pos == new_pos)
+            .collect();
+        let mut names = String::from("");
+        for p in others {
+            names = names
+                 + "\n    普通百姓 " + &p.1.name + "\n";
+        }
+        l_view = l_view + &names;
+
         let val = wrap_message(self.msg.addr, l_view.to_string());
         self.s_service.send(val).unwrap();
         self.msg.content.to_owned() + "@" + &new_pos.to_string()

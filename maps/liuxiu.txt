@@ -4,6 +4,9 @@ name=未明谷
 look=maps/liuxiu/liuxiu_1.txt
 look@river=这是一条清澈的小溪，也许你可以拿起地上的葫芦(get hulu)，研究下(l hulu)用来盛溪水喝。
 look@path=这是一段陡峭的山坡，应该可以向上攀爬出去。(climb up)
+climb@up=你手足并用，飞快的向上攀爬。
+climb@updone=你轻轻松松地爬了上来。
+climb@pos=5
 south=2
 west=3
 east=4
@@ -30,6 +33,9 @@ west=1
 id=5
 name=缓坡
 look=maps/liuxiu/liuxiu_5.txt
+climb@down=你小心翼翼的向下爬去。
+climb@updone=你费了九牛二虎之力，终于爬到了谷底！
+climb@pos=1
 north=6
 
 [node]

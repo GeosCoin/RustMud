@@ -50,9 +50,9 @@ impl<'a>  Command for FightCommand<'a>  {
             return "deny fight yourself".to_string();
         }
 
-        //对手不能是空的
+        //对手不能是空的 不在当前位置
         let opponent_vec: Vec<(&SocketAddr, &Player)> = self.players.iter()
-            .filter(|p| p.1.name == opponent.to_string())
+            .filter(|p| p.1.name == opponent.to_string() && p.1.pos == player.pos)
             .collect();
         if opponent_vec.is_empty() {
             let val = wrap_message(self.msg.addr,

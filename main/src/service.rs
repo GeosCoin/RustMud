@@ -214,6 +214,7 @@ pub fn on_service(
         }
     }
 
+    println!("{}", ret_str);
     if ret_str.contains("e@") || ret_str.contains("w@") 
     || ret_str.contains("n@") || ret_str.contains("s@") 
     || ret_str.contains("ne@") || ret_str.contains("nw@") 

@@ -3,21 +3,21 @@ use crossbeam::channel::Sender;
 use utils::{show_color, Color};
 use crate::{channel::{wrap_message, Message}, command::Command, map::Node, player::Player};
 
-pub struct LookCommand<'a> {
+pub struct ClimbCommand<'a> {
     players: &'a HashMap<SocketAddr, Player>,
     s_service: &'a Sender<String>,
     msg: &'a Message,
     nodes: &'a HashMap<u32, Node>
 }
 
-impl<'a> LookCommand<'a> {
+impl<'a> ClimbCommand<'a> {
     pub fn new(
         players: &'a HashMap<SocketAddr, Player>,
         s_service: &'a Sender<String>,
         msg: &'a Message,
         nodes: &'a HashMap<u32, Node>
-        ) -> LookCommand<'a>  {
-            LookCommand {
+        ) -> ClimbCommand<'a>  {
+            ClimbCommand {
             players,
             s_service,
             msg,
@@ -25,7 +25,7 @@ impl<'a> LookCommand<'a> {
         }
     }
 }
-impl<'a>  Command for LookCommand<'a>  {
+impl<'a>  Command for ClimbCommand<'a>  {
     fn execute(&self) -> String {
         let player = self.players.get(&self.msg.addr).unwrap();
 
@@ -54,17 +54,13 @@ impl<'a>  Command for LookCommand<'a>  {
         let mut l_view = String::new();
         read.read_to_string(&mut l_view);
 
-        for p in self.players.iter() {
-            println!("pos: {} player.pos: {}", p.1.pos, player.pos);
-        }
-
         let others: Vec<(&SocketAddr, &Player)> = self.players.iter()
-            .filter(|p| p.1.name != player.name && p.1.pos == player.pos)
+            .filter(|p| p.1.name != player.name)
             .collect();
         let mut names = String::from("");
         for p in others {
             names = names
-                 + "\n    普通百姓 " + &p.1.name + "\n";
+                 + "    普通百姓 " + &p.1.name + "\n";
         }
         l_view = l_view + &names;
         let val = wrap_message(self.msg.addr, l_view.to_string());
