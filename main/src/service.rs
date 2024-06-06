@@ -127,6 +127,7 @@ pub fn on_service(
                         .filter(|p| p.1.name == login_info.login.login_name)
                         .collect();
                     if !p_vec.is_empty() {
+                        println!("{}", p_vec.len());
                         let val = wrap_message(msg.addr, 
                             "此用户已在服务器上登录过，其将被强制退出。".to_string());
                         s_service.send(val).unwrap(); 
@@ -135,14 +136,16 @@ pub fn on_service(
                         let sessions_login = sessions.lock().unwrap();
                         
                         for p in p_vec.iter() {
+                            //先删除，后面stream不一定能得到
+                            let addr = p.0;
+                            players.remove(addr);
+
                             let stream = match sessions_login.get(p.0) {
                                 Some(a) => a,
                                 None => continue
                             };
                             let _ = stream.cur_session.0.shutdown(std::net::Shutdown::Both); 
                             
-                            let addr = stream.cur_session.1;
-                            players.remove(&addr);
                         }
                         println!(" Connect count = {}", sessions_login.len());
 
