@@ -11,6 +11,8 @@ use crate::command_fight::FightCommand;
 use crate::command_hp::HpCommand;
 use crate::command_look::LookCommand;
 use crate::command_walk::WalkCommand;
+use crate::map;
+use crate::map::Node;
 use crate::player::Player;
 use crate::{channel::{ServerHandler, SessionType, Sessions, SessionContext, SessionsType}, player};
 use std::collections::HashMap;
@@ -66,6 +68,7 @@ pub fn _handle_service(
 ){
     let mut login_infos: HashMap<SocketAddr, LoginInfo> = HashMap::new();
     let mut players: HashMap<SocketAddr, Player> = HashMap::new();
+    let nodes = map::init_map();
 
     loop {
         match r_service.recv() {
@@ -79,7 +82,8 @@ pub fn _handle_service(
                     s_combat_clone, 
                     &mut login_infos,
                     &mut players,
-                    srv_sessions);                
+                    srv_sessions,
+                    &nodes);                
             },
             Err(s) => {
                 println!("{:?}", s);
@@ -98,7 +102,8 @@ pub fn on_service(
     s_combat: Sender<String>,
     login_infos: &mut HashMap<SocketAddr, LoginInfo>,
     players: &mut HashMap<SocketAddr, Player>,
-    sessions: SessionsType
+    sessions: SessionsType,
+    nodes: &HashMap<u32, Node>
 ) -> u32 {
     println!("on_service: {}", message);
 
@@ -168,9 +173,9 @@ pub fn on_service(
         };
     match cmd_key {
         "hp" => invoker.set(Box::new(HpCommand::new(&ps, &s_service, &ms))),
-        "l" | "ls" | "look" => invoker.set(Box::new(LookCommand::new(&ps, &s_service, &ms))),
+        "l" | "ls" | "look" => invoker.set(Box::new(LookCommand::new(&ps, &s_service, &ms, nodes))),
         "fight" => invoker.set(Box::new(FightCommand::new(&ps, &s_service, &ms, &s_combat))),
-        "e"|"w"|"s"|"n"|"ne"|"sw"|"se"|"nw" => invoker.set(Box::new(WalkCommand::new(&ps, &s_service, &ms, &s_combat))),
+        "e"|"w"|"s"|"n"|"ne"|"sw"|"se"|"nw" => invoker.set(Box::new(WalkCommand::new(&ps, &s_service, &ms, &s_combat, nodes))),
         _ => {
             let nomatch = "There is no match command.";
             let val = wrap_message(msg.addr, nomatch.to_string());
@@ -209,15 +214,24 @@ pub fn on_service(
         }
     }
 
-    match ret_str.as_str() {
-        "e"|"w"|"s"|"n"|"ne"|"sw"|"se"|"nw" => {
-            for item in players.iter_mut() {
-                if item.1.name == login_info.login.login_name {                    
-                    item.1.timer_id = 0;
+    if ret_str.contains("e@") || ret_str.contains("w@") 
+    || ret_str.contains("n@") || ret_str.contains("s@") 
+    || ret_str.contains("ne@") || ret_str.contains("nw@") 
+    || ret_str.contains("se@") || ret_str.contains("sw@") 
+    {
+        let new_pos_vec: Vec<&str> = ret_str.split("@").collect();
+        let new_pos = match new_pos_vec.get(1) {
+            Some(a) => a,
+            None => "0",
+        };
+        for item in players.iter_mut() {
+            if item.1.name == login_info.login.login_name {                    
+                item.1.timer_id = 0;
+                if new_pos != "0" {
+                    item.1.pos = new_pos.parse().unwrap();
                 }
             }
-        },
-        _ => (),
+        }
     }
     
     if ret_str == "none" {

@@ -1,5 +1,7 @@
 #![allow(warnings)]
 
+use std::{fs::read_to_string, io::Read};
+
 use serde::{Serialize, Deserialize};
 
 #[derive(Serialize, Deserialize, Debug, PartialEq)]
@@ -25,9 +27,19 @@ pub enum Role {
     Magician   //法师
 }
 
+
+//地图
+#[derive(Serialize, Deserialize, Debug, PartialEq, Clone, Copy)]
+pub enum Map {
+    Liuxiu, //柳秀山庄
+    Yangzhou, //扬州
+}
+
 #[derive(Serialize, Deserialize, Debug, PartialEq)]
 pub struct Player {
     pub name: String,   //名称
+    pub map: Map,       //地图
+    pub pos: u32,      //位置
     pub level: u32,     //等级
     pub role: Role, //角色
     pub physical: u32,  //物理输出
@@ -53,6 +65,8 @@ impl Player {
     pub fn new() -> Self {
         Player{
             name: String::from(""),   
+            map: Map::Liuxiu,
+            pos: 1,
             level: 1,  
             role: Role::Magician,
             physical: 0,
@@ -121,6 +135,14 @@ fn main() {
     //创建用户信息
     create_user();
     
-    
+    //读取地图
+    // read_node();
+}
+
+fn read_node(){
+    let mut read = utils::load_file("maps/liuxiu_1.txt");
+    let mut buf = String::new();
+    read.read_to_string(&mut buf);
+
 }
 

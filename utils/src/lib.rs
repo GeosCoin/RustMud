@@ -1,6 +1,6 @@
 #![allow(warnings)]
 
-use std::{fs::File, net::SocketAddr, path::Path, sync::atomic::{AtomicUsize, Ordering}};
+use std::{fs::File, io::{self, BufRead}, net::SocketAddr, path::Path, sync::atomic::{AtomicUsize, Ordering}};
 use chrono::Local;
 
 pub enum Color {
@@ -55,6 +55,12 @@ pub fn append_file(filepath: &str) -> File {
         .expect("Error: failed to append file");
 }
 
+pub fn read_lines<P>(filename: P) -> io::Result<io::Lines<io::BufReader<File>>>
+where P: AsRef<Path>, {
+    let file = File::open(filename)?;
+    Ok(io::BufReader::new(file).lines())
+}
+
 pub fn show_color(content: &str, color: Color) -> String {
     match color {
         Color::RED => {
@@ -92,3 +98,4 @@ pub fn get_id() -> usize {
     static COUNTER : AtomicUsize = AtomicUsize::new(1);
     COUNTER.fetch_add(1, Ordering::Relaxed) 
 }
+
