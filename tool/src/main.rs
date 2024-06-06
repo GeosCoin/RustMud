@@ -92,6 +92,7 @@ fn create_login(){
     let mut logins :Vec<Login> = Vec::new();
     let mut login1 = Login::new();
     let mut login2 = Login::new();
+    let mut login3 = Login::new();
 
     login1.login_name = "a".to_string();
     login1.password = "1".to_string();
@@ -99,8 +100,12 @@ fn create_login(){
     login2.login_name = "b".to_string();
     login2.password = "1".to_string();
 
+    login3.login_name = "c".to_string();
+    login3.password = "1".to_string();
+
     logins.push(login1);
     logins.push(login2);
+    logins.push(login3);
 
     let w_file = utils::create_file("login.json"); 
     serde_json::to_writer(w_file, &logins).unwrap();
@@ -121,6 +126,13 @@ fn create_user(){
     player2.level = 7;
     player2.hp = 10000;
     player2.mp = 90;
+    players.push(player2);
+
+    let mut player2 = Player::new();
+    player2.name = "c".to_string();
+    player2.level = 7;
+    player2.hp = 1000;
+    player2.mp = 100;
     players.push(player2);
     
     let w_file = utils::create_file("users.json"); 

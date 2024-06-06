@@ -83,7 +83,7 @@ impl<'a>  Command for WalkCommand<'a>  {
         let mut names = String::from("");
         for p in others {
             names = names
-                 + "\n    普通百姓 " + &p.1.name + "\n";
+                 + "    普通百姓 " + &p.1.name + "\n";
         }
         l_view = l_view + &names;
 

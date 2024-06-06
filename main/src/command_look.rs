@@ -64,7 +64,7 @@ impl<'a>  Command for LookCommand<'a>  {
         let mut names = String::from("");
         for p in others {
             names = names
-                 + "\n    普通百姓 " + &p.1.name + "\n";
+                 + "    普通百姓 " + &p.1.name + "\n";
         }
         l_view = l_view + &names;
         let val = wrap_message(self.msg.addr, l_view.to_string());
