@@ -33,6 +33,22 @@ impl<'a>  Command for LookCommand<'a>  {
             Some(a) => a,
             None => {return "no map!".to_string()}
         };
+
+        let cmds: Vec<&str> = self.msg.content.split(" ").collect();
+        let cmd = match cmds.get(1) {
+            Some(a) => a,
+            None => "",
+        };
+        
+        if cmd != "" {
+            let view = match node.lookat.get(cmd){
+                Some(a) => a,
+                None => "要看什么?",
+            };
+            let val = wrap_message(self.msg.addr, view.to_string());
+            self.s_service.send(val).unwrap();
+            return "".to_string();
+        }
         
         let mut read = utils::load_file(&node.look);
         let mut l_view = String::new();

@@ -177,7 +177,7 @@ pub fn on_service(
         "fight" => invoker.set(Box::new(FightCommand::new(&ps, &s_service, &ms, &s_combat))),
         "e"|"w"|"s"|"n"|"ne"|"sw"|"se"|"nw" => invoker.set(Box::new(WalkCommand::new(&ps, &s_service, &ms, &s_combat, nodes))),
         _ => {
-            let nomatch = "There is no match command.";
+            let nomatch = "要做什么?";
             let val = wrap_message(msg.addr, nomatch.to_string());
             s_service.send(val).unwrap();
             return 0;
