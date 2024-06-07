@@ -112,12 +112,15 @@ localmaps=maps/liuxiu/liuxiu_localmaps.txt
 id=14
 name=山庄大门
 look=maps/liuxiu/liuxiu_14_1.txt
-look@knocked=liuxiu/liuxiu_14_2.txt
+look@gate=一扇红漆大门上有两个金环在阳光照耀下格外耀眼。似乎可以敲门。(knock gate)
+knock=你轻轻地敲了敲门，只听吱地一声，一个小丫鬟将门打开了一道缝，露出脑袋，转着乌黑的大眼睛，笑嘻嘻打量着你。\n丫鬟走了过来。\n丫鬟说道：「这位小兄弟，你回来啦，快请进吧！」
+knock@done=丫鬟走了过来。\n丫鬟上前把大门关了起来。
+look$2=maps/liuxiu/liuxiu_14_2.txt
 localmaps=maps/liuxiu/liuxiu_localmaps.txt
 east=15
 west=16
 south=12
-north=17
+north$2=17
 
 [node]
 id=15

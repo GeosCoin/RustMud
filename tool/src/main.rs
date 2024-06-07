@@ -59,6 +59,7 @@ pub struct Player {
     
     pub timer_id: usize, //定时器ID
     pub pending: usize, 
+    pub knocked: usize,
 }
 
 
@@ -85,7 +86,8 @@ impl Player {
             accuracy: 0,
             avoidance: 0,
             timer_id:0,
-            pending: 0
+            pending: 0,
+            knocked: 0
         }
     }
 }

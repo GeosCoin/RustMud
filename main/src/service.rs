@@ -173,8 +173,8 @@ pub fn on_service(
             None => "none",
         };
     match cmd_key {
-        "hp" => invoker.set(Box::new(HpCommand::new(&ps, &s_service, &ms))),
-        "l" | "ls" | "look" | "localmaps" | "lm" => invoker.set(Box::new(LookCommand::new(&ps, &s_service, &ms, nodes))),
+        "hp"|"who" => invoker.set(Box::new(HpCommand::new(&ps, &s_service, &ms))),
+        "l" | "ls" | "look" | "localmaps" | "lm"|"knock" => invoker.set(Box::new(LookCommand::new(&ps, &s_service, &ms, nodes))),
         "fight" => invoker.set(Box::new(FightCommand::new(&ps, &s_service, &ms, &s_combat))),
         "e"|"w"|"s"|"n"|"ne"|"sw"|"se"|"nw" => invoker.set(Box::new(WalkCommand::new(&ps, &s_service, &ms, &s_combat, nodes))),
         "climb" => invoker.set(Box::new(ClimbCommand::new(&ps, &s_service, &ms, &s_combat, nodes))),

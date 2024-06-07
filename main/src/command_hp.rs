@@ -4,9 +4,9 @@ use utils::{show_color, Color};
 use crate::{channel::{wrap_message, Message}, command::Command, player::Player};
 
 pub struct HpCommand<'a> {
-    players: &'a HashMap<SocketAddr, Player>,
-    s_service: &'a Sender<String>,
-    msg: &'a Message
+    pub players: &'a HashMap<SocketAddr, Player>,
+    pub s_service: &'a Sender<String>,
+    pub msg: &'a Message
 }
 
 impl<'a> HpCommand<'a> {
@@ -14,18 +14,16 @@ impl<'a> HpCommand<'a> {
         players: &'a HashMap<SocketAddr, Player>,
         s_service: &'a Sender<String>,
         msg: &'a Message
-        ) -> HpCommand<'a>  {
+        ) -> Self  {
         HpCommand {
             players,
             s_service,
             msg
         }
     }
-}
-impl<'a>  Command for HpCommand<'a>  {
-    fn execute(&self) -> String {
-        let player = self.players.get(&self.msg.addr).unwrap();
 
+    pub fn do_hp(player: &Player, s_service: &'a Sender<String>,
+        msg: &'a Message) -> String {
         let name = show_color(&player.name, Color::YELLOW);
         let hp: String = show_color(&player.hp.to_string(), Color::YELLOW);
         let mp = show_color(&player.mp.to_string(), Color::YELLOW);
@@ -43,8 +41,41 @@ impl<'a>  Command for HpCommand<'a>  {
     │【状态】 健康                                                                 │
     └──────────────────────────────北大侠客行────┘";
 
-        let val = wrap_message(self.msg.addr, hpframe);
-        self.s_service.send(val).unwrap();  
+        let val = wrap_message(msg.addr, hpframe);
+        s_service.send(val).unwrap();  
         "ok".to_string() 
+    }
+
+    pub fn do_who(players: &'a HashMap<SocketAddr, Player>, 
+    s_service: &'a Sender<String>,msg: &'a Message) -> String {
+        let mut view = String::from("");
+        let mut cnt = 0;
+        for player in players {
+            cnt += 1;
+            if (cnt % 2 == 0){
+                view = view.to_owned() + &show_color(&player.1.name, Color::GREEN) + "\n";
+            }else {
+                view = view.to_owned() + &show_color(&player.1.name, Color::GREEN) + " ";
+            }
+        }
+        let val = wrap_message(msg.addr, view);
+        s_service.send(val).unwrap();  
+
+        "ok".to_string() 
+    }
+
+}
+impl<'a>  Command for HpCommand<'a>  {
+    
+    fn execute(&self) -> String {
+        let player = self.players.get(&self.msg.addr).unwrap();
+
+        let cmd = self.msg.content.to_ascii_lowercase();
+        match cmd.as_str() {
+            "hp" => {return HpCommand::<'a>::do_hp(player, self.s_service, self.msg)},
+            "who" => {return HpCommand::<'a>::do_who(self.players, self.s_service, self.msg)},
+            _ => {return "ok".to_string();}
+        }
+        
     }
 }

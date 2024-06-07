@@ -61,6 +61,7 @@ pub struct Player {
     pub avoidance: u32, //规避力
     pub timer_id: usize, //定时器ID
     pub pending: usize,  //暂停
+    pub knocked: usize,  //是否已经敲门 0:否  1:是
 }
 
 
@@ -88,6 +89,7 @@ impl Player {
             avoidance: 0,
             timer_id: 0,
             pending: 0,
+            knocked: 0,
         }
     }
 }
