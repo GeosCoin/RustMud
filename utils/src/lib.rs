@@ -3,6 +3,7 @@
 use std::{fs::File, io::{self, BufRead}, net::SocketAddr, path::Path, sync::atomic::{AtomicUsize, Ordering}};
 use chrono::Local;
 
+// 起：  [1;31m   尾：   [0;00m
 pub enum Color {
     RED,  //[1;31m
     GREEN,

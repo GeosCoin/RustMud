@@ -4,8 +4,11 @@ use std::{collections::HashMap, fs::read_to_string, net::ToSocketAddrs, ptr::{nu
 pub struct Node {
     pub id: u32,            //地图ID
     pub name: String,       //地图名称
-    pub look: String,       //地图展示
+    pub look: String,       //地图展示    
     pub lookat: HashMap<String, String>, //地图内更多的命令
+    pub climbat: HashMap<String, String>, //爬山动作
+    pub destpos: u32,   //目标位置
+    pub localmaps: String,  //地图
     pub east_id: u32,       
     pub west_id: u32,
     pub south_id: u32,
@@ -23,6 +26,9 @@ impl Node {
             name: String::from(""),
             look: String::from(""),
             lookat: HashMap::new(),
+            climbat: HashMap::new(),
+            destpos: 0,
+            localmaps: String::from(""),
             east_id: 0,
             west_id: 0,
             south_id: 0,
@@ -84,7 +90,17 @@ pub fn init_map() -> HashMap<u32, Node> {
                         None => "",
                     };
                     node.lookat.insert(cmd.to_string(), group.get(1).unwrap().to_string());
-                },                 
+                },       
+                "climb@up" | "climb@updone" | "climb@down" => {
+                    let cmds: Vec<&str> = key.split("@").collect();
+                    let cmd = match cmds.get(1) {
+                        Some(a) => a,
+                        None => "",
+                    };
+                    node.climbat.insert(cmd.to_string(), group.get(1).unwrap().to_string());
+                },
+                "destpos" => {node.destpos = group.get(1).unwrap().parse().unwrap(); }
+                "localmaps" => {node.localmaps = group.get(1).unwrap().to_string();}
                 "east" => {node.east_id = group.get(1).unwrap().parse().unwrap(); },
                 "west" => {node.west_id = group.get(1).unwrap().parse().unwrap(); },
                 "south" => {node.south_id = group.get(1).unwrap().parse().unwrap(); },
@@ -100,10 +116,10 @@ pub fn init_map() -> HashMap<u32, Node> {
         nodes.insert(node.id, node);
     }
 
-    let node_display = nodes.clone();
-    for item in node_display.iter() {
-        println!("{}", item.1.name);
-    }
+    // let node_display = nodes.clone();
+    // for item in node_display.iter() {
+    //     println!("{}", item.1.name);
+    // }
 
     nodes
 }

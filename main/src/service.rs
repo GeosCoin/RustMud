@@ -7,6 +7,7 @@ use crate::channel::wrap_message_timer;
 use crate::channel::Message;
 use crate::channel::MessageType;
 use crate::command::Invoker;
+use crate::command_climb::ClimbCommand;
 use crate::command_fight::FightCommand;
 use crate::command_hp::HpCommand;
 use crate::command_look::LookCommand;
@@ -173,9 +174,10 @@ pub fn on_service(
         };
     match cmd_key {
         "hp" => invoker.set(Box::new(HpCommand::new(&ps, &s_service, &ms))),
-        "l" | "ls" | "look" => invoker.set(Box::new(LookCommand::new(&ps, &s_service, &ms, nodes))),
+        "l" | "ls" | "look" | "localmaps" | "lm" => invoker.set(Box::new(LookCommand::new(&ps, &s_service, &ms, nodes))),
         "fight" => invoker.set(Box::new(FightCommand::new(&ps, &s_service, &ms, &s_combat))),
         "e"|"w"|"s"|"n"|"ne"|"sw"|"se"|"nw" => invoker.set(Box::new(WalkCommand::new(&ps, &s_service, &ms, &s_combat, nodes))),
+        "climb" => invoker.set(Box::new(ClimbCommand::new(&ps, &s_service, &ms, &s_combat, nodes))),
         _ => {
             let nomatch = "要做什么?";
             let val = wrap_message(msg.addr, nomatch.to_string());
@@ -230,11 +232,33 @@ pub fn on_service(
                 item.1.timer_id = 0;
                 if new_pos != "0" {
                     item.1.pos = new_pos.parse().unwrap();
-                }
+                }                
             }
         }
     }
     
+    if ret_str.contains("pending") {
+        let pendings: Vec<&str> = ret_str.split(" ").collect();
+        let pending_status = match pendings.get(1) {
+            Some(a) => a,
+            None => "0",
+        };
+        let new_pos = match pendings.get(3) {
+            Some(a) => a,
+            None => "0",
+        };
+        
+        for item in players.iter_mut() {
+            if item.1.name == login_info.login.login_name {                    
+                item.1.pending = pending_status.parse().unwrap(); 
+
+                if new_pos != "0" {
+                    item.1.pos = new_pos.parse().unwrap();
+                }                        
+            }
+        }
+    }
+
     if ret_str == "none" {
         let nomatch = "There is no match command.";
         let val = wrap_message(msg.addr, nomatch.to_string());

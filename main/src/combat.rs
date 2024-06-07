@@ -23,6 +23,7 @@ fn on_timer (message: &String, s_rt: Sender<String>){
     }
     
     let val: usize = msg.timer_id.parse::<usize>().unwrap();
+    let mut max_cnt = msg.max_cnt; 
 
     //结束时，比较timerid
     if msg.msg_type == MessageType::CombatStop {
@@ -40,14 +41,16 @@ fn on_timer (message: &String, s_rt: Sender<String>){
                 let mut intv = time::interval_at(start,
                     Duration::from_secs(10));
 
-                let mut cnt = 0; 
+                let mut cnt = 0;
+
+                intv.tick().await;  //提前等一下
 
                 loop{
                     cnt += 1;
 
                     //最多2分钟时间，战斗线程会释放
                     //避免线程永远没有机会释放
-                    if cnt > 60 {  
+                    if cnt > max_cnt {  
                         println!(" > 2 minutes auto kill thread.");
                         return;
                     }
@@ -60,9 +63,16 @@ fn on_timer (message: &String, s_rt: Sender<String>){
 
                     intv.tick().await;               
                     
-                    let msg = wrap_message_timer(MessageType::CombatIn,
-                        msg.addr, msg.content.to_owned() + " continue", val.to_string());
-                    s_rt.send(msg).unwrap();
+                    //最后一次，发送停止命令
+                    if cnt == max_cnt { 
+                        let msg = wrap_message_timer(MessageType::CombatStop,
+                            msg.addr, msg.content.to_owned() + " stop", val.to_string());
+                        s_rt.send(msg).unwrap();
+                    } else {
+                        let msg = wrap_message_timer(MessageType::CombatIn,
+                            msg.addr, msg.content.to_owned() + " continue", val.to_string());
+                        s_rt.send(msg).unwrap();
+                    }
                 }
             });
         });

@@ -35,8 +35,14 @@ pub fn on_sender(sessions: &SessionsType, message: String){
         None => {return;}
     };
     let mut stream = &ctx.cur_session.0;
-    let val = msg.content + "\n>" ;
-    let _ = stream.write(val.as_bytes() );
-    let _ = stream.write(&[0xff, 0xf9] );
+    if msg.content.contains("@@@") {
+        let val = msg.content.replace("@@@", "");
+        let val = val + "\n" ;
+        let _ = stream.write(val.as_bytes() );
+    } else {
+        let val = msg.content + "\n>" ;
+        let _ = stream.write(val.as_bytes() );
+        let _ = stream.write(&[0xff, 0xf9] );
+    }
 }
 

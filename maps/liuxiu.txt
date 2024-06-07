@@ -4,46 +4,55 @@ name=未明谷
 look=maps/liuxiu/liuxiu_1.txt
 look@river=这是一条清澈的小溪，也许你可以拿起地上的葫芦(get hulu)，研究下(l hulu)用来盛溪水喝。
 look@path=这是一段陡峭的山坡，应该可以向上攀爬出去。(climb up)
-climb@up=你手足并用，飞快的向上攀爬。
+climb@up=[1;31m你手足并用，飞快的向上攀爬。[0;00m
 climb@updone=你轻轻松松地爬了上来。
-climb@pos=5
+destpos=5
 south=2
 west=3
 east=4
+localmaps=maps/liuxiu/liuxiu_localmaps.txt
 
 [node]
 id=2
 name=青石桥头
 look=maps/liuxiu/liuxiu_2.txt
 north=1
+localmaps=maps/liuxiu/liuxiu_localmaps.txt
 
 [node]
 id=3
 name=树林
 look=maps/liuxiu/liuxiu_3.txt
 east=1
+localmaps=maps/liuxiu/liuxiu_localmaps.txt
 
 [node]
 id=4
 name=乱石阵
 look=maps/liuxiu/liuxiu_4.txt
 west=1
+localmaps=maps/liuxiu/liuxiu_localmaps.txt
 
 [node]
 id=5
 name=缓坡
 look=maps/liuxiu/liuxiu_5.txt
-climb@down=你小心翼翼的向下爬去。
-climb@updone=你费了九牛二虎之力，终于爬到了谷底！
-climb@pos=1
+climb@down=[1;31m你小心翼翼的向下爬去。[0;00m
+climb@downdone=你费了九牛二虎之力，终于爬到了谷底！
+destpos=1
 north=6
+localmaps=maps/liuxiu/liuxiu_localmaps.txt
 
 [node]
 id=6
 name=集镇小道
 look=maps/liuxiu/liuxiu_6.txt
 south=5
+west=9
 southeast=7
+north=12
+northeast=10
+localmaps=maps/liuxiu/liuxiu_localmaps.txt
 
 [node]
 id=7
@@ -51,12 +60,14 @@ name=酒铺
 look=maps/liuxiu/liuxiu_7.txt
 northwest=6
 northeast=10
+localmaps=maps/liuxiu/liuxiu_localmaps.txt
 
 [node]
 id=8
 name=车马行
 look=maps/liuxiu/liuxiu_8.txt
 north=9
+localmaps=maps/liuxiu/liuxiu_localmaps.txt
 
 [node]
 id=9
@@ -64,18 +75,21 @@ name=杏子林
 look=maps/liuxiu/liuxiu_9.txt
 south=8
 east=6
+localmaps=maps/liuxiu/liuxiu_localmaps.txt
 
 [node]
 id=10
 name=药铺
 look=maps/liuxiu/liuxiu_10.txt
 southwest=6
+localmaps=maps/liuxiu/liuxiu_localmaps.txt
 
 [node]
 id=11
 name=杂货铺   
 look=maps/liuxiu/liuxiu_11.txt
 west=12
+localmaps=maps/liuxiu/liuxiu_localmaps.txt
 
 [node]
 id=12
@@ -85,31 +99,39 @@ west=13
 east=11
 south=6
 north=14
+localmaps=maps/liuxiu/liuxiu_localmaps.txt
 
 [node]
 id=13
 name=铁匠铺
 look=maps/liuxiu/liuxiu_13.txt
 east=12
+localmaps=maps/liuxiu/liuxiu_localmaps.txt
 
 [node]
 id=14
 name=山庄大门
 look=maps/liuxiu/liuxiu_14_1.txt
 look@knocked=liuxiu/liuxiu_14_2.txt
+localmaps=maps/liuxiu/liuxiu_localmaps.txt
 east=15
+west=16
+south=12
+north=17
 
 [node]
 id=15
 name=票号
 look=maps/liuxiu/liuxiu_15.txt
 west=14
+localmaps=maps/liuxiu/liuxiu_localmaps.txt
 
 [node]
 id=16
 name=当铺
 look=maps/liuxiu/liuxiu_16.txt
 east=14
+localmaps=maps/liuxiu/liuxiu_localmaps.txt
 
 [node]
 id=17
@@ -117,6 +139,7 @@ name=长廊
 look=maps/liuxiu/liuxiu_17.txt
 south=14
 north=18
+localmaps=maps/liuxiu/liuxiu_localmaps.txt
 
 [node]
 id=18
@@ -124,6 +147,7 @@ name=岩桂花园
 look=maps/liuxiu/liuxiu_18.txt
 south=17
 north=19
+localmaps=maps/liuxiu/liuxiu_localmaps.txt
 
 [node]
 id=19
@@ -133,6 +157,7 @@ south=18
 north=24
 east=22
 west=20
+localmaps=maps/liuxiu/liuxiu_localmaps.txt
 
 [node]
 id=20
@@ -140,12 +165,14 @@ name=西厢房
 look=maps/liuxiu/liuxiu_20.txt
 east=19
 north=21
+localmaps=maps/liuxiu/liuxiu_localmaps.txt
 
 [node]
 id=21
 name=男浴室
 look=maps/liuxiu/liuxiu_21.txt
 south=20
+localmaps=maps/liuxiu/liuxiu_localmaps.txt
 
 [node]
 id=22
@@ -153,12 +180,14 @@ name=东厢房
 look=maps/liuxiu/liuxiu_22.txt
 west=19
 north=23
+localmaps=maps/liuxiu/liuxiu_localmaps.txt
 
 [node]
 id=23
 name=女浴室
 look=maps/liuxiu/liuxiu_23.txt
 south=22
+localmaps=maps/liuxiu/liuxiu_localmaps.txt
 
 [node]
 id=24
@@ -166,15 +195,11 @@ name=尚武堂
 look=maps/liuxiu/liuxiu_24.txt
 south=19
 north=25
+localmaps=maps/liuxiu/liuxiu_localmaps.txt
 
 [node]
 id=25
 name=藏书阁
 look=maps/liuxiu/liuxiu_25.txt
 south=24
-
-[item]
-
-[npc]
-
-[event]
+localmaps=maps/liuxiu/liuxiu_localmaps.txt

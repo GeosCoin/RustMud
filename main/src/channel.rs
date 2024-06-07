@@ -48,6 +48,7 @@
         pub content: String,  //消息内容
         pub addr: SocketAddr,    //消息地址，用于获取用户信息
         pub timer_id: String,  //启动关闭定时器使用
+        pub max_cnt: u32,      //线程循环最大次数
     }
     
     const WELCOME: &str = "
@@ -71,7 +72,8 @@
                             —— 奈尔·泰森
                     
 
-
+            随着马斯克的星舰的到来，一个星际时代即将来临。
+            让我们一起来开创火星之旅，开启未知世界之旅。
 
             ∷∷∷∷∷∷∷∷∷∷∷∷∷∷∷∷∷∷∷∷∷∷∷∷∷∷∷∷∷∷∷∷∷∷∷∷∷∷∷[0;00m
 
@@ -286,12 +288,24 @@
 
     }
 
+    pub fn wrap_message_climb(msg_type: MessageType, addr: SocketAddr, message: String, timer_id: String, max_cnt: u32) -> String {
+        let msg = serde_json::to_string(&Message {
+            msg_type,
+            content: message.trim().to_string(),
+            addr,
+            timer_id,
+            max_cnt
+        }).unwrap();
+        msg
+    }
+
     pub fn wrap_message_timer(msg_type: MessageType, addr: SocketAddr, message: String, timer_id: String) -> String {
         let msg = serde_json::to_string(&Message {
             msg_type,
             content: message.trim().to_string(),
             addr,
-            timer_id
+            timer_id,
+            max_cnt: 60
         }).unwrap();
         msg
     }
@@ -301,7 +315,8 @@
             msg_type,
             content: message.trim().to_string(),
             addr,
-            timer_id: "".to_string()
+            timer_id: "".to_string(),
+            max_cnt: 60, //默认两分钟
         }).unwrap();
         msg
     }
@@ -311,7 +326,8 @@
             msg_type: MessageType::Normal,
             content: message.trim().to_string(),
             addr: addr,
-            timer_id: "".to_string()
+            timer_id: "".to_string(),
+            max_cnt: 0
         }).unwrap();
         msg
     }

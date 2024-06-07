@@ -58,6 +58,7 @@ pub struct Player {
     pub avoidance: u32, //规避力
     
     pub timer_id: usize, //定时器ID
+    pub pending: usize, 
 }
 
 
@@ -83,7 +84,8 @@ impl Player {
             mp_regen: 0,
             accuracy: 0,
             avoidance: 0,
-            timer_id:0
+            timer_id:0,
+            pending: 0
         }
     }
 }

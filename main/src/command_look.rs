@@ -34,6 +34,19 @@ impl<'a>  Command for LookCommand<'a>  {
             None => {return "no map!".to_string()}
         };
 
+        if self.msg.content == "localmaps"
+            || self.msg.content == "lm" { 
+        
+            let mut read = utils::load_file(&node.localmaps);
+            let mut l_view = String::new();
+            read.read_to_string(&mut l_view);
+            let l_view = l_view.replace(&node.name,
+                 &("[1;41m".to_string() + &node.name + "[0;00m"));
+            let val = wrap_message(self.msg.addr, l_view.to_string());
+            self.s_service.send(val).unwrap();
+            return "ok".to_string();
+        }
+
         let cmds: Vec<&str> = self.msg.content.split(" ").collect();
         let cmd = match cmds.get(1) {
             Some(a) => a,
