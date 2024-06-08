@@ -61,6 +61,7 @@ pub struct Player {
     pub pending: usize, 
     pub knocked: usize,
     pub opened: u32,
+    pub sleep: u32,
 }
 
 
@@ -90,6 +91,7 @@ impl Player {
             pending: 0,
             knocked: 0, 
             opened: 0,
+            sleep: 0,
         }
     }
 }

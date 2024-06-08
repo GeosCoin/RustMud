@@ -31,7 +31,7 @@ impl<'a> WalkCommand<'a> {
 impl<'a>  Command for WalkCommand<'a>  {
     fn execute(&self) -> String {
         let player = self.players.get(&self.msg.addr).unwrap();
-        if player.pending == 1 {
+        if player.pending == 1 || player.sleep == 1 {
             let val = wrap_message(self.msg.addr,
                  "你的动作还没有完成，不能移动。".to_string());
                  self.s_service.send(val).unwrap();

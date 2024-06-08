@@ -170,6 +170,9 @@ localmaps=maps/liuxiu/liuxiu_localmaps.txt
 id=20
 name=西厢房
 look=maps/liuxiu/liuxiu_20.txt
+look@bed=这是一张小床，你可以在上面安心睡个好觉。
+sleep=你往床上一躺，开始睡觉。\n不一会儿，你就进入了梦乡。
+sleep@done=你慢慢睁开眼睛，清醒了过来。\n\n\n慢慢地你终于又有了知觉....
 east=19
 north=21
 localmaps=maps/liuxiu/liuxiu_localmaps.txt
@@ -178,6 +181,7 @@ localmaps=maps/liuxiu/liuxiu_localmaps.txt
 id=21
 name=男浴室
 look=maps/liuxiu/liuxiu_21.txt
+look@yutong=快把脏衣服脱光了(remove cloth)\n，赶紧洗个澡。(bath)
 south=20
 localmaps=maps/liuxiu/liuxiu_localmaps.txt
 

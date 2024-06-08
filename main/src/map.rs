@@ -10,8 +10,10 @@ pub struct Node {
     pub climbat: HashMap<String, String>, //爬山动作
     pub knockat: HashMap<String, String>, //敲门动作
     pub openat: HashMap<String, String>, //开门动作
+    pub sleepat: HashMap<String, String>, //睡觉动作
     pub destpos: u32,   //目标位置
     pub localmaps: String,  //地图
+    pub sleep: String,
     pub east_id: u32,       
     pub west_id: u32,
     pub south_id: u32,
@@ -28,6 +30,7 @@ pub struct Node {
     pub northwests: HashMap<u32, u32>,
     pub southeasts: HashMap<u32, u32>,
     pub southwests: HashMap<u32, u32>,
+    
 }
 
 impl Node {
@@ -41,8 +44,10 @@ impl Node {
             climbat: HashMap::new(),
             knockat: HashMap::new(),
             openat: HashMap::new(),
+            sleepat: HashMap::new(),
             destpos: 0,
             localmaps: String::from(""),
+            sleep: String::from(""),
             east_id: 0,
             west_id: 0,
             south_id: 0,
@@ -58,7 +63,8 @@ impl Node {
             northeasts: HashMap::new(),
             northwests: HashMap::new(),
             southeasts: HashMap::new(),
-            southwests: HashMap::new(),         
+            southwests: HashMap::new(),   
+            
         }
     }
 }
@@ -109,7 +115,8 @@ pub fn init_map() -> HashMap<u32, Node> {
                 "id" => {node.id = item.parse().unwrap(); },
                 "name" => {node.name = item.to_string(); },
                 "look" => {node.look = item.to_string(); },
-                "look@river" | "look@path" | "look@gate" => {
+                "look@river" | "look@path" | "look@gate" | "look@bed"
+                | "look@yutong" => {
                     let cmds: Vec<&str> = key.split("@").collect();
                     let cmd = match cmds.get(1) {
                         Some(a) => a,
@@ -141,8 +148,17 @@ pub fn init_map() -> HashMap<u32, Node> {
                     };
                     node.openat.insert(cmd.to_string(), item.to_string());
                 },
+                "sleep@done" => {
+                    let cmds: Vec<&str> = key.split("@").collect();
+                    let cmd = match cmds.get(1) {
+                        Some(a) => a,
+                        None => "",
+                    };
+                    node.sleepat.insert(cmd.to_string(), item.to_string());
+                },
                 "destpos" => {node.destpos = item.parse().unwrap(); }
                 "localmaps" => {node.localmaps = item.to_string();}
+                "sleep" => {node.sleep = item.to_string(); },
                 "east" => {node.east_id = item.parse().unwrap(); },
                 "west" => {node.west_id = item.parse().unwrap(); },
                 "south" => {node.south_id = item.parse().unwrap(); },
@@ -151,6 +167,7 @@ pub fn init_map() -> HashMap<u32, Node> {
                 "southwest" => {node.southwest_id = item.parse().unwrap(); },
                 "northeast" => {node.northeast_id = item.parse().unwrap(); },
                 "northwest" => {node.northwest_id = item.parse().unwrap(); },
+                
                 _ => (),
             };
 

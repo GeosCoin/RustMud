@@ -235,6 +235,55 @@ impl<'a> ClimbCommand<'a> {
 
         "opened 0".to_string()
     }
+    
+    fn do_sleep(&self, player: &Player, node: &Node) -> String {
+        let cmds: Vec<&str> = self.msg.content.split(" ").collect();
+
+        //接收定时器来的消息
+        let action = match cmds.get(1) {
+            Some(a) => a,
+            None => "0"
+        };
+
+        if node.sleep.is_empty() {
+            let val = wrap_message(self.msg.addr, 
+                "这里不是你能睡的地方！".to_string());
+            self.s_service.send(val).unwrap();
+            return "".to_string();
+        }
+        
+        let view = node.sleep.to_owned() + "@@@";
+
+        if action == "0" {
+            let view = view.replace("\\n", "\n");
+            let val = wrap_message(self.msg.addr, view.to_string());
+            self.s_service.send(val).unwrap();
+
+            //启动定时器
+            let timer_id = get_id();
+            let val = wrap_message_climb(MessageType::CombatStart, self.msg.addr
+                , self.msg.content.to_string(), timer_id.to_string(), 3);
+            self.s_combat.send(val).unwrap();
+            return "sleep 1".to_string();
+        } else if action == "continue" {
+            //什么也不做，等着关门就行
+            return "sleep 1".to_string();
+        } else if action == "stop" {
+            let param = "done";
+            let view = match node.sleepat.get(param){
+                Some(a) => a,
+                None => "",
+            };
+
+            if view != "" {
+                let view = view.replace("\\n", "\n");
+                let val = wrap_message(self.msg.addr, view.to_string());
+                self.s_service.send(val).unwrap();
+            }
+        }
+
+        "sleep 0".to_string()
+    }
 }
 
 impl<'a>  Command for ClimbCommand<'a>  {
@@ -259,6 +308,8 @@ impl<'a>  Command for ClimbCommand<'a>  {
                 return ClimbCommand::<'a>::do_knock(&self, player, node)},
             "open" => {
                 return ClimbCommand::<'a>::do_open(&self, player, node)},
+            "sleep" => {
+                return ClimbCommand::<'a>::do_sleep(&self, player, node)},            
             _ => {return "ok".to_string();}
         }
 

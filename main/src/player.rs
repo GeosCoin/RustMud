@@ -63,6 +63,7 @@ pub struct Player {
     pub pending: u32,  //暂停
     pub knocked: u32,  //是否已经敲门 0:否  1:是
     pub opened: u32,   //是否已打开门
+    pub sleep: u32,    //是否睡觉
 }
 
 
@@ -92,6 +93,7 @@ impl Player {
             pending: 0,
             knocked: 0,
             opened: 0,
+            sleep: 0,
         }
     }
 }

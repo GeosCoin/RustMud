@@ -45,10 +45,11 @@ impl<'a> LookCommand<'a> {
         };
         
         if cmd != "" {
-            let view = match node.lookat.get(cmd){
+            let mut view = match node.lookat.get(cmd){
                 Some(a) => a,
                 None => "要看什么?",
             };
+            let view = view.replace("\\n", "\n");
             let val = wrap_message(self.msg.addr, view.to_string());
             self.s_service.send(val).unwrap();
             return "".to_string();
@@ -57,7 +58,14 @@ impl<'a> LookCommand<'a> {
         let player = self.players.get(&self.msg.addr).unwrap();
 
         //展示对应层次的look
-        let look_book = match node.looks.get(&player.knocked) {
+        let mut hash_key = 0;
+        if !node.openat.is_empty() {
+            hash_key = player.opened;
+        } else if (!node.knockat.is_empty()){
+            hash_key = player.knocked;
+        }
+
+        let look_book = match node.looks.get(&hash_key) {
             Some(a) => a,
             None => &node.look,
         };
