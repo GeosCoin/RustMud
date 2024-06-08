@@ -68,7 +68,7 @@ impl Player {
         Player{
             name: String::from(""),   
             map: Map::Liuxiu,
-            pos: 1,
+            pos: 14,
             level: 1,  
             role: Role::Magician,
             physical: 0,

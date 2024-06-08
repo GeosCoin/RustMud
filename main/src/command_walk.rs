@@ -52,16 +52,49 @@ impl<'a>  Command for WalkCommand<'a>  {
             None => {return "no map!".to_string()}
         };
 
+        let east_id = match node.easts.get(&player.knocked) {
+            Some(a) => a,
+            None => &node.east_id,
+        };
+        let west_id = match node.wests.get(&player.knocked) {
+            Some(a) => a,
+            None => &node.west_id,
+        };
+        let south_id = match node.souths.get(&player.knocked) {
+            Some(a) => a,
+            None => &node.south_id,
+        };
+        let north_id = match node.norths.get(&player.knocked) {
+            Some(a) => a,
+            None => &node.north_id,
+        };
+        let northeast_id = match node.northeasts.get(&player.knocked) {
+            Some(a) => a,
+            None => &node.northeast_id,
+        };
+        let northwest_id = match node.northwests.get(&player.knocked) {
+            Some(a) => a,
+            None => &node.northwest_id,
+        };
+        let southeast_id = match node.southeasts.get(&player.knocked) {
+            Some(a) => a,
+            None => &node.southeast_id,
+        };
+        let southwest_id = match node.southwests.get(&player.knocked) {
+            Some(a) => a,
+            None => &node.southwest_id,
+        };
+
         // if "e"|"w"|"s"|"n"|"ne"|"sw"|"se"|"nw"
         match self.msg.content.as_str() {
-            "e" => {new_pos = node.east_id;},
-            "w" => {new_pos = node.west_id;},
-            "s" => {new_pos = node.south_id;},
-            "n" => {new_pos = node.north_id;},
-            "se" => {new_pos = node.southeast_id;},
-            "sw" => {new_pos = node.southwest_id;},
-            "ne" => {new_pos = node.northeast_id;},
-            "nw" => {new_pos = node.northwest_id;},
+            "e" => {new_pos = *east_id;},
+            "w" => {new_pos = *west_id;},
+            "s" => {new_pos = *south_id;},
+            "n" => {new_pos = *north_id;},
+            "se" => {new_pos = *southeast_id;},
+            "sw" => {new_pos = *southwest_id;},
+            "ne" => {new_pos = *northeast_id;},
+            "nw" => {new_pos = *northwest_id;},
             _ => {},
         };
 
@@ -76,7 +109,13 @@ impl<'a>  Command for WalkCommand<'a>  {
             None => {return "no map!".to_string()}
         };
 
-        let mut read = utils::load_file(&node.look);
+        //展示对应层次的look
+        let look_book = match node.looks.get(&player.knocked) {
+            Some(a) => a,
+            None => &node.look,
+        };
+
+        let mut read = utils::load_file(look_book);
         let mut l_view = String::new();
         read.read_to_string(&mut l_view);
 

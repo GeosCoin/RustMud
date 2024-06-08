@@ -6,7 +6,9 @@ pub struct Node {
     pub name: String,       //地图名称
     pub look: String,       //地图展示    
     pub lookat: HashMap<String, String>, //地图内更多的命令
+    pub looks: HashMap<u32, String>, //一个地点有多个展示 
     pub climbat: HashMap<String, String>, //爬山动作
+    pub knockat: HashMap<String, String>, //敲门动作
     pub destpos: u32,   //目标位置
     pub localmaps: String,  //地图
     pub east_id: u32,       
@@ -16,7 +18,15 @@ pub struct Node {
     pub northeast_id: u32,
     pub northwest_id: u32,
     pub southeast_id: u32,
-    pub southwest_id: u32
+    pub southwest_id: u32,
+    pub easts: HashMap<u32, u32>,
+    pub wests: HashMap<u32, u32>,
+    pub souths: HashMap<u32, u32>,
+    pub norths: HashMap<u32, u32>,
+    pub northeasts: HashMap<u32, u32>,
+    pub northwests: HashMap<u32, u32>,
+    pub southeasts: HashMap<u32, u32>,
+    pub southwests: HashMap<u32, u32>,
 }
 
 impl Node {
@@ -26,7 +36,9 @@ impl Node {
             name: String::from(""),
             look: String::from(""),
             lookat: HashMap::new(),
+            looks: HashMap::new(),
             climbat: HashMap::new(),
+            knockat: HashMap::new(),
             destpos: 0,
             localmaps: String::from(""),
             east_id: 0,
@@ -36,7 +48,15 @@ impl Node {
             northeast_id: 0,
             northwest_id: 0,
             southeast_id: 0,
-            southwest_id: 0,            
+            southwest_id: 0,   
+            easts: HashMap::new(),
+            wests: HashMap::new(),
+            souths: HashMap::new(),
+            norths: HashMap::new(),
+            northeasts: HashMap::new(),
+            northwests: HashMap::new(),
+            southeasts: HashMap::new(),
+            southwests: HashMap::new(),         
         }
     }
 }
@@ -79,17 +99,21 @@ pub fn init_map() -> HashMap<u32, Node> {
                 None => "none",
             };
             
+            let item = match group.get(1){
+                Some(a) => a,
+                None => "",
+            };
             match key {
-                "id" => {node.id = group.get(1).unwrap().parse().unwrap(); },
-                "name" => {node.name = group.get(1).unwrap().to_string(); },
-                "look" => {node.look = group.get(1).unwrap().to_string(); },
+                "id" => {node.id = item.parse().unwrap(); },
+                "name" => {node.name = item.to_string(); },
+                "look" => {node.look = item.to_string(); },
                 "look@river" | "look@path" => {
                     let cmds: Vec<&str> = key.split("@").collect();
                     let cmd = match cmds.get(1) {
                         Some(a) => a,
                         None => "",
                     };
-                    node.lookat.insert(cmd.to_string(), group.get(1).unwrap().to_string());
+                    node.lookat.insert(cmd.to_string(), item.to_string());
                 },       
                 "climb@up" | "climb@updone" | "climb@down" => {
                     let cmds: Vec<&str> = key.split("@").collect();
@@ -97,20 +121,67 @@ pub fn init_map() -> HashMap<u32, Node> {
                         Some(a) => a,
                         None => "",
                     };
-                    node.climbat.insert(cmd.to_string(), group.get(1).unwrap().to_string());
+                    node.climbat.insert(cmd.to_string(), item.to_string());
                 },
-                "destpos" => {node.destpos = group.get(1).unwrap().parse().unwrap(); }
-                "localmaps" => {node.localmaps = group.get(1).unwrap().to_string();}
-                "east" => {node.east_id = group.get(1).unwrap().parse().unwrap(); },
-                "west" => {node.west_id = group.get(1).unwrap().parse().unwrap(); },
-                "south" => {node.south_id = group.get(1).unwrap().parse().unwrap(); },
-                "north" => {node.north_id = group.get(1).unwrap().parse().unwrap(); },
-                "southeast" => {node.southeast_id = group.get(1).unwrap().parse().unwrap(); },
-                "southwest" => {node.southwest_id = group.get(1).unwrap().parse().unwrap(); },
-                "northeast" => {node.northeast_id = group.get(1).unwrap().parse().unwrap(); },
-                "northwest" => {node.northwest_id = group.get(1).unwrap().parse().unwrap(); },
+                "knock@gate" | "knock@gatedone" => {
+                    let cmds: Vec<&str> = key.split("@").collect();
+                    let cmd = match cmds.get(1) {
+                        Some(a) => a,
+                        None => "",
+                    };
+                    node.knockat.insert(cmd.to_string(), item.to_string());
+                },
+                "destpos" => {node.destpos = item.parse().unwrap(); }
+                "localmaps" => {node.localmaps = item.to_string();}
+                "east" => {node.east_id = item.parse().unwrap(); },
+                "west" => {node.west_id = item.parse().unwrap(); },
+                "south" => {node.south_id = item.parse().unwrap(); },
+                "north" => {node.north_id = item.parse().unwrap(); },
+                "southeast" => {node.southeast_id = item.parse().unwrap(); },
+                "southwest" => {node.southwest_id = item.parse().unwrap(); },
+                "northeast" => {node.northeast_id = item.parse().unwrap(); },
+                "northwest" => {node.northwest_id = item.parse().unwrap(); },
+                "east$1" => {node.easts.insert(1, item.parse().unwrap());},
+
                 _ => (),
             };
+
+            let mut cnt = 0;
+            loop {
+                if cnt > 3 {
+                    break;
+                }
+
+                cnt += 1;
+                let content = "$".to_string() + &cnt.to_string();
+                if key.contains(&content) {
+                    let keys:Vec<&str> = key.split("$").collect();
+                    let key_cmd = match keys.get(0) {
+                        Some(a) => a,
+                        None => "none",
+                    };
+
+                    match key_cmd {
+                        "look" => {
+                            let cmds: Vec<&str> = key.split("$").collect();
+                            let cmd = match cmds.get(1) {
+                                Some(a) => a,
+                                None => "",
+                            };
+                            node.looks.insert(cnt, item.to_string());
+                        },
+                        "east" => {node.easts.insert(cnt, item.parse().unwrap()); },
+                        "west" => {node.wests.insert(cnt, item.parse().unwrap()); },
+                        "south" => {node.souths.insert(cnt, item.parse().unwrap()); },
+                        "north" => {node.norths.insert(cnt, item.parse().unwrap());},
+                        "southeast" => {node.southeasts.insert(cnt, item.parse().unwrap()); },
+                        "southwest" => {node.southwests.insert(cnt, item.parse().unwrap()); },
+                        "northeast" => {node.northeasts.insert(cnt, item.parse().unwrap()); },
+                        "northwest" => {node.northwests.insert(cnt, item.parse().unwrap()); },
+                        _ => (),
+                    };
+                }
+            }
         }
 
         nodes.insert(node.id, node);

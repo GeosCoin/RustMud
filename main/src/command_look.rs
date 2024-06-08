@@ -53,12 +53,18 @@ impl<'a> LookCommand<'a> {
             self.s_service.send(val).unwrap();
             return "".to_string();
         }
-        
-        let mut read = utils::load_file(&node.look);
-        let mut l_view = String::new();
-        read.read_to_string(&mut l_view);
 
         let player = self.players.get(&self.msg.addr).unwrap();
+
+        //展示对应层次的look
+        let look_book = match node.looks.get(&player.knocked) {
+            Some(a) => a,
+            None => &node.look,
+        };
+        
+        let mut read = utils::load_file(look_book);
+        let mut l_view = String::new();
+        read.read_to_string(&mut l_view);
 
         for p in self.players.iter() {
             println!("pos: {} player.pos: {}", p.1.pos, player.pos);

@@ -259,6 +259,20 @@ pub fn on_service(
         }
     }
 
+    if ret_str.contains("knocked") {
+        let knockeds: Vec<&str> = ret_str.split(" ").collect();
+        let knocked_status = match knockeds.get(1) {
+            Some(a) => a,
+            None => "0",
+        };
+        
+        for item in players.iter_mut() {
+            if item.1.name == login_info.login.login_name {                    
+                item.1.knocked = knocked_status.parse().unwrap();          
+            }
+        }
+    }
+
     if ret_str == "none" {
         let nomatch = "There is no match command.";
         let val = wrap_message(msg.addr, nomatch.to_string());
