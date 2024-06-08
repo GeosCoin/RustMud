@@ -25,22 +25,20 @@ impl<'a> LookCommand<'a> {
         }
     }
 
-    pub fn do_localmaps(node: &Node, s_service: &'a Sender<String>,
-    msg: &'a Message) -> String{
+    pub fn do_localmaps(&self, node: &Node) -> String{
         
         let mut read = utils::load_file(&node.localmaps);
         let mut l_view = String::new();
         read.read_to_string(&mut l_view);
         let l_view = l_view.replace(&node.name,
              &("[1;41m".to_string() + &node.name + "[0;00m"));
-        let val = wrap_message(msg.addr, l_view.to_string());
-        s_service.send(val).unwrap();
+        let val = wrap_message(self.msg.addr, l_view.to_string());
+        self.s_service.send(val).unwrap();
         return "ok".to_string();
     }
 
-    pub fn do_look(players: &'a HashMap<SocketAddr, Player>, node: &Node, s_service: &'a Sender<String>,
-    msg: &'a Message) -> String {
-        let cmds: Vec<&str> = msg.content.split(" ").collect();
+    pub fn do_look(&self, node: &Node) -> String {
+        let cmds: Vec<&str> = self.msg.content.split(" ").collect();
         let cmd = match cmds.get(1) {
             Some(a) => a,
             None => "",
@@ -51,8 +49,8 @@ impl<'a> LookCommand<'a> {
                 Some(a) => a,
                 None => "要看什么?",
             };
-            let val = wrap_message(msg.addr, view.to_string());
-            s_service.send(val).unwrap();
+            let val = wrap_message(self.msg.addr, view.to_string());
+            self.s_service.send(val).unwrap();
             return "".to_string();
         }
         
@@ -60,13 +58,13 @@ impl<'a> LookCommand<'a> {
         let mut l_view = String::new();
         read.read_to_string(&mut l_view);
 
-        let player = players.get(&msg.addr).unwrap();
+        let player = self.players.get(&self.msg.addr).unwrap();
 
-        for p in players.iter() {
+        for p in self.players.iter() {
             println!("pos: {} player.pos: {}", p.1.pos, player.pos);
         }
 
-        let others: Vec<(&SocketAddr, &Player)> = players.iter()
+        let others: Vec<(&SocketAddr, &Player)> = self.players.iter()
             .filter(|p| p.1.name != player.name && p.1.pos == player.pos)
             .collect();
         let mut names = String::from("");
@@ -75,17 +73,11 @@ impl<'a> LookCommand<'a> {
                  + "    普通百姓 " + &p.1.name + "\n";
         }
         l_view = l_view + &names;
-        let val = wrap_message(msg.addr, l_view.to_string());
-        s_service.send(val).unwrap();
+        let val = wrap_message(self.msg.addr, l_view.to_string());
+        self.s_service.send(val).unwrap();
         "ok".to_string()
     }
 
-    pub fn do_knock(player: &Player, node: &Node, s_service: &'a Sender<String>,
-        msg: &'a Message) -> String{
-        let val = wrap_message(msg.addr, "敲什么？".to_string());
-        s_service.send(val).unwrap();
-        "knock 1".to_string()
-    }
 }
 
 impl<'a>  Command for LookCommand<'a>  {
@@ -97,14 +89,16 @@ impl<'a>  Command for LookCommand<'a>  {
             None => {return "no map!".to_string()}
         };
 
-        let cmd = self.msg.content.to_ascii_lowercase();
+        let cmd_key = self.msg.content.split(" ").collect::<Vec<&str>>();
+        let cmd_key = match cmd_key.get(0) {
+            Some(a) => a,
+            None => "none",
+        };
+
+        let cmd = cmd_key.to_string().to_ascii_lowercase();
         match cmd.as_str() {
-            "localmaps" | "lm" => {return LookCommand::<'a>::do_localmaps(node, self.s_service, self.msg)},
-            "l" | "ls" | "look" => {
-                return LookCommand::<'a>::do_look(self.players,node, self.s_service, self.msg)},
-            "knock" => {
-                return LookCommand::<'a>::do_knock(player, node, self.s_service, self.msg)},
-            
+            "localmaps" | "lm" => {return LookCommand::<'a>::do_localmaps(&self, node)},
+            "l" | "ls" | "look" => {return LookCommand::<'a>::do_look(&self, node)},
             _ => {return "ok".to_string();}
         }
         

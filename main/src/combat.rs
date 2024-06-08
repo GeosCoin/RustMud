@@ -39,7 +39,7 @@ fn on_timer (message: &String, s_rt: Sender<String>){
 
                 let start = Instant::now();
                 let mut intv = time::interval_at(start,
-                    Duration::from_secs(10));
+                    Duration::from_millis(1000));
 
                 let mut cnt = 0;
 

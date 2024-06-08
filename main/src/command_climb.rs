@@ -1,7 +1,7 @@
 use std::{collections::HashMap, fs::read_to_string, io::Read, net::SocketAddr, rc::Rc};
 use crossbeam::channel::Sender;
 use utils::{get_id, show_color, Color};
-use crate::{channel::{wrap_message, wrap_message_climb, Message, MessageType}, command::Command, map::Node, player::Player};
+use crate::{channel::{wrap_message, wrap_message_climb, Message, MessageType}, command::Command, map::Node, player::{self, Player}};
 
 pub struct ClimbCommand<'a> {
     players: &'a HashMap<SocketAddr, Player>,
@@ -27,15 +27,10 @@ impl<'a> ClimbCommand<'a> {
             nodes
         }
     }
-}
-impl<'a>  Command for ClimbCommand<'a>  {
-    fn execute(&self) -> String {
-        let player = self.players.get(&self.msg.addr).unwrap();
 
-        let node = match self.nodes.get(&player.pos) {
-            Some(a) => a,
-            None => {return "no map!".to_string()}
-        };
+    pub fn do_climb(&self, 
+        player: &Player,
+        node: &Node) -> String {
 
         let cmds: Vec<&str> = self.msg.content.split(" ").collect();
         let cmd = match cmds.get(1) {
@@ -117,5 +112,36 @@ impl<'a>  Command for ClimbCommand<'a>  {
         self.s_service.send(val).unwrap();
 
         return "pending 0 destpos ".to_string() + &dest_pos.to_string();
+    }
+
+    pub fn do_knock(&self) -> String {
+        "".to_string()
+    }
+}
+
+impl<'a>  Command for ClimbCommand<'a>  {
+    fn execute(&self) -> String {
+        let player = self.players.get(&self.msg.addr).unwrap();
+
+        let node = match self.nodes.get(&player.pos) {
+            Some(a) => a,
+            None => {return "no map!".to_string()}
+        };
+        
+        let cmd_key = self.msg.content.split(" ").collect::<Vec<&str>>();
+        let cmd_key = match cmd_key.get(0) {
+            Some(a) => a,
+            None => "none",
+        };
+
+        let cmd = cmd_key.to_string().to_ascii_lowercase();
+        match cmd.as_str() {
+            "climb" => {return ClimbCommand::<'a>::do_climb(&self, player, node)},
+            "knock" => {
+                return ClimbCommand::<'a>::do_knock(&self)},
+            _ => {return "ok".to_string();}
+        }
+
+        
     }
 }
