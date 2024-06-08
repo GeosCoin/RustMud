@@ -174,6 +174,67 @@ impl<'a> ClimbCommand<'a> {
 
         "knocked 0".to_string()
     }
+
+    pub fn do_open(&self,
+        player: &Player,
+        node: &Node) -> String {
+        
+        let cmds: Vec<&str> = self.msg.content.split(" ").collect();
+        let cmd = match cmds.get(1) {
+            Some(a) => a,
+            None => "",
+        };
+
+        //接收定时器来的消息
+        let action = match cmds.get(2) {
+            Some(a) => a,
+            None => "0"
+        };
+        
+        let view = match node.openat.get(cmd){
+            Some(a) => a,
+            None => "",
+        };
+
+        if (cmd == "" || view == "") && player.opened == 0  {
+            let val = wrap_message(self.msg.addr, 
+                "要打开什么？试一下open gate".to_string());
+            self.s_service.send(val).unwrap();
+            return "".to_string();
+        }
+        
+        let view = view.to_owned() + "@@@";
+
+        if action == "0" {
+            let view = view.replace("\\n", "\n");
+            let val = wrap_message(self.msg.addr, view.to_string());
+            self.s_service.send(val).unwrap();
+
+            //启动定时器
+            let timer_id = get_id();
+            let val = wrap_message_climb(MessageType::CombatStart, self.msg.addr
+                , self.msg.content.to_string(), timer_id.to_string(), 3);
+            self.s_combat.send(val).unwrap();
+            return "opened 1".to_string();
+        } else if action == "continue" {
+            //什么也不做，等着关门就行
+            return "opened 1".to_string();
+        } else if action == "stop" {
+            let param = cmd.to_string() + "done";
+            let view = match node.openat.get(&param){
+                Some(a) => a,
+                None => "",
+            };
+
+            if view != "" {
+                let view = view.replace("\\n", "\n");
+                let val = wrap_message(self.msg.addr, view.to_string());
+                self.s_service.send(val).unwrap();
+            }
+        }
+
+        "opened 0".to_string()
+    }
 }
 
 impl<'a>  Command for ClimbCommand<'a>  {
@@ -194,8 +255,10 @@ impl<'a>  Command for ClimbCommand<'a>  {
         let cmd = cmd_key.to_string().to_ascii_lowercase();
         match cmd.as_str() {
             "climb" => {return ClimbCommand::<'a>::do_climb(&self, player, node)},
-            "knock" => {
+            "knock"  => {
                 return ClimbCommand::<'a>::do_knock(&self, player, node)},
+            "open" => {
+                return ClimbCommand::<'a>::do_open(&self, player, node)},
             _ => {return "ok".to_string();}
         }
 

@@ -52,35 +52,43 @@ impl<'a>  Command for WalkCommand<'a>  {
             None => {return "no map!".to_string()}
         };
 
-        let east_id = match node.easts.get(&player.knocked) {
+        //判断open/knocked状态
+        let mut hash_key = 0;
+        if !node.openat.is_empty() {
+            hash_key = player.opened;
+        } else if (!node.knockat.is_empty()){
+            hash_key = player.knocked;
+        }
+
+        let east_id = match node.easts.get(&hash_key) {
             Some(a) => a,
             None => &node.east_id,
         };
-        let west_id = match node.wests.get(&player.knocked) {
+        let west_id = match node.wests.get(&hash_key) {
             Some(a) => a,
             None => &node.west_id,
         };
-        let south_id = match node.souths.get(&player.knocked) {
+        let south_id = match node.souths.get(&hash_key) {
             Some(a) => a,
             None => &node.south_id,
         };
-        let north_id = match node.norths.get(&player.knocked) {
+        let north_id = match node.norths.get(&hash_key) {
             Some(a) => a,
             None => &node.north_id,
         };
-        let northeast_id = match node.northeasts.get(&player.knocked) {
+        let northeast_id = match node.northeasts.get(&hash_key) {
             Some(a) => a,
             None => &node.northeast_id,
         };
-        let northwest_id = match node.northwests.get(&player.knocked) {
+        let northwest_id = match node.northwests.get(&hash_key) {
             Some(a) => a,
             None => &node.northwest_id,
         };
-        let southeast_id = match node.southeasts.get(&player.knocked) {
+        let southeast_id = match node.southeasts.get(&hash_key) {
             Some(a) => a,
             None => &node.southeast_id,
         };
-        let southwest_id = match node.southwests.get(&player.knocked) {
+        let southwest_id = match node.southwests.get(&hash_key) {
             Some(a) => a,
             None => &node.southwest_id,
         };

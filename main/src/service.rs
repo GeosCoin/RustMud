@@ -177,7 +177,7 @@ pub fn on_service(
         "l" | "ls" | "look" | "localmaps" | "lm" => invoker.set(Box::new(LookCommand::new(&ps, &s_service, &ms, nodes))),
         "fight" => invoker.set(Box::new(FightCommand::new(&ps, &s_service, &ms, &s_combat))),
         "e"|"w"|"s"|"n"|"ne"|"sw"|"se"|"nw" => invoker.set(Box::new(WalkCommand::new(&ps, &s_service, &ms, &s_combat, nodes))),
-        "climb"|"knock" => invoker.set(Box::new(ClimbCommand::new(&ps, &s_service, &ms, &s_combat, nodes))),
+        "climb"|"knock"|"open" => invoker.set(Box::new(ClimbCommand::new(&ps, &s_service, &ms, &s_combat, nodes))),
         _ => {
             let nomatch = "要做什么?";
             let val = wrap_message(msg.addr, nomatch.to_string());
@@ -259,7 +259,8 @@ pub fn on_service(
         }
     }
 
-    if ret_str.contains("knocked") {
+    if ret_str.contains("knocked") 
+    || ret_str.contains("opened") {
         let knockeds: Vec<&str> = ret_str.split(" ").collect();
         let knocked_status = match knockeds.get(1) {
             Some(a) => a,
@@ -267,8 +268,12 @@ pub fn on_service(
         };
         
         for item in players.iter_mut() {
-            if item.1.name == login_info.login.login_name {                    
-                item.1.knocked = knocked_status.parse().unwrap();          
+            if item.1.name == login_info.login.login_name {  
+                if ret_str.contains("knocked") {                  
+                    item.1.knocked = knocked_status.parse().unwrap();          
+                }else if ret_str.contains("opened") {
+                    item.1.opened = knocked_status.parse().unwrap();          
+                }
             }
         }
     }
