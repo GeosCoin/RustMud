@@ -1,0 +1,8 @@
+
+┌───票号提供以下服务──────────────────┐
+│存钱              │deposit或者cun                        │
+│取钱              │withdraw或者qu                        │
+│查帐              │check或者chazhang                     │
+│钱币兑换          │convert或者duihuan                    │
+│开具飞票          │issue或者kaiju                        │
+└─────────┴──────────北大侠客行────┘

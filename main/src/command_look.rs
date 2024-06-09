@@ -39,17 +39,31 @@ impl<'a> LookCommand<'a> {
 
     pub fn do_look(&self, node: &Node) -> String {
         let cmds: Vec<&str> = self.msg.content.split(" ").collect();
-        let cmd = match cmds.get(1) {
+        let mut cmd = match cmds.get(1) {
             Some(a) => a,
             None => "",
         };
+        let cmd2 = match cmds.get(2) {
+            Some(a) => a,
+            None => "",
+        };
+        let cmd = cmd.to_owned() + cmd2;
         
         if cmd != "" {
-            let mut view = match node.lookat.get(cmd){
+            let mut view = match node.lookat.get(&cmd){
                 Some(a) => a,
                 None => "要看什么?",
             };
-            let view = view.replace("\\n", "\n");
+
+            //来自文件
+            let mut l_view = String::new();
+            if view.contains(".txt") {                
+                let mut read = utils::load_file(view);
+                read.read_to_string(&mut l_view);
+                view = &l_view;
+            }
+
+            let view = view.replace("\\n", "\n");            
             let val = wrap_message(self.msg.addr, view.to_string());
             self.s_service.send(val).unwrap();
             return "".to_string();
@@ -91,6 +105,23 @@ impl<'a> LookCommand<'a> {
         self.s_service.send(val).unwrap();
         "ok".to_string()
     }
+    
+    fn do_list(&self, node: &Node) -> String {
+        if node.list.is_empty() {
+            let val = wrap_message(self.msg.addr, "什么？".to_string());
+            self.s_service.send(val).unwrap();
+            return "".to_string();
+        }
+
+        let mut l_view = String::new();   
+        let mut read = utils::load_file(&node.list);
+        read.read_to_string(&mut l_view);
+        
+        let view = l_view.replace("\\n", "\n");            
+        let val = wrap_message(self.msg.addr, view.to_string());
+        self.s_service.send(val).unwrap();
+        return "".to_string();
+    }
 
 }
 
@@ -113,6 +144,7 @@ impl<'a>  Command for LookCommand<'a>  {
         match cmd.as_str() {
             "localmaps" | "lm" => {return LookCommand::<'a>::do_localmaps(&self, node)},
             "l" | "ls" | "look" => {return LookCommand::<'a>::do_look(&self, node)},
+            "list" => {return LookCommand::<'a>::do_list(&self, node)},
             _ => {return "ok".to_string();}
         }
         

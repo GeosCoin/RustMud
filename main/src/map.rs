@@ -12,8 +12,10 @@ pub struct Node {
     pub openat: HashMap<String, String>, //开门动作
     pub sleepat: HashMap<String, String>, //睡觉动作
     pub destpos: u32,   //目标位置
-    pub localmaps: String,  //地图
+    pub localmaps: String,  //地图    
     pub sleep: String,
+    pub list: String,  //物品
+    pub huangzi: String, //幌子
     pub east_id: u32,       
     pub west_id: u32,
     pub south_id: u32,
@@ -48,6 +50,8 @@ impl Node {
             destpos: 0,
             localmaps: String::from(""),
             sleep: String::from(""),
+            list: String::from(""),
+            huangzi: String::from(""),
             east_id: 0,
             west_id: 0,
             south_id: 0,
@@ -116,7 +120,9 @@ pub fn init_map() -> HashMap<u32, Node> {
                 "name" => {node.name = item.to_string(); },
                 "look" => {node.look = item.to_string(); },
                 "look@river" | "look@path" | "look@gate" | "look@bed"
-                | "look@yutong" => {
+                | "look@yutong" | "look@paizi" | "look@huangzi"
+                | "look@tangnan" | "look@liuzhuqian"
+                | "look@zhaopai" | "look@laohu" => {
                     let cmds: Vec<&str> = key.split("@").collect();
                     let cmd = match cmds.get(1) {
                         Some(a) => a,
@@ -159,6 +165,7 @@ pub fn init_map() -> HashMap<u32, Node> {
                 "destpos" => {node.destpos = item.parse().unwrap(); }
                 "localmaps" => {node.localmaps = item.to_string();}
                 "sleep" => {node.sleep = item.to_string(); },
+                "list" => {node.list = item.to_string(); },
                 "east" => {node.east_id = item.parse().unwrap(); },
                 "west" => {node.west_id = item.parse().unwrap(); },
                 "south" => {node.south_id = item.parse().unwrap(); },

@@ -1,3 +1,5 @@
+use std::collections::HashMap;
+
 use serde::{Serialize, Deserialize};
 
 //角色
@@ -64,6 +66,8 @@ pub struct Player {
     pub knocked: u32,  //是否已经敲门 0:否  1:是
     pub opened: u32,   //是否已打开门
     pub sleep: u32,    //是否睡觉
+    pub quest: HashMap<u32, u32>, //任务完成情况
+    pub cur_quest_id: u32, //当前执行任务id
 }
 
 
@@ -94,6 +98,8 @@ impl Player {
             knocked: 0,
             opened: 0,
             sleep: 0,
+            quest: HashMap::new(),
+            cur_quest_id: 0,
         }
     }
 }

@@ -15,6 +15,8 @@ use crate::command_walk::WalkCommand;
 use crate::map;
 use crate::map::Node;
 use crate::player::Player;
+use crate::quest;
+use crate::quest::Quest;
 use crate::{channel::{ServerHandler, SessionType, Sessions, SessionContext, SessionsType}, player};
 use std::collections::HashMap;
 use std::fmt::Error;
@@ -70,6 +72,7 @@ pub fn _handle_service(
     let mut login_infos: HashMap<SocketAddr, LoginInfo> = HashMap::new();
     let mut players: HashMap<SocketAddr, Player> = HashMap::new();
     let nodes = map::init_map();
+    let quests: HashMap<(u32, String), String> = Quest::init_quest();
 
     loop {
         match r_service.recv() {
@@ -174,10 +177,11 @@ pub fn on_service(
         };
     match cmd_key {
         "hp"|"who" => invoker.set(Box::new(HpCommand::new(&ps, &s_service, &ms))),
-        "l" | "ls" | "look" | "localmaps" | "lm" => invoker.set(Box::new(LookCommand::new(&ps, &s_service, &ms, nodes))),
+        "l" | "ls" | "look" | "localmaps" | "lm"
+        | "list" => invoker.set(Box::new(LookCommand::new(&ps, &s_service, &ms, nodes))),
         "fight" => invoker.set(Box::new(FightCommand::new(&ps, &s_service, &ms, &s_combat))),
         "e"|"w"|"s"|"n"|"ne"|"sw"|"se"|"nw" => invoker.set(Box::new(WalkCommand::new(&ps, &s_service, &ms, &s_combat, nodes))),
-        "climb"|"knock"|"open"|"sleep" => invoker.set(Box::new(ClimbCommand::new(&ps, &s_service, &ms, &s_combat, nodes))),
+        "climb"|"knock"|"open"|"sleep"|"bath" => invoker.set(Box::new(ClimbCommand::new(&ps, &s_service, &ms, &s_combat, nodes))),
         _ => {
             let nomatch = "要做什么?";
             let val = wrap_message(msg.addr, nomatch.to_string());
