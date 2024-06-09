@@ -1,6 +1,6 @@
 #![allow(warnings)]
 
-use std::{fs::read_to_string, io::Read};
+use std::{collections::HashMap, fs::read_to_string, io::Read};
 
 use serde::{Serialize, Deserialize};
 
@@ -62,6 +62,8 @@ pub struct Player {
     pub knocked: usize,
     pub opened: u32,
     pub sleep: u32,
+    pub quest: HashMap<u32, u32>,
+    pub cur_quest_id: u32, 
 }
 
 
@@ -92,6 +94,8 @@ impl Player {
             knocked: 0, 
             opened: 0,
             sleep: 0,
+            quest: HashMap::new(),
+            cur_quest_id: 0,
         }
     }
 }
