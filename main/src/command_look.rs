@@ -1,7 +1,7 @@
 use std::{collections::HashMap, fs::read_to_string, io::Read, net::SocketAddr, rc::Rc};
 use crossbeam::channel::Sender;
 use utils::{show_color, Color};
-use crate::{channel::{wrap_message, Message}, command::Command, map::Node, player::Player};
+use crate::{channel::{wrap_message, wrap_message_ext, Message, MessageType}, command::Command, map::Node, player::Player};
 
 pub struct LookCommand<'a> {
     players: &'a HashMap<SocketAddr, Player>,
@@ -122,6 +122,20 @@ impl<'a> LookCommand<'a> {
         self.s_service.send(val).unwrap();
         return "".to_string();
     }
+    
+    fn do_start_gmcp(&self, node: &Node) -> String {
+        let view = "LPmud version : DW OS v1.01 on port 4242.";
+        let val = wrap_message_ext(MessageType::IacDoTerm, self.msg.addr, view.to_string());
+        self.s_service.send(val).unwrap();
+        return "".to_string();
+    }
+
+    fn do_send_gmcp(&self, node: &Node) -> String {
+        let view = "Player.Vital {\"hp\": 100, \"maxhp\": 500}".to_owned();
+        let val = wrap_message_ext(MessageType::IacDoGmcp, self.msg.addr, view.to_string());
+        self.s_service.send(val).unwrap();
+        return "".to_string();
+    }
 
 }
 
@@ -145,6 +159,8 @@ impl<'a>  Command for LookCommand<'a>  {
             "localmaps" | "lm" => {return LookCommand::<'a>::do_localmaps(&self, node)},
             "l" | "ls" | "look" => {return LookCommand::<'a>::do_look(&self, node)},
             "list" => {return LookCommand::<'a>::do_list(&self, node)},
+            "startgmcp" => {return LookCommand::<'a>::do_start_gmcp(&self, node)},
+            "xgmcp" => {return LookCommand::<'a>::do_send_gmcp(&self, node)},
             _ => {return "ok".to_string();}
         }
         

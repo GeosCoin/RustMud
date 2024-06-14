@@ -109,6 +109,7 @@ pub fn on_service(
     sessions: SessionsType,
     nodes: &HashMap<u32, Node>
 ) -> u32 {
+    
     println!("on_service: {}", message);
 
     let ps  =  players.clone();
@@ -178,7 +179,7 @@ pub fn on_service(
     match cmd_key {
         "hp"|"who" => invoker.set(Box::new(HpCommand::new(&ps, &s_service, &ms))),
         "l" | "ls" | "look" | "localmaps" | "lm"
-        | "list" => invoker.set(Box::new(LookCommand::new(&ps, &s_service, &ms, nodes))),
+        | "list" | "startgmcp" | "xgmcp"  => invoker.set(Box::new(LookCommand::new(&ps, &s_service, &ms, nodes))),
         "fight" => invoker.set(Box::new(FightCommand::new(&ps, &s_service, &ms, &s_combat))),
         "e"|"w"|"s"|"n"|"ne"|"sw"|"se"|"nw" => invoker.set(Box::new(WalkCommand::new(&ps, &s_service, &ms, &s_combat, nodes))),
         "climb"|"knock"|"open"|"sleep"|"bath" => invoker.set(Box::new(ClimbCommand::new(&ps, &s_service, &ms, &s_combat, nodes))),

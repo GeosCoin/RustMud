@@ -22,7 +22,7 @@ impl Quest {
         };
 
         for i in buf.lines() {
-            println!("{:?}", i);
+            // println!("{:?}", i);
 
             //todo: 
         }

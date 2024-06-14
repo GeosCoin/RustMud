@@ -1,7 +1,7 @@
 use std::{collections::HashMap, fs::read_to_string, io::Read, net::SocketAddr, rc::Rc};
 use crossbeam::channel::Sender;
 use utils::{get_id, show_color, Color};
-use crate::{channel::{wrap_message, wrap_message_climb, Message, MessageType}, command::Command, map::Node, player::{self, Player}};
+use crate::{channel::{wrap_message, wrap_message_climb, wrap_message_ext, Message, MessageType}, command::Command, map::Node, player::{self, Player}};
 
 pub struct ClimbCommand<'a> {
     players: &'a HashMap<SocketAddr, Player>,
@@ -54,10 +54,10 @@ impl<'a> ClimbCommand<'a> {
             return "".to_string();
         }
 
-        let view = view.to_owned() + "@@@";
+        let view = view.to_owned();
 
         if action == "0" {
-            let val = wrap_message(self.msg.addr, view.to_string());
+            let val = wrap_message_ext(MessageType::NoPrompt,self.msg.addr, view.to_string());
             self.s_service.send(val).unwrap();
 
             //启动定时器
@@ -142,11 +142,11 @@ impl<'a> ClimbCommand<'a> {
             return "".to_string();
         }
         
-        let view = view.to_owned() + "@@@";
+        let view = view.to_owned();
 
         if action == "0" {
             let view = view.replace("\\n", "\n");
-            let val = wrap_message(self.msg.addr, view.to_string());
+            let val = wrap_message_ext(MessageType::NoPrompt,self.msg.addr, view.to_string());
             self.s_service.send(val).unwrap();
 
             //启动定时器
@@ -203,11 +203,11 @@ impl<'a> ClimbCommand<'a> {
             return "".to_string();
         }
         
-        let view = view.to_owned() + "@@@";
+        let view = view.to_owned();
 
         if action == "0" {
             let view = view.replace("\\n", "\n");
-            let val = wrap_message(self.msg.addr, view.to_string());
+            let val = wrap_message_ext(MessageType::NoPrompt,self.msg.addr, view.to_string());
             self.s_service.send(val).unwrap();
 
             //启动定时器
@@ -252,11 +252,11 @@ impl<'a> ClimbCommand<'a> {
             return "".to_string();
         }
         
-        let view = node.sleep.to_owned() + "@@@";
+        let view = node.sleep.to_owned();
 
         if action == "0" {
             let view = view.replace("\\n", "\n");
-            let val = wrap_message(self.msg.addr, view.to_string());
+            let val = wrap_message_ext(MessageType::NoPrompt,self.msg.addr, view.to_string());
             self.s_service.send(val).unwrap();
 
             //启动定时器

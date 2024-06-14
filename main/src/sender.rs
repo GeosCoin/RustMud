@@ -1,6 +1,6 @@
 
-use crate::{channel::{ServerHandler, SessionType, Sessions, SessionContext, SessionsType}, player};
-use std::net::{SocketAddr, TcpListener, TcpStream};
+use crate::{channel::{MessageType, ServerHandler, SessionContext, SessionType, Sessions, SessionsType}, player};
+use std::{net::{SocketAddr, TcpListener, TcpStream}, str::Bytes};
 use std::collections::HashMap;
 use std::io::prelude::*;
 use std::io::BufReader;
@@ -28,6 +28,7 @@ pub fn _handle_sender(
 }
 
 pub fn on_sender(sessions: &SessionsType, message: String){
+    println!("on_sender: {:?}", message);
     let msg: Message = serde_json::from_str(&message).unwrap();
     let sessions_ok = sessions.lock().unwrap();
     let ctx = match sessions_ok.get(&msg.addr) {
@@ -35,14 +36,47 @@ pub fn on_sender(sessions: &SessionsType, message: String){
         None => {return;}
     };
     let mut stream = &ctx.cur_session.0;
-    if msg.content.contains("@@@") {
-        let val = msg.content.replace("@@@", "");
-        let val = val + "\n" ;
+
+    //没有提示符
+    if msg.msg_type == MessageType::NoPrompt {
+        let val = msg.content.to_owned() + "\n" ;
         let _ = stream.write(val.as_bytes() );
-    } else {
-        let val = msg.content + "\n>" ;
-        let _ = stream.write(val.as_bytes() );
-        let _ = stream.write(&[0xff, 0xf9] );
+        return;
     }
+
+    if msg.msg_type == MessageType::IacDoTerm {
+        let tail: &[u8; 3] = &[0xff, 0xfd, 0x18];
+        let val = msg.content.as_bytes();
+        let mut buff = [val, tail].concat(); 
+        let _ = stream.write(&buff.as_slice() );
+         
+        return;
+    }
+
+    if msg.msg_type == MessageType::IacWillGmcp {
+        // let tail: &[u8; 3] = &[0xff, 0xfb, 0xc9];
+        let val = msg.content.as_bytes();
+        let mut buff = [val, tail].concat(); 
+        let _ = stream.write(&buff.as_slice() );
+         
+        return;
+    }
+
+    if msg.msg_type == MessageType::IacDoGmcp {        
+        let val = msg.content.as_bytes();
+        let head = &[0xff, 0xfd, 0xc9, 0xff, 0xfa, 0xc9];
+        let tail: &[u8; 2] = &[0xff, 0xf0];
+        let mut buff = [head, val, tail].concat();        
+
+        let _ = stream.write(&buff.as_slice());
+        
+        return;
+    }
+
+    //正常情况下，有提示符
+    let val = msg.content + "\n>" ;
+    let _ = stream.write(val.as_bytes() );
+    let _ = stream.write(&[0xff, 0xf9] );
+        
 }
 

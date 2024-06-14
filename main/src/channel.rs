@@ -11,6 +11,7 @@
     use crossbeam::channel::unbounded;
     use serde::Deserialize;
     use serde::Serialize;
+    use tokio::stream;
     use utils::{show_color, Color};
 
     pub type SessionType = (TcpStream, SocketAddr);
@@ -39,6 +40,12 @@
         Command,    //命令
         Sender,     //发送
         Normal,     //一般消息
+        NoPrompt,   //不带提示符
+        IacDoTerm,    //GMCP Server:  IAC DO TERMINAL-TYPE  ff fd 18
+        IacWillTerm,  //GMCP Client:  IAC WILL TERMINAL-TYPE   ff fb 18
+        IacWillGmcp,  //GMPC Server:  ff fb c9 
+        IacDoGmcp,    //GMCP Mutual:  ff fd c9 ff fa c9 ... ff f0
+        
     }
 
     //线程间消息
@@ -209,22 +216,50 @@
             let mut session: SessionType = (stream.try_clone().unwrap(), addr);
             let mut reader = BufReader::new(stream.try_clone().unwrap());
 
+            let mut stream_clone = stream.try_clone().unwrap();
+
             Self::on_connect(&mut session, &sessions, run_start_time);
 
-            Self::add_connect(addr, stream, &sessions);
+            Self::add_connect(addr, &stream, &sessions);
             
             loop {
                 let mut message = String::new();
 
-                match reader.read_line(&mut message) {
+                let mut buf: Vec<u8> = Vec::new();
+                
+                // match reader.read_line(&mut message) {
+                // 解决raw socket问题
+                match reader.read_until(0x0a, &mut buf){
                     Ok(_success) => {
+                        println!("raw bytes: {:?}", buf.as_slice());
+                        let buf_clone = buf.clone();
+                        message = match String::from_utf8(buf) {
+                            Ok(a) => a,
+                            Err(e) => "".to_string(),
+                        };
+                        // println!("raw bytes: {:?}", String::from_utf8(buf));
                         if message.is_empty() {
-                            Self::on_disconnect(&mut session);
-                            Self::del_connect(addr, &sessions);
-                            return;
+
+                            //todo: 需要另外的功能模块实现这个raw data的处理。
+
+                            if buf_clone.len() < 3 {                                
+                                return;
+                            }
+
+                            //以下是GMCP的处理
+                            if (buf_clone[0] == 0xff && buf_clone[1] == 0xfb
+                            && buf_clone[2] == 0x18)
+                            || (buf_clone[0] == 0xff && buf_clone[1] == 0xfb
+                                && buf_clone[2] == 0xc9) {
+                                println!("there is GMCP .");
+                                stream_clone.flush();
+                            }else{
+                                return;
+                            }
                         }
                     },
-                    Err(_e) => {                     
+                    Err(_e) => {   
+                        println!("error: {:?}", _e);           
                         Self::on_disconnect(&mut session);
                         Self::del_connect(addr, &sessions);
                         return;
@@ -253,7 +288,7 @@
         
         fn add_connect(
             addr: SocketAddr, 
-            stream: TcpStream,
+            stream: &TcpStream,
             sessions: &SessionsType
         ){
             let mut sessions_ok = sessions.lock().unwrap();
