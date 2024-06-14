@@ -237,25 +237,9 @@
                             Ok(a) => a,
                             Err(e) => "".to_string(),
                         };
-                        // println!("raw bytes: {:?}", String::from_utf8(buf));
+                        
                         if message.is_empty() {
-
-                            //todo: 需要另外的功能模块实现这个raw data的处理。
-
-                            if buf_clone.len() < 3 {                                
-                                return;
-                            }
-
-                            //以下是GMCP的处理
-                            if (buf_clone[0] == 0xff && buf_clone[1] == 0xfb
-                            && buf_clone[2] == 0x18)
-                            || (buf_clone[0] == 0xff && buf_clone[1] == 0xfb
-                                && buf_clone[2] == 0xc9) {
-                                println!("there is GMCP .");
-                                stream_clone.flush();
-                            }else{
-                                return;
-                            }
+                            do_raw_data(&buf_clone, &mut stream_clone);
                         }
                     },
                     Err(_e) => {   
@@ -323,6 +307,26 @@
 
     }
 
+    fn do_raw_data(buf_clone: &[u8], stream_clone: &mut TcpStream) {
+        if buf_clone.len() < 3 {  
+            stream_clone.flush();                     
+            return;
+        }
+
+        //以下是GMCP的处理
+        if (buf_clone[0] == 0xff && buf_clone[1] == 0xfb
+        && buf_clone[2] == 0x18)
+        || (buf_clone[0] == 0xff && buf_clone[1] == 0xfb
+            && buf_clone[2] == 0xc9)
+        || (buf_clone[0] == 0xff && buf_clone[1] == 0xfc
+            && buf_clone[2] == 0xc9) {
+            println!("there is GMCP .");
+            stream_clone.flush();
+        }else{
+            return;
+        }
+    }
+    
     pub fn wrap_message_climb(msg_type: MessageType, addr: SocketAddr, message: String, timer_id: String, max_cnt: u32) -> String {
         let msg = serde_json::to_string(&Message {
             msg_type,

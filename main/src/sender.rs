@@ -56,7 +56,7 @@ pub fn on_sender(sessions: &SessionsType, message: String){
     if msg.msg_type == MessageType::IacWillGmcp {
         // let tail: &[u8; 3] = &[0xff, 0xfb, 0xc9];
         let val = msg.content.as_bytes();
-        let mut buff = [val, tail].concat(); 
+        let mut buff = [val].concat(); 
         let _ = stream.write(&buff.as_slice() );
          
         return;

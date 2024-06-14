@@ -124,7 +124,7 @@ impl<'a> LookCommand<'a> {
     }
     
     fn do_start_gmcp(&self, node: &Node) -> String {
-        let view = "LPmud version : DW OS v1.01 on port 4242.";
+        let view = "RUSTMUD version : OS v0.01 on port 7878.";
         let val = wrap_message_ext(MessageType::IacDoTerm, self.msg.addr, view.to_string());
         self.s_service.send(val).unwrap();
         return "".to_string();
