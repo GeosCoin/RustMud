@@ -67,7 +67,7 @@ impl<'a> ClimbCommand<'a> {
             self.s_combat.send(val).unwrap();
             return "pending 1".to_string();
         } else if action == "continue" {
-            let val = wrap_message(self.msg.addr, view.to_string());
+            let val = wrap_message_ext(MessageType::NoPrompt, self.msg.addr, view.to_string());
             self.s_service.send(val).unwrap();
             return "pending 1".to_string();
         } else if action == "stop" {

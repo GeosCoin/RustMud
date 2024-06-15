@@ -48,6 +48,7 @@ pub struct Player {
     pub defence: u32,   //防御，使用盾牌限制
     pub hp: u32,    //血量
     pub mp: u32,    //精神
+    pub sp: u32,
     pub xp: u32,    //经验
     pub max_hp: u32,    //最大血量
     pub max_mp: u32,    //最大精神
@@ -62,8 +63,9 @@ pub struct Player {
     pub knocked: usize,
     pub opened: u32,
     pub sleep: u32,
-    pub quest: HashMap<u32, u32>,
-    pub cur_quest_id: u32, 
+    pub newbie_quest: HashMap<u32, bool>,
+    pub newbie_next: u32, 
+    pub newbie_prompt: u32,
 }
 
 
@@ -80,7 +82,8 @@ impl Player {
             offense: 0,
             defence: 0,
             hp: 0,
-            mp: 0,    
+            mp: 0,
+            sp: 0,    
             xp: 0,    
             max_hp: 0,
             max_mp: 0,
@@ -94,8 +97,9 @@ impl Player {
             knocked: 0, 
             opened: 0,
             sleep: 0,
-            quest: HashMap::new(),
-            cur_quest_id: 0,
+            newbie_quest: HashMap::new(),
+            newbie_next: 1,
+            newbie_prompt: 0,
         }
     }
 }

@@ -43,6 +43,8 @@ impl<'a> LookCommand<'a> {
             Some(a) => a,
             None => "",
         };
+        let ret_cmd = "look_".to_owned()+cmd;
+
         let cmd2 = match cmds.get(2) {
             Some(a) => a,
             None => "",
@@ -52,7 +54,11 @@ impl<'a> LookCommand<'a> {
         if cmd != "" {
             let mut view = match node.lookat.get(&cmd){
                 Some(a) => a,
-                None => "要看什么?",
+                None => {
+                    let val = wrap_message(self.msg.addr, "要看什么?".to_string());
+                    self.s_service.send(val).unwrap();
+                    return "".to_string();
+                },
             };
 
             //来自文件
@@ -66,7 +72,7 @@ impl<'a> LookCommand<'a> {
             let view = view.replace("\\n", "\n");            
             let val = wrap_message(self.msg.addr, view.to_string());
             self.s_service.send(val).unwrap();
-            return "".to_string();
+            return ret_cmd;
         }
 
         let player = self.players.get(&self.msg.addr).unwrap();
@@ -103,7 +109,7 @@ impl<'a> LookCommand<'a> {
         l_view = l_view + &names;
         let val = wrap_message(self.msg.addr, l_view.to_string());
         self.s_service.send(val).unwrap();
-        "ok".to_string()
+        ret_cmd
     }
     
     fn do_list(&self, node: &Node) -> String {

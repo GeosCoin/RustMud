@@ -2,6 +2,8 @@ use std::collections::HashMap;
 
 use serde::{Serialize, Deserialize};
 
+use crate::quest::Quest;
+
 //角色
 #[derive(Serialize, Deserialize, Debug, PartialEq, Clone, Copy)]
 pub enum Role {
@@ -52,7 +54,8 @@ pub struct Player {
     pub offense: u32,   //攻击，使用武器限制
     pub defence: u32,   //防御，使用盾牌限制
     pub hp: i32,    //血量
-    pub mp: u32,    //精神
+    pub mp: u32,    //法术能量
+    pub sp: u32,    //精神力
     pub xp: u32,    //经验
     pub max_hp: u32,    //最大血量
     pub max_mp: u32,    //最大精神
@@ -66,8 +69,9 @@ pub struct Player {
     pub knocked: u32,  //是否已经敲门 0:否  1:是
     pub opened: u32,   //是否已打开门
     pub sleep: u32,    //是否睡觉
-    pub quest: HashMap<u32, u32>, //任务完成情况
-    pub cur_quest_id: u32, //当前执行任务id
+    pub newbie_quest: HashMap<u32, bool>, //任务完成情况
+    pub newbie_next: u32,   //下一个向导
+    pub newbie_prompt: u32,  //是否提示过
 }
 
 
@@ -84,7 +88,8 @@ impl Player {
             offense: 0,
             defence: 0,
             hp: 0,
-            mp: 0,    
+            mp: 0,
+            sp: 0,  //spiritual confidence 自信程度 影响气血和魔法恢复
             xp: 0,    
             max_hp: 0,
             max_mp: 0,
@@ -98,8 +103,9 @@ impl Player {
             knocked: 0,
             opened: 0,
             sleep: 0,
-            quest: HashMap::new(),
-            cur_quest_id: 0,
+            newbie_quest: HashMap::new(),
+            newbie_next: 1,
+            newbie_prompt: 0,
         }
     }
 }

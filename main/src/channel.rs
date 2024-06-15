@@ -231,7 +231,7 @@
                 // 解决raw socket问题
                 match reader.read_until(0x0a, &mut buf){
                     Ok(_success) => {
-                        println!("raw bytes: {:?}", buf.as_slice());
+                        // println!("raw bytes: {:?}", buf.as_slice());
                         let buf_clone = buf.clone();
                         message = match String::from_utf8(buf) {
                             Ok(a) => a,

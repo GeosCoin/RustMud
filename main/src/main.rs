@@ -17,6 +17,7 @@ mod command_look;
 mod command_fight;
 mod command_walk;
 mod command_climb;
+mod command_quest;
 mod map;
 
 

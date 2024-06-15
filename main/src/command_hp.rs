@@ -42,7 +42,7 @@ impl<'a> HpCommand<'a> {
 
         let val = wrap_message(self.msg.addr, hpframe);
         self.s_service.send(val).unwrap();  
-        "ok".to_string() 
+        "hp".to_string() 
     }
 
     pub fn do_who(&self) -> String {
@@ -59,7 +59,7 @@ impl<'a> HpCommand<'a> {
         let val = wrap_message(self.msg.addr, view);
         self.s_service.send(val).unwrap();  
 
-        "ok".to_string() 
+        "who".to_string() 
     }
 
 }

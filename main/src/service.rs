@@ -11,6 +11,7 @@ use crate::command_climb::ClimbCommand;
 use crate::command_fight::FightCommand;
 use crate::command_hp::HpCommand;
 use crate::command_look::LookCommand;
+use crate::command_quest::QuestCommand;
 use crate::command_walk::WalkCommand;
 use crate::map;
 use crate::map::Node;
@@ -72,7 +73,8 @@ pub fn _handle_service(
     let mut login_infos: HashMap<SocketAddr, LoginInfo> = HashMap::new();
     let mut players: HashMap<SocketAddr, Player> = HashMap::new();
     let nodes = map::init_map();
-    let quests: HashMap<(u32, String), String> = Quest::init_quest();
+    let quests = quest::init_quest();
+    let mut newbie_prompt: u32 = 0; //未提示过
 
     loop {
         match r_service.recv() {
@@ -87,7 +89,9 @@ pub fn _handle_service(
                     &mut login_infos,
                     &mut players,
                     srv_sessions,
-                    &nodes);                
+                    &nodes,
+                    &quests,
+                    &mut newbie_prompt);                
             },
             Err(s) => {
                 println!("{:?}", s);
@@ -107,7 +111,9 @@ pub fn on_service(
     login_infos: &mut HashMap<SocketAddr, LoginInfo>,
     players: &mut HashMap<SocketAddr, Player>,
     sessions: SessionsType,
-    nodes: &HashMap<u32, Node>
+    nodes: &HashMap<u32, Node>,
+    quests: &HashMap<u32, Quest>,
+    newbie_prompt: &mut u32,
 ) -> u32 {
     
     println!("on_service: {}", message);
@@ -129,6 +135,7 @@ pub fn on_service(
 
         let player = players.entry(msg.addr)
             .or_insert(Player::new());
+        let player_clone = player.clone();
         match crate::login::do_login(&s_service, login_info, player, &msg, &ps) {
             Ok(a) => {
                 //重复用户登录判断  
@@ -159,16 +166,36 @@ pub fn on_service(
                         }
                         println!(" Connect count = {}", sessions_login.len());
 
-                        return 99;
+                        // return 99;
                     }
 
                     
                 }
-                return 0;
+
+                //已登录并且新手向导存在
+                if login_info.b_login && player_clone.newbie_next != 0 {
+                    //登录时就进行首轮提示                    
+                    let quest = match quests.get(&player_clone.newbie_next){
+                        Some(a) => a,
+                        None => return 99,
+                    };
+            
+                    //提示
+                    let val = wrap_message(msg.addr, quest.job.to_string());
+                    s_service.send(val).unwrap(); 
+                    *newbie_prompt = 1;
+                    return 0;
+                }
             },
             Err(_) => {return 99;}
         };
     }
+
+    //判断新手向导
+    let player = match ps.get(&msg.addr) {
+        Some(a) => a,
+        None => return 99,
+    };
 
     let mut invoker = Invoker::new();
     let cmd_key = ms.content.split(" ").collect::<Vec<&str>>();
@@ -178,6 +205,7 @@ pub fn on_service(
         };
     match cmd_key {
         "hp"|"who" => invoker.set(Box::new(HpCommand::new(&ps, &s_service, &ms))),
+        "jq" | "jobquery" => invoker.set(Box::new(QuestCommand::new(&ps, &s_service, &ms, quests))),
         "l" | "ls" | "look" | "localmaps" | "lm"
         | "list" | "startgmcp" | "xgmcp"  => invoker.set(Box::new(LookCommand::new(&ps, &s_service, &ms, nodes))),
         "fight" => invoker.set(Box::new(FightCommand::new(&ps, &s_service, &ms, &s_combat))),
@@ -222,6 +250,89 @@ pub fn on_service(
     }
 
     println!("{}", ret_str);
+
+    //判断是否满足新手任务
+    let mut quest_ret = ret_str.clone();    
+    if quest_ret.contains("e@") {
+        quest_ret = "east".to_string();
+    } else if quest_ret.contains("w@") {
+        quest_ret = "west".to_string();
+    } else if quest_ret.contains("s@") {
+        quest_ret = "south".to_string();
+    } else if quest_ret.contains("n@") {
+        quest_ret = "north".to_string();
+    }
+
+    quest_ret = "q_".to_owned() + &quest_ret;
+    println!("quest_ret: {:?}", quest_ret);
+    let quest: Vec<(&u32, &Quest)> = quests.iter().filter(|p| p.1.name == quest_ret).collect();
+    if !quest.is_empty() {
+        
+        let id = quest[0].1.id;
+        let is_id_exist = match player.newbie_quest.get(&id){
+            Some(a) => true,
+            None => false,
+        };
+
+        //如果不存在，表示有新任务
+        if !is_id_exist {
+
+            let parent = quest[0].1.parent;
+            let next = quest[0].1.next;
+            println!("next: {:?}", next);
+            let xp = quest[0].1.xp;
+            let sp = quest[0].1.sp;
+            let award = &quest[0].1.award;
+            let after = &quest[0].1.after;
+            
+            
+            //如果没有父项，才会通知
+            if parent == 0 {
+                let val = wrap_message_ext(MessageType::NoPrompt,msg.addr, award.to_string());
+                s_service.send(val).unwrap();    
+
+                let val = wrap_message_ext(MessageType::NoPrompt,msg.addr, after.to_string());
+                s_service.send(val).unwrap();
+            }
+
+            for item in players.iter_mut() {
+                if item.1.name == login_info.login.login_name {        
+                    item.1.newbie_quest.insert(id, true);            
+                    item.1.newbie_next = next;
+                    item.1.xp += xp;
+                    item.1.sp += sp;
+
+                    //如果有父项，判断父项下的子项是否已经全部满足
+                    if parent != 0 {
+                        let quest = match quests.get(&parent) {
+                            Some(a) => a,
+                            None => return 99,
+                        };
+                        
+                        let subquest = &quest.subquest;
+                        let mut all_exist = true;
+                        for item in subquest.iter() {
+                            let is_exist = match player.newbie_quest.get(&item.0){
+                                Some(a) => true,
+                                None => false,
+                            };
+                            if !is_exist {
+                                all_exist = false;
+                                break;
+                            }
+                        }
+                        
+                        if all_exist {
+                            item.1.newbie_quest.insert(parent, true);
+                        }
+                    }
+                }
+            }
+
+        }
+        // *newbie_prompt = 0;
+    }
+
     if ret_str.contains("e@") || ret_str.contains("w@") 
     || ret_str.contains("n@") || ret_str.contains("s@") 
     || ret_str.contains("ne@") || ret_str.contains("nw@") 
