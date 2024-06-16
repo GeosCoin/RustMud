@@ -30,7 +30,11 @@ impl<'a> QuestCommand<'a> {
         
         let quest = match quests.get(&player.newbie_next){
             Some(a) => a,
-            None => return "no match quest".to_string(),
+            None => {
+                let val = wrap_message(self.msg.addr, "当前没有任务".to_string());
+                self.s_service.send(val).unwrap();  
+                return "jobquery".to_string();
+            },
         };
 
         let val = wrap_message(self.msg.addr, quest.job.to_string());

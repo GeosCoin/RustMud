@@ -59,7 +59,7 @@ pub struct Player {
     pub avoidance: u32, //规避力
     
     pub timer_id: usize, //定时器ID
-    pub pending: usize, 
+    pub climbing: usize, 
     pub knocked: usize,
     pub opened: u32,
     pub sleep: u32,
@@ -93,7 +93,7 @@ impl Player {
             accuracy: 0,
             avoidance: 0,
             timer_id:0,
-            pending: 0,
+            climbing: 0,
             knocked: 0, 
             opened: 0,
             sleep: 0,

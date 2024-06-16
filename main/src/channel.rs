@@ -2,11 +2,15 @@
     use std::collections::HashMap;
     use std::io::prelude::*;
     use std::io::BufReader;
+    use std::net::Ipv4Addr;
+    use std::net::SocketAddrV4;
     use std::net::{SocketAddr, TcpListener, TcpStream};
     use std::sync::{Arc, Mutex};
     use std::thread;
     use std::time::SystemTime;
     use crate::player::Player;
+    use crate::service::Service;
+    use crate::timer;
     use crossbeam::channel::Sender;
     use crossbeam::channel::unbounded;
     use serde::Deserialize;
@@ -56,6 +60,20 @@
         pub addr: SocketAddr,    //消息地址，用于获取用户信息
         pub timer_id: String,  //启动关闭定时器使用
         pub max_cnt: u32,      //线程循环最大次数
+    }
+
+    impl Message {
+        pub fn new() -> Self {
+            Message {
+                msg_type: MessageType::Normal,
+                content: String::from(""),
+                addr: SocketAddr::V4(SocketAddrV4::new(
+                    Ipv4Addr::new(0,0,0,0), 
+                    0)),
+                timer_id : String::from("0"),
+                max_cnt: 0,
+            }
+        }
     }
     
     const WELCOME: &str = "
@@ -159,11 +177,12 @@
 
             //service线程            
             threads.push(thread::spawn(move || {
-                crate::service::_handle_service(
-                    srv_sessions,
-                    s_service,
-                    r_service,
-                    s_combat);
+                let mut service = Service::new(&srv_sessions,
+                    &s_service,
+                    &r_service,
+                    &s_combat);
+                
+                service.handle();
             }));
 
             //timer线程

@@ -65,7 +65,7 @@ pub struct Player {
     pub accuracy: u32,  //准确度  
     pub avoidance: u32, //规避力
     pub timer_id: usize, //定时器ID
-    pub pending: u32,  //暂停
+    pub climbing: u32,  //暂停
     pub knocked: u32,  //是否已经敲门 0:否  1:是
     pub opened: u32,   //是否已打开门
     pub sleep: u32,    //是否睡觉
@@ -99,7 +99,7 @@ impl Player {
             accuracy: 0,
             avoidance: 0,
             timer_id: 0,
-            pending: 0,
+            climbing: 0,
             knocked: 0,
             opened: 0,
             sleep: 0,

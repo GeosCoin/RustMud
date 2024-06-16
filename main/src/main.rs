@@ -1,5 +1,8 @@
 #![allow(warnings)]
 
+#[macro_use]
+extern crate lazy_static;
+
 use crate::channel::Server;
 use crate::channel::ServerHandler;
 
@@ -18,6 +21,11 @@ mod command_fight;
 mod command_walk;
 mod command_climb;
 mod command_quest;
+mod command_x;
+mod process;
+mod process_quest;
+mod process_fight;
+mod log;
 mod map;
 
 

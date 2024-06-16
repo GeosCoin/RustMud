@@ -65,11 +65,11 @@ impl<'a> ClimbCommand<'a> {
             let val = wrap_message_climb(MessageType::CombatStart, self.msg.addr
                 , self.msg.content.to_string(), timer_id.to_string(), 3);
             self.s_combat.send(val).unwrap();
-            return "pending 1".to_string();
+            return "climbing 1".to_string();
         } else if action == "continue" {
             let val = wrap_message_ext(MessageType::NoPrompt, self.msg.addr, view.to_string());
             self.s_service.send(val).unwrap();
-            return "pending 1".to_string();
+            return "climbing 1".to_string();
         } else if action == "stop" {
             let param = cmd.to_string() + "done";
             let view = match node.climbat.get(&param){
@@ -111,7 +111,7 @@ impl<'a> ClimbCommand<'a> {
         let val = wrap_message(self.msg.addr, l_view.to_string());
         self.s_service.send(val).unwrap();
 
-        return "pending 0 destpos ".to_string() + &dest_pos.to_string();
+        return "climbing 0 destpos ".to_string() + &dest_pos.to_string();
     }
 
     pub fn do_knock(&self,

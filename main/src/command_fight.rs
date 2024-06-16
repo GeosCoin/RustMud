@@ -38,6 +38,9 @@ impl<'a>  Command for FightCommand<'a>  {
             Some(a) => a,
             None => {
                 println!("Do not know fight who?");
+                let val = wrap_message(self.msg.addr,
+                    "你要fight谁？".to_string());
+                self.s_service.send(val).unwrap();
                 return "no".to_string();
             }
         };

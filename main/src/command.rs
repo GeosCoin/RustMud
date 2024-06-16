@@ -4,17 +4,17 @@ pub trait Command{
     fn execute(&self) -> String;
 }
 
-struct EmptyCommand{}
+pub struct EmptyCommand;
 
 impl EmptyCommand {
-    fn new() -> Self {
+    pub fn new() -> Self {
         EmptyCommand{}
     }
 }
 
 impl Command for EmptyCommand {
     fn execute(&self) -> String {
-        "".to_string()
+        "I am empty command".to_string()
     }
 }
 
@@ -45,16 +45,20 @@ impl<'a> Invoker<'a> {
 // }
 
 // impl<'a> Invokers<'a> {
-//     pub fn new(command: &'a String) -> Self{   
+//     pub fn new() -> Self{ 
+//         Invokers  {
+//             commands: HashMap::new(),
+//             cur_command: "".to_string()
+//         }
+//     }
+
+//     pub fn set_cmd(&mut self, command: String) {   
 //         let cmd = command.split(" ").collect::<Vec<&str>>();
 //         let cmd = match cmd.get(0) {
 //             Some(a) => a,
 //             None => "none",
 //         };
-//         Invokers  {
-//             commands: HashMap::new(),
-//             cur_command: cmd.to_string()
-//         }
+//         self.cur_command = cmd.to_string();        
 //     }
 
 //     pub fn add(&mut self, cmd_key:String, command: Box<dyn Command + 'a>) {

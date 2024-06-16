@@ -14,6 +14,7 @@ pub struct Quest {
     pub subquest: HashMap<u32, bool>, //子任务及完成情况
     pub parent: u32,    //父任务
     pub next: u32,      //下一个任务
+    pub node: u32,  
     pub completed: bool,  //完成与否
 }
 
@@ -30,6 +31,7 @@ impl Quest {
             subquest: HashMap::new(), //子任务
             parent: 0,    //父任务
             next: 0,
+            node: 0,
             completed: false, 
         }
     }
@@ -72,13 +74,12 @@ pub fn init_quest() -> HashMap<u32, Quest> {
                 "after" => {quest.after = item.to_string(); },
                 "xp" => {quest.xp = item.parse().unwrap(); },
                 "sp" => {quest.sp = item.parse().unwrap(); },
+                "node" => {quest.node = item.parse().unwrap(); },
                 "subquest" => {
                     let subs: Vec<&str> = item.split("|").collect();
-                    let sub = match subs.get(1) {
-                        Some(a) => a,
-                        None => "",
-                    };
-                    quest.subquest.insert(sub.to_string().parse().unwrap(), false);
+                    for sub in subs.iter() {
+                        quest.subquest.insert(sub.to_string().parse().unwrap(), false);
+                    }
                 },       
                 "parent" => {quest.parent = item.parse().unwrap();},
                 "next" => {quest.next = item.parse().unwrap();},
@@ -91,3 +92,4 @@ pub fn init_quest() -> HashMap<u32, Quest> {
     quests
 
 }
+
