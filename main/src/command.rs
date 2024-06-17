@@ -4,6 +4,10 @@ pub trait Command{
     fn execute(&self) -> String;
 }
 
+pub trait Gmcp {
+    fn send_msg(&self) -> String;
+}
+
 pub struct EmptyCommand;
 
 impl EmptyCommand {

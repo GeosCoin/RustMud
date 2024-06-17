@@ -89,7 +89,7 @@ impl Player {
             defence: 0,
             hp: 0,
             mp: 0,
-            sp: 0,  //spiritual confidence 自信程度 影响气血和魔法恢复
+            sp: 0,  //spiritual confidence 信心程度 影响气血和魔法恢复
             xp: 0,    
             max_hp: 0,
             max_mp: 0,

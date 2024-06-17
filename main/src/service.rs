@@ -8,6 +8,7 @@ use crate::channel::Message;
 use crate::channel::MessageType;
 use crate::command::EmptyCommand;
 use crate::command::Invoker;
+use crate::command_chat::ChatCommand;
 use crate::command_climb::ClimbCommand;
 use crate::command_fight::FightCommand;
 use crate::command_hp::HpCommand;
@@ -155,6 +156,7 @@ impl<'a>  Service<'a> {
             "fight" => invoker.set(Box::new(FightCommand::new(&ps, &self.s_service, &ms, &self.s_combat))),
             "e"|"w"|"s"|"n"|"ne"|"sw"|"se"|"nw" => invoker.set(Box::new(WalkCommand::new(&ps, &self.s_service, &ms, &self.s_combat, &self.nodes))),
             "climb"|"knock"|"open"|"sleep"|"bath" => invoker.set(Box::new(ClimbCommand::new(&ps, &self.s_service, &ms, &self.s_combat, &self.nodes))),
+            "chat"|"`" => invoker.set(Box::new(ChatCommand::new(&ps, &self.s_service, &ms))),
             _ => {
                 let nomatch = "要做什么?";
                 let val = wrap_message(msg.addr, nomatch.to_string());

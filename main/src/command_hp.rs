@@ -1,7 +1,7 @@
 use std::{collections::HashMap, net::SocketAddr, rc::Rc};
 use crossbeam::channel::Sender;
 use utils::{show_color, Color};
-use crate::{channel::{wrap_message, Message}, command::Command, player::Player};
+use crate::{channel::{wrap_message, wrap_message_ext, wrap_message_raw, Message, MessageType}, command::{Command, Gmcp}, player::Player};
 
 pub struct HpCommand<'a> {
     pub players: &'a HashMap<SocketAddr, Player>,
@@ -26,22 +26,27 @@ impl<'a> HpCommand<'a> {
         let name = show_color(&player.name, Color::YELLOW);
         let hp: String = show_color(&player.hp.to_string(), Color::YELLOW);
         let mp = show_color(&player.mp.to_string(), Color::YELLOW);
+        let sp = show_color(&player.sp.to_string(), Color::YELLOW);
         let max_hp = show_color(&player.max_hp.to_string(), Color::YELLOW);
         let max_mp = show_color(&player.max_mp.to_string(), Color::YELLOW);
+        let max_sp = show_color("100", Color::YELLOW);
+        let xp = show_color(&player.xp.to_string(), Color::YELLOW);
+        let next_xp = show_color("2000", Color::YELLOW);
 
         let hpframe = r"
-    ┌─── ".to_owned() + &name + "状态────────────┬───────────────────┐
-    │【精神】 "+ &mp +"     / "+&max_mp +"      [100%]    │【精力】 100     / 100     (+   0)    │
-    │【气血】 "+ &hp +"      / "+&max_hp+"      [100%]    │【内力】 141     / 71      (+   0)    │
-    │【真气】 0       / 0        [  0%]    │【战意】 100%               [正常]    │
-    │【食物】 0       / 300      [饥饿]    │【潜能】 5075                         │
-    │【饮水】 0       / 300      [饥渴]    │【经验】 830                          │
-    ├───────────────────┴───────────────────┤
-    │【状态】 健康                                                                 │
-    └──────────────────────────────北大侠客行────┘";
+    ┌─── ".to_owned() + &name + "状态────────────
+     【气血】 "+ &mp +"     / "+&max_mp +"      [100%]     
+     【法力】 "+ &hp +"     / "+&max_hp+"      [100%]     
+     【信心】 "+ &sp +"     / "+&max_sp+"     [100%]
+     【经验】 "+ &xp +"     / "+&next_xp+"                    
+    ├────────────────────────────────────────────
+    │【状态】 健康                                 
+    └──────────────────────────────未知世界──────┘
+    ";
 
-        let val = wrap_message(self.msg.addr, hpframe);
+        let val = wrap_message_raw(self.msg.addr, hpframe);
         self.s_service.send(val).unwrap();  
+        self.send_msg();
         "hp".to_string() 
     }
 
@@ -59,10 +64,22 @@ impl<'a> HpCommand<'a> {
         let val = wrap_message(self.msg.addr, view);
         self.s_service.send(val).unwrap();  
 
+        
         "who".to_string() 
     }
 
 }
+
+impl<'a> Gmcp for HpCommand<'a> {
+    fn send_msg(&self) -> String {
+        
+        let view = "Player.Vital {\"hp\": 200, \"maxhp\": 800, \"msg\": \"兄弟，有时间参加攻城不？\"}".to_owned();
+        let val = wrap_message_ext(MessageType::IacDoGmcp, self.msg.addr, view.to_string());
+        self.s_service.send(val).unwrap();
+        "".to_string()
+    }
+}
+
 impl<'a>  Command for HpCommand<'a>  {
     
     fn execute(&self) -> String {

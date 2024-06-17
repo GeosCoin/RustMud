@@ -251,7 +251,7 @@
                 match reader.read_until(0x0a, &mut buf){
                     Ok(_success) => {
                         // println!("raw bytes: {:?}", buf.as_slice());
-                        let buf_clone = buf.clone();
+                        let mut buf_clone = buf.clone();
                         message = match String::from_utf8(buf) {
                             Ok(a) => {
                                 if a.is_empty() {
@@ -266,7 +266,7 @@
                         };
                         
                         if message.is_empty() {
-                            do_raw_data(&buf_clone, &mut stream_clone);
+                            message = do_raw_data(&mut buf_clone, &mut stream_clone);
                         }
                     },
                     Err(_e) => {   
@@ -334,10 +334,10 @@
 
     }
 
-    fn do_raw_data(buf_clone: &[u8], stream_clone: &mut TcpStream) {
+    fn do_raw_data(buf_clone: &[u8], stream_clone: &mut TcpStream) -> String {
         if buf_clone.len() < 3 {  
             stream_clone.flush();                     
-            return;
+            return "奇怪的来宾".to_string();
         }
 
         //以下是GMCP的处理
@@ -347,10 +347,12 @@
             && buf_clone[2] == 0xc9)
         || (buf_clone[0] == 0xff && buf_clone[1] == 0xfc
             && buf_clone[2] == 0xc9) {
+            let buf = &buf_clone[3..];
             println!("there is GMCP .");
             stream_clone.flush();
+            return String::from_utf8_lossy(buf).to_string();
         }else{
-            return;
+            return "奇怪的来宾".to_string();
         }
     }
     
@@ -391,6 +393,17 @@
         let msg = serde_json::to_string(&Message {
             msg_type: MessageType::Normal,
             content: message.trim().to_string(),
+            addr: addr,
+            timer_id: "".to_string(),
+            max_cnt: 0
+        }).unwrap();
+        msg
+    }
+
+    pub fn wrap_message_raw(addr: SocketAddr, message: String) -> String {
+        let msg = serde_json::to_string(&Message {
+            msg_type: MessageType::Normal,
+            content: message,
             addr: addr,
             timer_id: "".to_string(),
             max_cnt: 0
