@@ -253,7 +253,15 @@
                         // println!("raw bytes: {:?}", buf.as_slice());
                         let buf_clone = buf.clone();
                         message = match String::from_utf8(buf) {
-                            Ok(a) => a,
+                            Ok(a) => {
+                                if a.is_empty() {
+                                    Self::on_disconnect(&mut session);
+                                    Self::del_connect(addr, &sessions);
+                                    return;
+                                }else{
+                                    a
+                                }
+                            },
                             Err(e) => "".to_string(),
                         };
                         

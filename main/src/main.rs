@@ -25,6 +25,8 @@ mod command_x;
 mod process;
 mod process_quest;
 mod process_fight;
+mod process_walk;
+mod process_climb;
 mod log;
 mod map;
 

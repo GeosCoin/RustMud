@@ -83,9 +83,11 @@ impl<'a> PostProcess for ProcessQuest<'a> {
                 
                 //如果没有父项，才会通知
                 if parent == 0 {
+                    let award = award.replace("\\n", "\n");
                     let val = wrap_message_ext(MessageType::NoPrompt,self.msg.addr, award.to_string());
                     self.s_service.send(val).unwrap();    
 
+                    let after = after.replace("\\n", "\n");
                     let val = wrap_message_ext(MessageType::NoPrompt,self.msg.addr, after.to_string());
                     self.s_service.send(val).unwrap();
                 }
