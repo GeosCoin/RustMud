@@ -76,7 +76,7 @@ impl<'a> PostProcess for ProcessQuest<'a> {
                 let next = quest[0].1.next;
                 println!("next: {:?} node: {}", next, node);
                 let xp = quest[0].1.xp;
-                let sp = quest[0].1.sp;
+                let fp = quest[0].1.fp;
                 let award = &quest[0].1.award;
                 let after = &quest[0].1.after;
                 
@@ -108,7 +108,7 @@ impl<'a> PostProcess for ProcessQuest<'a> {
                         if parent == 0 {           
                             item.1.newbie_next = next;                    
                             item.1.xp += xp;
-                            item.1.sp += sp;
+                            item.1.fp += fp;
                         }
 
                         //如果有父项，判断父项下的子项是否已经全部满足
@@ -137,7 +137,7 @@ impl<'a> PostProcess for ProcessQuest<'a> {
                                 item.1.newbie_quest.insert(parent, true);
                                 item.1.newbie_next = quest.next;                    
                                 item.1.xp += quest.xp;
-                                item.1.sp += quest.sp;
+                                item.1.fp += quest.fp;
 
                                 let val = wrap_message_ext(MessageType::NoPrompt,self.msg.addr, quest.award.to_string());
                                 self.s_service.send(val).unwrap();    

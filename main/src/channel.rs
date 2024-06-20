@@ -1,12 +1,15 @@
     
+    
     use std::collections::HashMap;
     use std::io::prelude::*;
     use std::io::BufReader;
     use std::net::Ipv4Addr;
     use std::net::SocketAddrV4;
     use std::net::{SocketAddr, TcpListener, TcpStream};
+    use std::os::windows::io::IntoRawSocket;
     use std::sync::{Arc, Mutex};
     use std::thread;
+    use std::time::Duration;
     use std::time::SystemTime;
     use crate::player::Player;
     use crate::service::Service;
@@ -243,30 +246,30 @@
             
             loop {
                 let mut message = String::new();
-
-                let mut buf: Vec<u8> = Vec::new();
+                let mut buf:[u8; 1024] = [0; 1024]; // !!!Important!!!
                 
-                // match reader.read_line(&mut message) {
-                // 解决raw socket问题
-                match reader.read_until(0x0a, &mut buf){
-                    Ok(_success) => {
-                        // println!("raw bytes: {:?}", buf.as_slice());
-                        let mut buf_clone = buf.clone();
-                        message = match String::from_utf8(buf) {
-                            Ok(a) => {
-                                if a.is_empty() {
-                                    Self::on_disconnect(&mut session);
-                                    Self::del_connect(addr, &sessions);
-                                    return;
-                                }else{
-                                    a
-                                }
-                            },
+                match reader.read(&mut buf){
+                    Ok(_success) => {                        
+                        let mut bufx0: Vec<u8> = buf.into_iter().filter(|p| *p != b'\0').collect();
+                        println!("raw bytes: {:?}, len = {}", bufx0.as_slice(), bufx0.len());
+                        if bufx0.len() == 0 {
+                            Self::on_disconnect(&mut session);
+                            Self::del_connect(addr, &sessions);
+                            return;
+                        }
+
+                        let mut buf_clone = bufx0.clone();                        
+                        message = match String::from_utf8(bufx0) {
+                            Ok(a) => a,
                             Err(e) => "".to_string(),
                         };
                         
                         if message.is_empty() {
                             message = do_raw_data(&mut buf_clone, &mut stream_clone);
+                        }
+
+                        if message.is_empty() {
+                            continue;
                         }
                     },
                     Err(_e) => {   
@@ -341,17 +344,21 @@
         }
 
         //以下是GMCP的处理
-        if (buf_clone[0] == 0xff && buf_clone[1] == 0xfb
-        && buf_clone[2] == 0x18)
-        || (buf_clone[0] == 0xff && buf_clone[1] == 0xfb
-            && buf_clone[2] == 0xc9)
-        || (buf_clone[0] == 0xff && buf_clone[1] == 0xfc
-            && buf_clone[2] == 0xc9) {
+        if (buf_clone[0] == 0xff && buf_clone[1] == 0xfb && buf_clone[2] == 0x18)
+        || (buf_clone[0] == 0xff && buf_clone[1] == 0xfb && buf_clone[2] == 0xc9)
+        || (buf_clone[0] == 0xff && buf_clone[1] == 0xfc && buf_clone[2] == 0xc9) {
             let buf = &buf_clone[3..];
             println!("there is GMCP .");
             stream_clone.flush();
             return String::from_utf8_lossy(buf).to_string();
-        }else{
+        } else if buf_clone[0] == 0xff && buf_clone[1] == 0xfa && buf_clone[2] == 0xc9
+            && buf_clone[buf_clone.len()-2] == 0xff && buf_clone[buf_clone.len()-1] == 0xf0
+        {
+            let buf = &buf_clone[3..buf_clone.len()-2];
+            println!("GMCP cmd: {:?}", buf);
+            stream_clone.flush();
+            return String::from_utf8_lossy(buf).to_string();
+        } else{
             return "奇怪的来宾".to_string();
         }
     }

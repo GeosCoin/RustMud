@@ -10,7 +10,7 @@ pub struct Quest {
     pub award: String,  //奖励
     pub after: String,  //之后提示
     pub xp: u32,        //经验
-    pub sp: u32,        //信心
+    pub fp: u32,        //信心
     pub subquest: HashMap<u32, bool>, //子任务及完成情况
     pub parent: u32,    //父任务
     pub next: u32,      //下一个任务
@@ -27,7 +27,7 @@ impl Quest {
             award: String::from(""),  //奖励
             after: String::from(""),  //之后提示
             xp: 0,        //经验
-            sp: 0,        //信心
+            fp: 0,        //信心
             subquest: HashMap::new(), //子任务
             parent: 0,    //父任务
             next: 0,
@@ -73,7 +73,7 @@ pub fn init_quest() -> HashMap<u32, Quest> {
                 "award" => {quest.award = item.to_string(); },
                 "after" => {quest.after = item.to_string(); },
                 "xp" => {quest.xp = item.parse().unwrap(); },
-                "sp" => {quest.sp = item.parse().unwrap(); },
+                "fp" => {quest.fp = item.parse().unwrap(); },
                 "node" => {quest.node = item.parse().unwrap(); },
                 "subquest" => {
                     let subs: Vec<&str> = item.split("|").collect();

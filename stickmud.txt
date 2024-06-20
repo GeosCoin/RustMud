@@ -1,0 +1,428 @@
+{
+  Char = {
+    Help = {
+      List = {
+        basic = { "accessibility", "alias", "brief", "close", "columns", "command", "cook", 
+"discharge", "donate", "drop", "examine", "exits", "extinguish", "fix", "gag", "get", "give", 
+"help", "hold", "keep", "levels", "light", "look", "loot", "open", "party", "quit", "recite", 
+"rehash", "remove", "rest", "rows", "screenreader", "show", "si", "sit", "socials", "sort", "stand",
+ "swap", "take", "terminal", "time", "unkeep", "unlight", "unwear", "verbose", "wear", "weather" },
+        character = { "abilities", "accounts", "advance", "balance", "cash", "clothes", "colors", 
+"desc", "disguise", "email", "eq", "eventpts", "exprates", "eyecolor", "haircolor", "hairlength", 
+"inventory", "lich", "liege", "map", "mchars", "memory", "messages", "music", "mysites", "password",
+ "petmsgfollow", "pretitle", "prompt", "regchar", "save", "sc", "score", "session", "set", "skills",
+ "skincolor", "starthere", "stats", "title", "training", "transactions", "where" },
+        combat = { "attack", "brave", "cast", "check", "consider", "counter", "dequeue", "dispel", 
+"end", "evoke", "exclude", "execute", "flee", "fp", "hp", "initiate", "invoke", "kill", "manifest", 
+"mkinfo", "negate", "opk", "perform", "pkinfo", "queue", "report", "reporter", "showrounds", "sp", 
+"target", "unwield", "use", "wield", "wimpy" },
+        communication = { "allow", "ask", "away", "bug", "channel", "chat", "clan", "finger", 
+"guild", "idea", "idle", "ignore", "info", "markdown", "mort", "news", "ping", "reply", "rsay", 
+"say", "shout", "speak", "talk", "tell", "typo", "whisper", "who", "yell" },
+        deities = { "baptize", "boccob", "caine", "faith", "praise", "pray", "renounce", "seth", 
+"worship" },
+        game = { "conv", "date", "gui", "lagometer", "nop", "timer", "uptime" },
+        guilds = { "bards", "fighters", "ghelp", "grefresh", "gresign", "gscore", "healers", 
+"mages", "necromancers", "ninjas", "priests", "thieves" },
+        policies = { "multiple-char", "raiding", "reimbursement", "rules" },
+        races = { "dark_elf", "deep_gnome", "devour", "duergar", "dwarf", "elf", "giant", "gnoll", 
+"gnome", "goblin", "half-elf", "half-ogre", "half-orc", "hobbit", "hobgoblin", "human", "ogre", 
+"orc", "racestats", "racevitals", "stomp", "tiefling", "troll" },
+        ["tips and tricks"] = { "autotargeting", "commands", "newbie", "quicktyper", "scores" },
+        topics = { "castles", "city", "clans", "coder", "credit", "crime", "disease", "enchant", 
+"events", "fatigue", "feelings", "games", "global-system", "guilds", "lag", "level", "months", 
+"moons", "quests", "races", "ranks", "reboot", "regexp", "scars", "sound", "start", "targeting", 
+"timezones", "weapon" }
+      }
+    },
+    Items = {
+      List = {
+        items = { {
+            attrib = "",
+            icon = 0,
+            id = "dcee295f74cee8df6f280e4ca41210cef5e91ee2",
+            name = "An arrow-shaped sign, pointing up <read sign>"
+          } },
+        location = "room"
+      }
+    },
+    MaxStats = {
+      maxcon = 1,
+      maxdex = 1,
+      maxint = 1,
+      maxstr = 1
+    },
+    Name = {
+      fullname = " Lxz",
+      name = "Lxz"
+    },
+    Resistances = {
+      List = { {
+          desc = "above average",
+          name = "resist_physical"
+        } }
+    },
+    Stats = {
+      con = 1,
+      dex = 1,
+      int = 1,
+      str = 1
+    },
+    Status = {
+      align = "Neutral",
+      amulet = "No",
+      armour = "No",
+      bank = 0,
+      belt = "No",
+      boots = "No",
+      bracers = "No",
+      brave = "Yes",
+      class = "priest",
+      cloak = "No",
+      confused = "No",
+      dead = "No",
+      disguise = "No",
+      draincon = "No",
+      draindex = "No",
+      drainint = "No",
+      drainstr = "No",
+      drunk = "No",
+      enemy = "None",
+      enemy_health = "0",
+      frog = "No",
+      fullname = " Lxz",
+      gender = "male",
+      girdle = "No",
+      gloves = "No",
+      gold = 0,
+      hallucinating = "No",
+      helmet = "No",
+      hunger = "Yes",
+      invis = "No",
+      leggings = "No",
+      level = 1,
+      mask = "No",
+      name = "Lxz",
+      necklace = "No",
+      nl = 1202,
+      pkable = "No",
+      poisoned = "No",
+      qp = 2,
+      race = "human",
+      rest = "No",
+      ring = "No",
+      ring2 = "No",
+      session_login = "Tue Jun 18 10:23:54 2024",
+      session_loginsession_rooms = 0,
+      session_rooms = 5,
+      shield = "Yes",
+      shoulders = "No",
+      sit = "No",
+      summonable = "No",
+      thirst = "Yes",
+      title = "the new member of the priesthood",
+      xp = 0
+    },
+    StatusVars = {
+      align = "Alignment",
+      amulet = "Amulet",
+      armour = "Armour",
+      belt = "Belt",
+      boots = "Boots",
+      bracers = "Bracers",
+      brave = "Brave",
+      class = "Guild",
+      cloak = "Cloak",
+      confused = "Confused",
+      dead = "Dead",
+      disguise = "Disguise",
+      draincon = "CON Drain",
+      draindex = "DEX Drain",
+      drainint = "INT Drain",
+      drainstr = "STR Drain",
+      drunk = "Drunk",
+      enemy = "Enemy Health",
+      frog = "Frogged",
+      fullname = "Full Name",
+      gender = "Gender",
+      girdle = "Girdle",
+      gloves = "Gloves",
+      gold = "Gold",
+      hallucinating = "Hallucinating",
+      helmet = "Helmet",
+      hunger = "Hunger",
+      invis = "Invisible",
+      leggings = "Leggings",
+      level = "Level",
+      mask = "Mask",
+      name = "Name",
+      necklace = "Necklace",
+      nl = "Next Level",
+      pkable = "PK Flag",
+      poisoned = "Poisoned",
+      qp = "Quest Points",
+      race = "Race",
+      rest = "Resting",
+      ring = "Ring",
+      ring2 = "Ring 2",
+      session_connected = "Last Connected",
+      session_kills = "Session Kills",
+      session_login = "Login Time",
+      session_rooms = "Entered Rooms",
+      session_xp = "Session Experience",
+      shield = "Shield",
+      shoulders = "Shoulders",
+      sit = "Sitting",
+      summonable = "Summonable",
+      thirst = "Thirst",
+      title = "Title",
+      xp = "Experience"
+    },
+    Training = {
+      List = { {
+          name = "Combat",
+          percent = "0.00%",
+          rank = "Non-existent",
+          skill = "combat"
+        }, {
+          name = "Weapon",
+          percent = "0.00%",
+          rank = "Non-existent",
+          skill = "combat.weapon"
+        }, {
+          name = "1h blunt",
+          percent = "0.00%",
+          rank = "Non-existent",
+          skill = "combat.weapon.1h blunt"
+        }, {
+          name = "2h blunt",
+          percent = "0.00%",
+          rank = "Non-existent",
+          skill = "combat.weapon.2h blunt"
+        }, {
+          name = "Unarmed",
+          percent = "0.00%",
+          rank = "Non-existent",
+          skill = "combat.weapon.unarmed"
+        }, {
+          name = "Divine",
+          percent = "0.00%",
+          rank = "Non-existent",
+          skill = "divine"
+        }, {
+          name = "Air",
+          percent = "0.00%",
+          rank = "Non-existent",
+          skill = "divine.air"
+        }, {
+          name = "Celestial",
+          percent = "0.00%",
+          rank = "Non-existent",
+          skill = "divine.celestial"
+        }, {
+          name = "Demonic",
+          percent = "0.00%",
+          rank = "Non-existent",
+          skill = "divine.demonic"
+        }, {
+          name = "Destruction",
+          percent = "0.00%",
+          rank = "Non-existent",
+          skill = "divine.destruction"
+        }, {
+          name = "Earth",
+          percent = "0.00%",
+          rank = "Non-existent",
+          skill = "divine.earth"
+        }, {
+          name = "Evil",
+          percent = "0.00%",
+          rank = "Non-existent",
+          skill = "divine.evil"
+        }, {
+          name = "Fire",
+          percent = "0.00%",
+          rank = "Non-existent",
+          skill = "divine.fire"
+        }, {
+          name = "Force",
+          percent = "0.00%",
+          rank = "Non-existent",
+          skill = "divine.force"
+        }, {
+          name = "Good",
+          percent = "0.00%",
+          rank = "Non-existent",
+          skill = "divine.good"
+        }, {
+          name = "Insect",
+          percent = "0.00%",
+          rank = "Non-existent",
+          skill = "divine.insect"
+        }, {
+          name = "Life",
+          percent = "0.00%",
+          rank = "Non-existent",
+          skill = "divine.life"
+        }, {
+          name = "Magic",
+          percent = "0.00%",
+          rank = "Non-existent",
+          skill = "divine.magic"
+        }, {
+          name = "Nature",
+          percent = "0.00%",
+          rank = "Non-existent",
+          skill = "divine.nature"
+        }, {
+          name = "Peace",
+          percent = "0.00%",
+          rank = "Non-existent",
+          skill = "divine.peace"
+        }, {
+          name = "Protection",
+          percent = "0.00%",
+          rank = "Non-existent",
+          skill = "divine.protection"
+        }, {
+          name = "Spirit",
+          percent = "0.00%",
+          rank = "Non-existent",
+          skill = "divine.spirit"
+        }, {
+          name = "Travel",
+          percent = "0.00%",
+          rank = "Non-existent",
+          skill = "divine.travel"
+        }, {
+          name = "Truth",
+          percent = "0.00%",
+          rank = "Non-existent",
+          skill = "divine.truth"
+        }, {
+          name = "General",
+          percent = "0.00%",
+          rank = "Non-existent",
+          skill = "general"
+        }, {
+          name = "Brewing",
+          percent = "0.00%",
+          rank = "Non-existent",
+          skill = "general.brewing"
+        }, {
+          name = "Elixirs",
+          percent = "0.00%",
+          rank = "Non-existent",
+          skill = "general.brewing.elixirs"
+        } }
+    },
+    Vitals = {
+      fp = 60,
+      hp = 60,
+      maxfp = 60,
+      maxhp = 60,
+      maxsp = 60,
+      nl = 1202,
+      sp = 60,
+      string = "HP:60/60 SP:60/60 FP:60/60"
+    }
+  },
+  Client = {
+    GUI = {
+      url = "https://raw.githubusercontent.com/StickMUD/StickMUDMudletGUI/master/StickMUD.mpackage",
+      version = "58"
+    },
+    Map = {
+      url = "https://raw.githubusercontent.com/StickMUD/StickMUDOfficialmap/master/maps/map.xml"
+    },
+    Media = {
+      Default = {
+        url = "https://raw.githubusercontent.com/StickMUD/StickMUDSounds/master/sounds/"
+      }
+    }
+  },
+  Comm = {
+    Channel = {
+      Text = {
+        channel = "priest",
+        talker = "Guild Informer",
+        text = "+Guild Informer+ Lxz recovers from linkdeath."
+      }
+    }
+  },
+  External = {
+    Discord = {
+      Info = {
+        applicationid = "491085457959026698",
+        inviteurl = "https://discord.gg/BduazjAKxR"
+      },
+      Status = {
+        game = "StickMUD",
+        starttime = 1718720634
+      }
+    }
+  },
+  Game = {
+    Players = {
+      List = { {
+          coder = 0,
+          exprate_hour = 19747652,
+          guild = "mage",
+          level = 136,
+          name = "parq",
+          race = "elf"
+        }, {
+          coder = 0,
+          exprate_hour = 2488,
+          guild = "necromancer",
+          level = 1,
+          name = "syanis",
+          race = "dark elf"
+        }, {
+          coder = 0,
+          exprate_hour = 0,
+          guild = "priest",
+          level = 1,
+          name = "lxz",
+          race = "human"
+        } }
+    }
+  },
+  Room = {
+    Info = {
+      area = "Adventurers Academy of Tristeza",
+      coords = "0,0,-1",
+      desc = "Beneath the balcony above lies this sprawling lower floor of the Adventurer's Academy,
+ a nexus of knowledge and power. At its heart, a tranquil pool reflects the flickering torchlight, 
+casting a dance of shadows and light across the polished stone walls. Radiating outward like the 
+spokes of a wheel, eight grand hallways extend towards the distant chambers of the guild trainers. 
+Each passage is adorned with banners and artifacts emblematic of its respective guild, leading to 
+realms where apprentices refine their crafts under the watchful eyes of their mentors. The air hums 
+with the subtle blend of magic and steel, a testament to the diverse paths of mastery offered 
+within these venerable halls. The obvious exits are: Southwest : \"Hallway to Fighter training 
+room\" Southeast : \"Hallway to Thief training room\" North : \"Hallway to Mage training room\" 
+South : \"Hallway to Necromancer training room\" East : \"Hallway to Priest training room\" 
+Northeast : \"Hallway to Ninja training room\" West : \"Hallway to Healer training room\" Northwest 
+: \"Hallway to Bard training room\" Up : \"Balcony in Adventurers' Academy\"",
+      details = "",
+      environment = "Pool",
+      exits = {
+        east = 47032,
+        north = 47029,
+        northeast = 47033,
+        northwest = 47034,
+        south = 47031,
+        southeast = 47030,
+        southwest = 47028,
+        up = 47036,
+        west = 47035
+      },
+      map = "",
+      name = "Pool room",
+      num = 47018
+    },
+    Players = ""
+  }
+}
+
+

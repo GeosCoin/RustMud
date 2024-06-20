@@ -55,10 +55,11 @@ pub struct Player {
     pub defence: u32,   //防御，使用盾牌限制
     pub hp: i32,    //血量
     pub mp: u32,    //法术能量
-    pub sp: u32,    //精神力
+    pub fp: u32,    //信心
     pub xp: u32,    //经验
     pub max_hp: u32,    //最大血量
     pub max_mp: u32,    //最大精神
+    pub max_fp: u32,    //最大信心
     pub max_xp: u32,    //最大经验
     pub hp_regen: u32,  //血量增量
     pub mp_regen: u32,  //精神增量
@@ -89,10 +90,11 @@ impl Player {
             defence: 0,
             hp: 0,
             mp: 0,
-            sp: 0,  //spiritual confidence 信心程度 影响气血和魔法恢复
+            fp: 0,  //faith 信心程度 影响气血和魔法恢复
             xp: 0,    
-            max_hp: 0,
-            max_mp: 0,
+            max_hp: 100,
+            max_mp: 100,
+            max_fp: 100,
             max_xp: 0,    
             hp_regen: 0,    
             mp_regen: 0,
