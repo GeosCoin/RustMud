@@ -27,19 +27,13 @@ impl<'a> ChatCommand<'a> {
 
 
 impl<'a> Gmcp for ChatCommand<'a> {
-    fn send_msg(&self) -> String {
-        let msg_vec:Vec<&str> = self.msg.content.split(" ").collect();
-        if msg_vec.len() < 2 {
-            return "".to_string();
-        }
-        let msg_str = &msg_vec[1..];
-        let mut dialog = String::from("");
-        for i in msg_str.iter() {
-            dialog = dialog + i + " ";
-        }
+    fn send_msg(&self, addr: &SocketAddr, message: &str) -> String {   
 
-        let view = "Player.Vital {\"hp\": 200, \"maxhp\": 800, \"msg\": \"".to_owned()+ &dialog+"\"}";
-        let val = wrap_message_ext(MessageType::IacDoGmcp, self.msg.addr, view.to_string());
+        let view = "
+        Chat {
+         \"message\" : \"".to_owned()+message+"\"
+        }";
+        let val = wrap_message_ext(MessageType::IacDoGmcp, *addr, view.to_string());
         self.s_service.send(val).unwrap();
         "".to_string()
     }
@@ -79,14 +73,13 @@ impl<'a>  Command for ChatCommand<'a>  {
         //表示第1个参数不是用户名，则是对世界的广播
         if another_player.is_empty() {
             for p in self.players.iter() {
-                // if p.1.name == player.name {
-                //     continue;
-                // }
-
+                
                 let view = "【世界】".to_owned() 
                 + &player.name +": "+ para1;
                 let val = wrap_message_ext(MessageType::NoPrompt, *p.0, view.to_string());
                 self.s_service.send(val).unwrap();
+
+                self.send_msg(p.0, &view);
             }
             return "world".to_string()
         }
@@ -106,13 +99,14 @@ impl<'a>  Command for ChatCommand<'a>  {
         + "来自"+&player.name +"的消息: "+ para2;
         let val = wrap_message_ext(MessageType::NoPrompt, *another_player[0].0, view.to_string());
         self.s_service.send(val).unwrap();
+        self.send_msg(another_player[0].0, &view);
 
         let view = "【私聊】".to_owned() 
         + "发送给" + &another_player[0].1.name +"的消息: "+ para2;
         let val = wrap_message_ext(MessageType::NoPrompt, self.msg.addr, view.to_string());
         self.s_service.send(val).unwrap();
+        self.send_msg(&self.msg.addr, &view);
 
-        // self.send_msg();
         self.msg.content.to_string()
     }
 }

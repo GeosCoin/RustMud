@@ -46,7 +46,7 @@ impl<'a> HpCommand<'a> {
 
         let val = wrap_message_raw(self.msg.addr, hpframe);
         self.s_service.send(val).unwrap();  
-        self.send_msg();
+        self.send_msg(&self.msg.addr, "");
         "hp".to_string() 
     }
 
@@ -71,7 +71,7 @@ impl<'a> HpCommand<'a> {
 }
 
 impl<'a> Gmcp for HpCommand<'a> {
-    fn send_msg(&self) -> String {
+    fn send_msg(&self, addr: &SocketAddr, message: &str) -> String {
         let player = self.players.get(&self.msg.addr).unwrap();
 
         let view = "

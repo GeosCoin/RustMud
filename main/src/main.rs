@@ -23,6 +23,7 @@ mod command_climb;
 mod command_quest;
 mod command_x;
 mod command_chat;
+mod command_friend;
 mod process;
 mod process_quest;
 mod process_fight;

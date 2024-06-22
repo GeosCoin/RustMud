@@ -1,11 +1,11 @@
-use std::collections::HashMap;
+use std::{collections::HashMap, net::SocketAddr};
 
 pub trait Command{
     fn execute(&self) -> String;
 }
 
 pub trait Gmcp {
-    fn send_msg(&self) -> String;
+    fn send_msg(&self, addr: &SocketAddr, message: &str) -> String;
 }
 
 pub struct EmptyCommand;
