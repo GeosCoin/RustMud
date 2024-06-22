@@ -28,7 +28,7 @@ pub fn _handle_sender(
 }
 
 pub fn on_sender(sessions: &SessionsType, message: String){
-    println!("on_sender: {:?}", message);
+    // println!("on_sender: {:?}", message);
     let msg: Message = serde_json::from_str(&message).unwrap();
     let sessions_ok = sessions.lock().unwrap();
     let ctx = match sessions_ok.get(&msg.addr) {
