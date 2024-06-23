@@ -76,8 +76,11 @@ impl<'a> Gmcp for HpCommand<'a> {
 
         let view = "
         Char {
-         \"Vitals\" : { 
-         \"hp\": ".to_owned()+&player.hp.to_string()+&",
+         \"Vitals\" : {
+         \"name\": \"".to_owned()+&player.name.to_string()+&"\",
+         \"fullname\": \"".to_owned()+&player.fullname.to_string()+&"\", 
+         \"level\": "+&player.level.to_string()+&",
+         \"hp\": "+&player.hp.to_string()+&",
          \"mp\": "+&player.mp.to_string()+&",
          \"fp\": "+&player.fp.to_string()+&",
          \"xp\": "+&player.xp.to_string()+&",

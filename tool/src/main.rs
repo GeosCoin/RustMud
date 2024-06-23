@@ -38,6 +38,8 @@ pub enum Map {
 #[derive(Serialize, Deserialize, Debug, PartialEq)]
 pub struct Player {
     pub name: String,   //名称
+    pub fullname: String,
+    pub group_name: String,
     pub map: Map,       //地图
     pub pos: u32,      //位置
     pub level: u32,     //等级
@@ -74,6 +76,8 @@ impl Player {
     pub fn new() -> Self {
         Player{
             name: String::from(""),   
+            fullname: String::from(""),
+            group_name: String::from(""),
             map: Map::Liuxiu,
             pos: 14,
             level: 1,  
@@ -134,6 +138,7 @@ fn create_user(){
     
     let mut player1 = Player::new();
     player1.name = "a".to_string();
+    player1.fullname = "西门吹雪".to_string();
     player1.level = 2;
     player1.hp = 100;
     player1.mp = 100;
@@ -141,6 +146,7 @@ fn create_user(){
 
     let mut player2 = Player::new();
     player2.name = "b".to_string();
+    player2.fullname = "小茶茶".to_string();
     player2.level = 7;
     player2.hp = 10000;
     player2.mp = 90;
@@ -148,6 +154,7 @@ fn create_user(){
 
     let mut player2 = Player::new();
     player2.name = "c".to_string();
+    player2.fullname = "西山老妖".to_string();
     player2.level = 7;
     player2.hp = 1000;
     player2.mp = 100;

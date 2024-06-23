@@ -95,6 +95,10 @@ pub fn now() -> String {
     Local::now().format("%F %T").to_string()
 }
 
+pub fn now_hm() -> String {
+    Local::now().format("%H:%M").to_string()
+}
+
 pub fn get_id() -> usize {
     static COUNTER : AtomicUsize = AtomicUsize::new(1);
     COUNTER.fetch_add(1, Ordering::Relaxed) 
@@ -135,6 +139,9 @@ pub fn insert_line(utf8_str: &str, num_per_line: usize) -> String {
         }
 
         let cur_start = num_per_line*i;
+        if cur_start >= len {
+            break;
+        }
         let mut cur_end = num_per_line*(i+1);
         if cur_end >= len {
             cur_end = len;

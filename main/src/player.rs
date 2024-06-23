@@ -45,6 +45,8 @@ pub struct Equipment {
 #[derive(Serialize, Deserialize, Debug, PartialEq, Clone)]
 pub struct Player {
     pub name: String,   //名称
+    pub fullname: String, //全名
+    pub group_name: String, //同盟名
     pub map: Map,       //地图
     pub pos: u32,       //位置
     pub level: u32,     //等级
@@ -80,6 +82,8 @@ impl Player {
     pub fn new() -> Self {
         Player{
             name: String::from("成王败寇"),   
+            fullname: String::from(""),
+            group_name: String::from(""),
             level: 1,  
             map: Map::Liuxiu,
             pos: 1,

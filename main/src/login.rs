@@ -1,14 +1,15 @@
 use crate::channel::SessionsType;
+use crate::command::Gmcp;
 use crate::player::Player;
 use crate::quest::Quest;
 use crate::service::Login;
 use crate::service::LoginInfo;
 use crossbeam::channel::Sender;
-use crate::channel::Message;
-use crate::channel::wrap_message;
 use std::collections::HashMap;
 use std::net::SocketAddr;
 use std::num::ParseIntError;
+
+use crate::channel::{wrap_message, wrap_message_ext, wrap_message_raw, Message, MessageType};
 
 pub struct LoginService<'a> {
     s_service: &'a Sender<String>, 
@@ -17,6 +18,32 @@ pub struct LoginService<'a> {
     players: &'a mut HashMap<SocketAddr, Player>,
     sessions:  &'a SessionsType,
     quests: &'a HashMap<u32, Quest>
+}
+
+impl<'a> Gmcp for LoginService<'a> {
+    fn send_msg(&self, addr: &SocketAddr, message: &str) -> String {
+        let player = self.players.get(&self.msg.addr).unwrap();
+
+        let view = "
+        Char {
+         \"Vitals\" : {
+         \"name\": \"".to_owned()+&player.name.to_string()+&"\", 
+         \"fullname\": \"".to_owned()+&player.fullname.to_string()+&"\",
+         \"level\": "+&player.level.to_string()+&",
+         \"hp\": "+&player.hp.to_string()+&",
+         \"mp\": "+&player.mp.to_string()+&",
+         \"fp\": "+&player.fp.to_string()+&",
+         \"xp\": "+&player.xp.to_string()+&",
+         \"maxhp\" : "+&player.max_hp.to_string()+&",
+         \"maxmp\" : "+&player.max_mp.to_string()+&",
+         \"maxfp\" : "+&player.max_fp.to_string()+&",
+         \"maxxp\" : "+&player.max_xp.to_string()+&"
+         } 
+        }".to_owned();
+        let val = wrap_message_ext(MessageType::IacDoGmcp, self.msg.addr, view.to_string());
+        self.s_service.send(val).unwrap();
+        "".to_string()
+    }
 }
 
 impl<'a> LoginService<'a> {
@@ -96,6 +123,9 @@ impl<'a> LoginService<'a> {
 
                 let filter_player = filter[0].clone();
                 *player = filter_player;
+
+                //发送gmcp消息
+                self.send_msg(&self.msg.addr, "");
 
             } else { //用户不存在
                 let val = wrap_message(self.msg.addr, "密码错误！".to_string());
