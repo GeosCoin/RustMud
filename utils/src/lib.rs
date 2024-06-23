@@ -100,3 +100,55 @@ pub fn get_id() -> usize {
     COUNTER.fetch_add(1, Ordering::Relaxed) 
 }
 
+pub fn substring_range(utf8_str: &str, start_idx: usize, end_idx: usize) -> &str {
+    let start_char = start_idx;
+    let end_char = end_idx;
+    let mut indices = utf8_str.char_indices().map(|(i, _)| i);
+    let start = indices.nth(start_char).unwrap();
+    println!("start:{}", start);
+    let end = indices.nth(end_char - start_char - 1).unwrap_or(utf8_str.len());
+    println!("end:{}", end);
+    return &utf8_str[start..end];
+}
+
+pub fn substring_start(utf8_str: &str, start_idx: usize) -> &str {    
+    let start_char = start_idx;
+    let end_char = utf8_str.len();
+    let mut indices = utf8_str.char_indices().map(|(i, _)| i);
+    let start = indices.nth(start_char).unwrap();
+    println!("start:{}", start);
+    let end = indices.nth(end_char - start_char - 1).unwrap_or(utf8_str.len());
+    println!("end:{}", end);
+    // println!("{:?}", &utf8_str[start..end]);
+    return &utf8_str[start..end];
+}
+
+pub fn insert_line(utf8_str: &str, num_per_line: usize) -> String {
+    let len = utf8_str.char_indices().count();
+    let cnt = len / num_per_line;
+    let mut i = 0;
+    let mut ret_str = String::from("");
+
+    loop {
+        if i > cnt {
+            break;
+        }
+
+        let cur_start = num_per_line*i;
+        let mut cur_end = num_per_line*(i+1);
+        if cur_end >= len {
+            cur_end = len;
+        }
+        println!("cur_start: {}, cur_end: {}", cur_start, cur_end);
+        let result = substring_range(utf8_str, cur_start, cur_end);
+        println!("result = {}", result);
+
+        ret_str = ret_str.to_owned() + result + "\\n";
+        i += 1;
+    }
+    
+    println!("ret_str: {:?}", ret_str);
+    ret_str
+}
+
+

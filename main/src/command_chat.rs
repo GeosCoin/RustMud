@@ -29,9 +29,13 @@ impl<'a> ChatCommand<'a> {
 impl<'a> Gmcp for ChatCommand<'a> {
     fn send_msg(&self, addr: &SocketAddr, message: &str) -> String {   
 
+        let mut message_0a = message.clone().to_string();
+        
+        message_0a = utils::insert_line(&message_0a, 19);
+
         let view = "
         Chat {
-         \"message\" : \"".to_owned()+message+"\"
+         \"message\" : \"".to_owned()+&message_0a+"\"
         }";
         let val = wrap_message_ext(MessageType::IacDoGmcp, *addr, view.to_string());
         self.s_service.send(val).unwrap();
@@ -45,6 +49,11 @@ impl<'a>  Command for ChatCommand<'a>  {
         println!("{:?}", self.msg.content);
 
         let arr: Vec<&str> = self.msg.content.split(" ").collect();
+        let para0 = match arr.get(0){
+            Some(a) => a,
+            None => {return "".to_string();}
+        };
+
         let para1 = match arr.get(1) {
             Some(a) => a,
             None => {
@@ -74,8 +83,9 @@ impl<'a>  Command for ChatCommand<'a>  {
         if another_player.is_empty() {
             for p in self.players.iter() {
                 
+                let content = self.msg.content.trim_start_matches(para0).trim();
                 let view = "【世界】".to_owned() 
-                + &player.name +": "+ para1;
+                + &player.name +": "+ content;
                 let val = wrap_message_ext(MessageType::NoPrompt, *p.0, view.to_string());
                 self.s_service.send(val).unwrap();
 
@@ -95,14 +105,17 @@ impl<'a>  Command for ChatCommand<'a>  {
             }
         };
 
+        let content = self.msg.content.trim_start_matches(para0).trim();
+        let content = content.trim_start_matches(para1).trim();
+
         let view = "【私聊】".to_owned() 
-        + "来自"+&player.name +"的消息: "+ para2;
+        + "来自"+&player.name +"的消息: "+ content;
         let val = wrap_message_ext(MessageType::NoPrompt, *another_player[0].0, view.to_string());
         self.s_service.send(val).unwrap();
         self.send_msg(another_player[0].0, &view);
 
         let view = "【私聊】".to_owned() 
-        + "发送给" + &another_player[0].1.name +"的消息: "+ para2;
+        + "发送给" + &another_player[0].1.name +"的消息: "+ content;
         let val = wrap_message_ext(MessageType::NoPrompt, self.msg.addr, view.to_string());
         self.s_service.send(val).unwrap();
         self.send_msg(&self.msg.addr, &view);
