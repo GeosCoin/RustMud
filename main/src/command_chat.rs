@@ -33,7 +33,8 @@ impl<'a> Gmcp for ChatCommand<'a> {
 
         let mut message_0a = message.clone().to_string();
         
-        message_0a = utils::insert_line(&message_0a, 19);
+        message_0a = utils::insert_line(&message_0a, 19) 
+            + &utils::now_mdhm();
 
         let view = "
         Chat {
@@ -87,8 +88,7 @@ impl<'a>  Command for ChatCommand<'a>  {
                 
                 let content = self.msg.content.trim_start_matches(para0).trim();
                 let view = "【世界】".to_owned() 
-                + &player.fullname +"("+&player.name+")" +": "+ content
-                + " " +  &utils::now_hm();
+                + &player.fullname +"("+&player.name+")" +": "+ content;
                 let val = wrap_message_ext(MessageType::NoPrompt, *p.0, view.to_string());
                 self.s_service.send(val).unwrap();
 
@@ -112,13 +112,13 @@ impl<'a>  Command for ChatCommand<'a>  {
         let content = content.trim_start_matches(para1).trim();
 
         let view = "【私聊】".to_owned() 
-        + "来自"+&player.fullname +"("+&player.name+")的消息: "+ content+ " " + &utils::now_hm();
+        + "来自"+&player.fullname +"("+&player.name+")的消息: "+ content;
         let val = wrap_message_ext(MessageType::NoPrompt, *another_player[0].0, view.to_string());
         self.s_service.send(val).unwrap();
         self.send_msg(another_player[0].0, &view);
 
         let view = "【私聊】".to_owned() 
-        + "发送给" + &another_player[0].1.name +"的消息: "+ content+ " " +  &utils::now_hm();
+        + "发送给" + &another_player[0].1.name +"的消息: "+ content;
         let val = wrap_message_ext(MessageType::NoPrompt, self.msg.addr, view.to_string());
         self.s_service.send(val).unwrap();
         self.send_msg(&self.msg.addr, &view);

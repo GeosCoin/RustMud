@@ -99,6 +99,10 @@ pub fn now_hm() -> String {
     Local::now().format("%H:%M").to_string()
 }
 
+pub fn now_mdhm() -> String {
+    Local::now().format("%m-%d %H:%M").to_string()
+}
+
 pub fn get_id() -> usize {
     static COUNTER : AtomicUsize = AtomicUsize::new(1);
     COUNTER.fetch_add(1, Ordering::Relaxed) 

@@ -27,17 +27,20 @@ impl<'a> FriendCommand<'a> {
 
 
 impl<'a> Gmcp for FriendCommand<'a> {
-    fn send_msg(&self, addr: &SocketAddr, message: &str) -> String {   
+    fn send_msg(&self, addr: &SocketAddr, message: &str) -> String {  
+
+        let player = self.players.get(&self.msg.addr).unwrap();
+
         let mut i = 0;
-        let len = self.players.len();
+        let len = player.friends.len();
         let mut view = String::from("
         Friend [");
-        for player in self.players.iter() {
+        for friend in player.friends.iter() {
             i += 1;
             if i < len {
-                view = view + "{\"name\" : \""+&player.1.name+"\"},";
+                view = view + "{\"name\" : \""+&friend+"\"},";
             } else if i == len {
-                view = view + "{\"name\" : \""+&player.1.name+"\"}";
+                view = view + "{\"name\" : \""+&friend+"\"}";
             }
         }
         view += "]";
