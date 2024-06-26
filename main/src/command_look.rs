@@ -146,7 +146,7 @@ impl<'a> LookCommand<'a> {
 }
 
 impl<'a>  Command for LookCommand<'a>  {
-    fn execute(&self) -> String {
+    fn execute(&mut self) -> String {
         let player = self.players.get(&self.msg.addr).unwrap();
 
         let node = match self.nodes.get(&player.pos) {

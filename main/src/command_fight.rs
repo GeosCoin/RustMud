@@ -27,7 +27,7 @@ impl<'a> FightCommand<'a> {
 }
 
 impl<'a>  Command for FightCommand<'a>  {
-    fn execute(&self) -> String {
+    fn execute(&mut self) -> String {
         let player = match self.players.get(&self.msg.addr){
             Some(a) => a,
             None => {return "none".to_string()},

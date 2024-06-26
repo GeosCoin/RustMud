@@ -1,5 +1,5 @@
 use std::collections::HashMap;
-
+use std::io::BufReader;
 use serde::{Serialize, Deserialize};
 
 use crate::quest::Quest;
@@ -79,6 +79,7 @@ pub struct Player {
 }
 
 
+
 impl Player {
     pub fn new() -> Self {
         Player{
@@ -116,4 +117,46 @@ impl Player {
             newbie_prompt: 0,
         }
     }
+}
+
+#[derive(Serialize, Deserialize, Debug, PartialEq)]
+pub struct Group {
+    pub name: String,   //组名
+    pub members: Vec<String>,   //成员
+}
+
+impl Group {
+    pub fn new() -> Self {
+        Group {
+            name: String::from(""),
+            members: Vec::new(),
+        }
+    }
+}
+
+#[derive(Serialize, Deserialize, Debug, PartialEq)]
+pub struct Groups {
+    pub group: Vec<Group>  
+}
+
+impl Groups {
+    pub fn new() -> Self {
+        Groups {
+            group: Vec::new()
+        }
+    }
+}
+
+pub fn init_players() -> Vec<Player> {
+    //从文件中读取群组
+    let users_file = utils::load_file("users.json");
+    let players: Vec<Player> = serde_json::from_reader(users_file).expect("Error: failed to read json file");
+    players
+}
+
+pub fn init_groups() -> Vec<Group> {
+    //从文件中读取群组
+    let groups_file = utils::load_file("groups.json");
+    let gs: Vec<Group> = serde_json::from_reader(groups_file).expect("Error: failed to read json file");
+    gs
 }

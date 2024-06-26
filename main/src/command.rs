@@ -1,7 +1,7 @@
 use std::{collections::HashMap, net::SocketAddr};
 
 pub trait Command{
-    fn execute(&self) -> String;
+    fn execute(&mut self) -> String;
 }
 
 pub trait Gmcp {
@@ -17,7 +17,7 @@ impl EmptyCommand {
 }
 
 impl Command for EmptyCommand {
-    fn execute(&self) -> String {
+    fn execute(&mut self) -> String {
         "I am empty command".to_string()
     }
 }
@@ -37,7 +37,7 @@ impl<'a> Invoker<'a> {
         self.command = command;
     }
 
-    pub fn execute(&self) -> String {
+    pub fn execute(&mut self) -> String {
         self.command.execute()
     }
 }
@@ -69,7 +69,7 @@ impl<'a> Invoker<'a> {
 //         self.commands.insert(cmd_key, command);
 //     }
 
-//     pub fn execute(&self) -> String {
+//     pub fn execute(&mut self) -> String {
 //         match self.commands.get(&self.cur_command) {
 //             Some(a) => a.execute(),
 //             None => {return "none".to_string();}

@@ -23,7 +23,7 @@ impl XCommand {
 
 impl  Command for XCommand  {
     
-    fn execute(&self) -> String {
+    fn execute(&mut self) -> String {
         let player = match self.players.get(&self.msg.addr){
             Some(a) => a,
             None => {return "no".to_string(); }

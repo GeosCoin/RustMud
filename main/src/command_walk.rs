@@ -29,7 +29,7 @@ impl<'a> WalkCommand<'a> {
     }
 }
 impl<'a>  Command for WalkCommand<'a>  {
-    fn execute(&self) -> String {
+    fn execute(&mut self) -> String {
         let player = self.players.get(&self.msg.addr).unwrap();
         if player.climbing == 1 || player.sleep == 1 {
             let val = wrap_message(self.msg.addr,

@@ -287,7 +287,7 @@ impl<'a> ClimbCommand<'a> {
 }
 
 impl<'a>  Command for ClimbCommand<'a>  {
-    fn execute(&self) -> String {
+    fn execute(&mut self) -> String {
         let player = self.players.get(&self.msg.addr).unwrap();
 
         let node = match self.nodes.get(&player.pos) {

@@ -159,7 +159,7 @@ pub fn insert_line(utf8_str: &str, num_per_line: usize) -> String {
     }
     
     println!("ret_str: {:?}", ret_str);
-    ret_str
+    ret_str.trim_end_matches("\\n").to_string()
 }
 
 

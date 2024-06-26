@@ -112,24 +112,58 @@ impl Player {
     }
 }
 
+#[derive(Serialize, Deserialize, Debug, PartialEq)]
+pub struct Group {
+    pub name: String,   //组名
+    pub members: Vec<String>,   //成员
+}
+
+
+impl Group {
+    pub fn new() -> Self {
+        Group {
+            name: String::from(""),
+            members: Vec::new(),
+        }
+    }
+}
+
+#[derive(Serialize, Deserialize, Debug, PartialEq)]
+pub struct Groups {
+    pub group: Vec<Group>  
+}
+
+impl Groups {
+    pub fn new() -> Self {
+        Groups {
+            group: Vec::new()
+        }
+    }
+}
+
 fn create_login(){
     let mut logins :Vec<Login> = Vec::new();
     let mut login1 = Login::new();
     let mut login2 = Login::new();
     let mut login3 = Login::new();
+    let mut login4 = Login::new();
 
-    login1.login_name = "a".to_string();
+    login1.login_name = "alice".to_string();
     login1.password = "1".to_string();
 
-    login2.login_name = "b".to_string();
+    login2.login_name = "bob".to_string();
     login2.password = "1".to_string();
 
-    login3.login_name = "c".to_string();
+    login3.login_name = "charlie".to_string();
     login3.password = "1".to_string();
+
+    login4.login_name = "david".to_string();
+    login4.password = "1".to_string();
 
     logins.push(login1);
     logins.push(login2);
     logins.push(login3);
+    logins.push(login4);
 
     let w_file = utils::create_file("login.json"); 
     serde_json::to_writer(w_file, &logins).unwrap();
@@ -139,35 +173,62 @@ fn create_user(){
     let mut players: Vec<Player> = Vec::new();
     
     let mut player1 = Player::new();
-    player1.name = "a".to_string();
+    player1.name = "alice".to_string();
     player1.fullname = "西门吹雪".to_string();
-    player1.friends.push("b".to_string());
-    player1.friends.push("c".to_string());
+    player1.friends.push("bob".to_string());
+    player1.friends.push("charlie".to_string());
+    player1.group_name = "oak".to_string();
     player1.level = 2;
     player1.hp = 100;
     player1.mp = 100;
     players.push(player1);
 
     let mut player2 = Player::new();
-    player2.name = "b".to_string();
+    player2.name = "bob".to_string();
     player2.fullname = "小茶茶".to_string();
-    player2.friends.push("c".to_string());
+    player2.friends.push("charlie".to_string());
+    player2.group_name = "oak".to_string();
     player2.level = 7;
     player2.hp = 10000;
     player2.mp = 90;
     players.push(player2);
 
-    let mut player2 = Player::new();
-    player2.name = "c".to_string();
-    player2.fullname = "西山老妖".to_string();
-    player2.friends.push("a".to_string());
-    player2.level = 7;
-    player2.hp = 1000;
-    player2.mp = 100;
-    players.push(player2);
+    let mut player3 = Player::new();
+    player3.name = "charlie".to_string();
+    player3.fullname = "西山老妖".to_string();
+    player3.friends.push("alice".to_string());
+    player3.group_name = "oak".to_string();
+    player3.level = 7;
+    player3.hp = 1000;
+    player3.mp = 100;
+    players.push(player3);
+
+    let mut player4 = Player::new();
+    player4.name = "david".to_string();
+    player4.fullname = "阿卡四十七".to_string();
+    player4.friends.push("alice".to_string());
+    player4.group_name = "oak".to_string();
+    player4.level = 57;
+    player4.hp = 100;
+    player4.mp = 100;
+    players.push(player4);
     
     let w_file = utils::create_file("users.json"); 
     serde_json::to_writer(w_file, &players).unwrap();
+}
+
+fn create_groups(){
+    let mut gs = Vec::new();
+    let mut g = Group::new();
+    g.name = "oak".to_string();
+    g.members = Vec::new();
+    g.members.push("alice".to_string());
+    g.members.push("bob".to_string());
+    g.members.push("david".to_string());
+    g.members.push("charlie".to_string());
+    gs.push(g);
+    let w_file = utils::create_file("groups.json"); 
+    serde_json::to_writer(w_file, &gs).unwrap();
 }
 
 fn main() {    
@@ -177,6 +238,9 @@ fn main() {
 
     //创建用户信息
     create_user();
+
+    //创建群
+    create_groups();
     
     //读取地图
     // read_node();

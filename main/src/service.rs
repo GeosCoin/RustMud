@@ -158,7 +158,7 @@ impl<'a>  Service<'a> {
             "e"|"w"|"s"|"n"|"ne"|"sw"|"se"|"nw" => invoker.set(Box::new(WalkCommand::new(&ps, &self.s_service, &ms, &self.s_combat, &self.nodes))),
             "climb"|"knock"|"open"|"sleep"|"bath" => invoker.set(Box::new(ClimbCommand::new(&ps, &self.s_service, &ms, &self.s_combat, &self.nodes))),
             "chat"|"`" => invoker.set(Box::new(ChatCommand::new(&ps, &self.s_service, &ms))),
-            "friend" => invoker.set(Box::new(FriendCommand::new(&ps, &self.s_service, &ms))),
+            "friend"|"group" => invoker.set(Box::new(FriendCommand::new(&ps, &self.s_service, &ms))),
             _ => {
                 let nomatch = "要做什么?";
                 let val = wrap_message(msg.addr, nomatch.to_string());

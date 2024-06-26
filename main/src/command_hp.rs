@@ -98,7 +98,7 @@ impl<'a> Gmcp for HpCommand<'a> {
 
 impl<'a>  Command for HpCommand<'a>  {
     
-    fn execute(&self) -> String {
+    fn execute(&mut self) -> String {
         let player = self.players.get(&self.msg.addr).unwrap();
 
         let cmd = self.msg.content.to_ascii_lowercase();
