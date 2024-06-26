@@ -113,7 +113,7 @@ impl<'a>  Command for ChatCommand<'a>  {
                 
                 let mut content = self.msg.content.trim_start_matches(para0).trim();
                 content = content.trim_start_matches(para1).trim();
-                let view = "【组织】".to_owned() 
+                let view = "【同盟】".to_owned() 
                 + &player.fullname +"("+&player.name+")" +": "+ content;
                 let val = wrap_message_ext(MessageType::NoPrompt, *p.0, view.to_string());
                 self.s_service.send(val).unwrap();
