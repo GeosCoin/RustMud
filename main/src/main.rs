@@ -24,6 +24,7 @@ mod command_quest;
 mod command_x;
 mod command_chat;
 mod command_friend;
+mod command_map;
 mod process;
 mod process_quest;
 mod process_fight;

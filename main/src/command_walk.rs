@@ -1,14 +1,15 @@
 use std::{collections::HashMap, io::Read, net::SocketAddr, rc::Rc};
 use crossbeam::channel::Sender;
 use utils::{show_color, Color};
-use crate::{channel::{wrap_message, wrap_message_ext, wrap_message_timer, Message, MessageType}, command::Command, map::Node, player::Player};
+use crate::{channel::{wrap_message, wrap_message_ext, wrap_message_timer, Message, MessageType}, command::{Command, Gmcp}, map::Node, player::Player};
 
 pub struct WalkCommand<'a> {
     players: &'a HashMap<SocketAddr, Player>,
     s_service: &'a Sender<String>,
     msg: &'a Message,
     s_combat: &'a Sender<String>,
-    nodes: &'a HashMap<u32, Node>
+    nodes: &'a HashMap<u32, Node>,
+    new_pos: u32
 }
 
 impl<'a> WalkCommand<'a> {
@@ -24,7 +25,8 @@ impl<'a> WalkCommand<'a> {
             s_service,
             msg,
             s_combat,
-            nodes
+            nodes,
+            new_pos: 0
         }
     }
 }
@@ -131,6 +133,10 @@ impl<'a>  Command for WalkCommand<'a>  {
             println!("pos: {} player.pos: {}", p.1.pos, new_pos);
         }
 
+        //发送到地图
+        self.new_pos = new_pos;
+        self.send_msg(&self.msg.addr, "");
+
         let others: Vec<(&SocketAddr, &Player)> = self.players.iter()
             .filter(|p| p.1.name != player.name && p.1.pos == new_pos)
             .collect();
@@ -144,5 +150,28 @@ impl<'a>  Command for WalkCommand<'a>  {
         let val = wrap_message(self.msg.addr, l_view.to_string());
         self.s_service.send(val).unwrap();
         self.msg.content.to_owned() + "@" + &new_pos.to_string()
+
+        
+    }
+}
+
+impl<'a> Gmcp for WalkCommand<'a> {
+    fn send_msg(&self, addr: &SocketAddr, message: &str) -> String {
+        let mut content = "<pre>◆柳秀山庄地图◆ <br /><br />               藏书阁25 <br />                  │ <br /> 男浴室21      尚武堂24      女浴室23<br />    │             │           │ <br /> 西厢房20──── 柳秀山庄正厅19────东厢房22<br />                  │ <br />               岩桂花园18 <br />                  │<br />                长廊17<br />                  &and;<br />       当铺16──山庄大门14──票号15<br />                  │<br />       铁匠铺13─集镇小道12─杂货铺11<br />                  │<br />                  │ 药铺10<br />                  │╱<br />      (扬州)26──杏子林9──集镇小道6<br />        │         │╲<br />      车马行8      │ 酒铺7<br />                  │<br />                缓坡5<br />                  〓 <br />          树林3─未明谷1─乱石阵4<br />                  │<br />               青石桥头2 <br /> </pre>";
+        
+        let cur_node = match self.nodes.get(&self.new_pos) {
+            Some(a) => a,
+            None => {return "".to_string()}
+        };
+        
+        let old_str = &cur_node.name;
+        let new_str = "<span style='color: yellow'>".to_owned()+old_str+"</span>";
+        let new_content = content.replace(old_str, &new_str);
+        let mut view = String::from("
+            Map ");
+        view = view + "{\"content\" : \""+&new_content+"\"}";
+        let val = wrap_message_ext(MessageType::IacDoGmcp, *addr, view.to_string());
+        self.s_service.send(val).unwrap();
+        "".to_string()
     }
 }

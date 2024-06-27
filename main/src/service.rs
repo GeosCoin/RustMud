@@ -14,6 +14,7 @@ use crate::command_fight::FightCommand;
 use crate::command_friend::FriendCommand;
 use crate::command_hp::HpCommand;
 use crate::command_look::LookCommand;
+use crate::command_map::MapCommand;
 use crate::command_quest::QuestCommand;
 use crate::command_walk::WalkCommand;
 use crate::command_x::XCommand;
@@ -159,6 +160,7 @@ impl<'a>  Service<'a> {
             "climb"|"knock"|"open"|"sleep"|"bath" => invoker.set(Box::new(ClimbCommand::new(&ps, &self.s_service, &ms, &self.s_combat, &self.nodes))),
             "chat"|"`" => invoker.set(Box::new(ChatCommand::new(&ps, &self.s_service, &ms))),
             "friend"|"group" => invoker.set(Box::new(FriendCommand::new(&ps, &self.s_service, &ms))),
+            "gmcp.localmap" => invoker.set(Box::new(MapCommand::new(&ps, &self.s_service, &ms, &self.nodes))),
             _ => {
                 let nomatch = "要做什么?";
                 let val = wrap_message(msg.addr, nomatch.to_string());
