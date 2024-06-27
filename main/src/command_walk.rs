@@ -157,12 +157,16 @@ impl<'a>  Command for WalkCommand<'a>  {
 
 impl<'a> Gmcp for WalkCommand<'a> {
     fn send_msg(&self, addr: &SocketAddr, message: &str) -> String {
-        let mut content = "<pre>◆柳秀山庄地图◆ <br /><br />               藏书阁25 <br />                  │ <br /> 男浴室21      尚武堂24      女浴室23<br />    │             │           │ <br /> 西厢房20──── 柳秀山庄正厅19────东厢房22<br />                  │ <br />               岩桂花园18 <br />                  │<br />                长廊17<br />                  &and;<br />       当铺16──山庄大门14──票号15<br />                  │<br />       铁匠铺13─集镇小道12─杂货铺11<br />                  │<br />                  │ 药铺10<br />                  │╱<br />      (扬州)26──杏子林9──集镇小道6<br />        │         │╲<br />      车马行8      │ 酒铺7<br />                  │<br />                缓坡5<br />                  〓 <br />          树林3─未明谷1─乱石阵4<br />                  │<br />               青石桥头2 <br /> </pre>";
+        // let mut content = "<pre>◆柳秀山庄地图◆ <br /><br />               藏书阁25 <br />                  │ <br /> 男浴室21      尚武堂24      女浴室23<br />    │             │           │ <br /> 西厢房20──── 柳秀山庄正厅19────东厢房22<br />                  │ <br />               岩桂花园18 <br />                  │<br />                长廊17<br />                  &and;<br />       当铺16──山庄大门14──票号15<br />                  │<br />       铁匠铺13─集镇小道12─杂货铺11<br />                  │<br />                  │ 药铺10<br />                  │╱<br />      (扬州)26──杏子林9──集镇小道6<br />        │         │╲<br />      车马行8      │ 酒铺7<br />                  │<br />                缓坡5<br />                  〓 <br />          树林3─未明谷1─乱石阵4<br />                  │<br />               青石桥头2 <br /> </pre>";
         
         let cur_node = match self.nodes.get(&self.new_pos) {
             Some(a) => a,
             None => {return "".to_string()}
         };
+
+        let mut read = utils::load_file(&cur_node.localmaps_gmcp);
+        let mut content = String::new();
+        read.read_to_string(&mut content);
         
         let old_str = &cur_node.name;
         let new_str = "<span style='color: yellow'>".to_owned()+old_str+"</span>";

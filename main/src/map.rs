@@ -12,7 +12,8 @@ pub struct Node {
     pub openat: HashMap<String, String>, //开门动作
     pub sleepat: HashMap<String, String>, //睡觉动作
     pub destpos: u32,   //目标位置
-    pub localmaps: String,  //地图    
+    pub localmaps: String,  //地图  
+    pub localmaps_gmcp: String, //gmcp显示地图
     pub sleep: String,
     pub list: String,  //物品
     pub huangzi: String, //幌子
@@ -49,6 +50,7 @@ impl Node {
             sleepat: HashMap::new(),
             destpos: 0,
             localmaps: String::from(""),
+            localmaps_gmcp: String::from(""),
             sleep: String::from(""),
             list: String::from(""),
             huangzi: String::from(""),
@@ -91,7 +93,7 @@ pub fn init_map() -> HashMap<u32, Node> {
 
     let mut nodes: HashMap<u32, Node> = HashMap::new();
 
-    let buf = match read_to_string("maps/liuxiu.txt"){
+    let buf = match read_to_string("maps/liuxiu.node"){
         Ok(a) => a,
         Err(_) => "".to_string(),
     };
@@ -164,6 +166,7 @@ pub fn init_map() -> HashMap<u32, Node> {
                 },
                 "destpos" => {node.destpos = item.parse().unwrap(); }
                 "localmaps" => {node.localmaps = item.to_string();}
+                "localmaps_gmcp" => {node.localmaps_gmcp = item.to_string();}
                 "sleep" => {node.sleep = item.to_string(); },
                 "list" => {node.list = item.to_string(); },
                 "east" => {node.east_id = item.parse().unwrap(); },

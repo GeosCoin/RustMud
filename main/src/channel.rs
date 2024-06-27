@@ -280,10 +280,23 @@
                     }
                 }
 
-                //分发消息到service模块                
-                let msg = wrap_message_ext(MessageType::Command,
-                    addr, message);
-                s_rt.send(msg).unwrap();
+                //分发消息到service模块
+                let msg_arr: Vec<&str> = message.split("\r\n").collect();
+                if msg_arr.is_empty(){
+                    let msg = wrap_message_ext(MessageType::Command,
+                        addr, message.clone());
+                    s_rt.send(msg).unwrap();
+                } else {                
+                    for msg_item in msg_arr {
+                        if msg_item == "" {
+                            continue;
+                        }
+
+                        let msg = wrap_message_ext(MessageType::Command,
+                            addr, msg_item.to_string());
+                        s_rt.send(msg).unwrap();
+                    }
+                }
             }
         }
 
@@ -340,14 +353,15 @@
     fn do_raw_data(buf_clone: &[u8], stream_clone: &mut TcpStream) -> String {
         if buf_clone.len() < 3 {  
             stream_clone.flush();                     
-            return "奇怪的来宾".to_string();
+            return "".to_string();
         }
 
         //以下是GMCP的处理
-        if (buf_clone[0] == 0xff && buf_clone[1] == 0xfb && buf_clone[2] == 0x18)
+        if ((buf_clone[0] == 0xff && buf_clone[1] == 0xfb && buf_clone[2] == 0x18)
         || (buf_clone[0] == 0xff && buf_clone[1] == 0xfb && buf_clone[2] == 0xc9)
-        || (buf_clone[0] == 0xff && buf_clone[1] == 0xfc && buf_clone[2] == 0xc9) {
-            let buf = &buf_clone[3..];
+        || (buf_clone[0] == 0xff && buf_clone[1] == 0xfc && buf_clone[2] == 0xc9))
+        && (buf_clone[buf_clone.len() - 1] == 0x0a) {
+            let buf = &buf_clone[3..];            
             println!("there is GMCP .");
             stream_clone.flush();
             return String::from_utf8_lossy(buf).to_string();
@@ -359,7 +373,7 @@
             stream_clone.flush();
             return String::from_utf8_lossy(buf).to_string();
         } else{
-            return "奇怪的来宾".to_string();
+            return "".to_string();
         }
     }
     
