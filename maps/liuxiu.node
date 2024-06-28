@@ -1,7 +1,7 @@
 [node]
 id=1
 name=未明谷
-look=maps/liuxiu/liuxiu_1.txt
+look=liuxiu_1.txt
 look@river=这是一条清澈的小溪，也许你可以拿起地上的葫芦(get hulu)，研究下(l hulu)用来盛溪水喝。
 look@path=这是一段陡峭的山坡，应该可以向上攀爬出去。(climb up)
 climb@up=[1;31m你手足并用，飞快的向上攀爬。[0;00m
@@ -10,136 +10,136 @@ destpos=5
 south=2
 west=3
 east=4
-localmaps=maps/liuxiu/liuxiu_localmaps.txt
-localmaps_gmcp=maps/liuxiu/liuxiu_localmaps_gmcp.txt
+localmaps=liuxiu_localmaps.txt
+localmaps_gmcp=liuxiu_localmaps_gmcp.txt
 
 [node]
 id=2
 name=青石桥头
-look=maps/liuxiu/liuxiu_2.txt
+look=liuxiu_2.txt
 north=1
-localmaps=maps/liuxiu/liuxiu_localmaps.txt
-localmaps_gmcp=maps/liuxiu/liuxiu_localmaps_gmcp.txt
+localmaps=liuxiu_localmaps.txt
+localmaps_gmcp=liuxiu_localmaps_gmcp.txt
 
 [node]
 id=3
 name=树林
-look=maps/liuxiu/liuxiu_3.txt
+look=liuxiu_3.txt
 east=1
-localmaps=maps/liuxiu/liuxiu_localmaps.txt
-localmaps_gmcp=maps/liuxiu/liuxiu_localmaps_gmcp.txt
+localmaps=liuxiu_localmaps.txt
+localmaps_gmcp=liuxiu_localmaps_gmcp.txt
 
 [node]
 id=4
 name=乱石阵
-look=maps/liuxiu/liuxiu_4.txt
+look=liuxiu_4.txt
 west=1
-localmaps=maps/liuxiu/liuxiu_localmaps.txt
-localmaps_gmcp=maps/liuxiu/liuxiu_localmaps_gmcp.txt
+localmaps=liuxiu_localmaps.txt
+localmaps_gmcp=liuxiu_localmaps_gmcp.txt
 
 [node]
 id=5
 name=缓坡
-look=maps/liuxiu/liuxiu_5.txt
+look=liuxiu_5.txt
 look@path=这是一段陡峭的山坡，应该可以向下攀爬下去。(climb down)
 climb@down=[1;31m你小心翼翼的向下爬去。[0;00m
 climb@downdone=你费了九牛二虎之力，终于爬到了谷底！
 destpos=1
 north=6
-localmaps=maps/liuxiu/liuxiu_localmaps.txt
-localmaps_gmcp=maps/liuxiu/liuxiu_localmaps_gmcp.txt
+localmaps=liuxiu_localmaps.txt
+localmaps_gmcp=liuxiu_localmaps_gmcp.txt
 
 [node]
 id=6
 name=集镇小道
-look=maps/liuxiu/liuxiu_6.txt
+look=liuxiu_6.txt
 south=5
 west=9
 southeast=7
 north=12
 northeast=10
-localmaps=maps/liuxiu/liuxiu_localmaps.txt
-localmaps_gmcp=maps/liuxiu/liuxiu_localmaps_gmcp.txt
+localmaps=liuxiu_localmaps.txt
+localmaps_gmcp=liuxiu_localmaps_gmcp.txt
 
 [node]
 id=7
 name=酒铺
-look=maps/liuxiu/liuxiu_7.txt
-look@paizi=maps/liuxiu/liuxiu_7_paizi.txt
-list=maps/liuxiu/liuxiu_7_list.txt
+look=liuxiu_7.txt
+look@paizi=liuxiu_7_paizi.txt
+list=liuxiu_7_list.txt
 northwest=6
 northeast=10
-localmaps=maps/liuxiu/liuxiu_localmaps.txt
-localmaps_gmcp=maps/liuxiu/liuxiu_localmaps_gmcp.txt
+localmaps=liuxiu_localmaps.txt
+localmaps_gmcp=liuxiu_localmaps_gmcp.txt
 
 [node]
 id=8
 name=车马行
-look=maps/liuxiu/liuxiu_8.txt
+look=liuxiu_8.txt
 north=9
-localmaps=maps/liuxiu/liuxiu_localmaps.txt
-localmaps_gmcp=maps/liuxiu/liuxiu_localmaps_gmcp.txt
+localmaps=liuxiu_localmaps.txt
+localmaps_gmcp=liuxiu_localmaps_gmcp.txt
 
 [node]
 id=9
 name=杏子林
-look=maps/liuxiu/liuxiu_9.txt
+look=liuxiu_9.txt
 south=8
 east=6
-localmaps=maps/liuxiu/liuxiu_localmaps.txt
-localmaps_gmcp=maps/liuxiu/liuxiu_localmaps_gmcp.txt
+localmaps=liuxiu_localmaps.txt
+localmaps_gmcp=liuxiu_localmaps_gmcp.txt
 
 [node]
 id=10
 name=药铺
-look=maps/liuxiu/liuxiu_10.txt
-look@paizi=maps/liuxiu/liuxiu_10_paizi.txt
-list=maps/liuxiu/liuxiu_10_list.txt
+look=liuxiu_10.txt
+look@paizi=liuxiu_10_paizi.txt
+list=liuxiu_10_list.txt
 southwest=6
-localmaps=maps/liuxiu/liuxiu_localmaps.txt
-localmaps_gmcp=maps/liuxiu/liuxiu_localmaps_gmcp.txt
+localmaps=liuxiu_localmaps.txt
+localmaps_gmcp=liuxiu_localmaps_gmcp.txt
 
 [node]
 id=11
 name=杂货铺   
-look=maps/liuxiu/liuxiu_11.txt
+look=liuxiu_11.txt
 look@zhaopai=请用 "list" 列出货物表，"buy" 向老板购物。
-list=maps/liuxiu/liuxiu_11_list.txt
+list=liuxiu_11_list.txt
 west=12
-localmaps=maps/liuxiu/liuxiu_localmaps.txt
-localmaps_gmcp=maps/liuxiu/liuxiu_localmaps_gmcp.txt
+localmaps=liuxiu_localmaps.txt
+localmaps_gmcp=liuxiu_localmaps_gmcp.txt
 
 [node]
 id=12
 name=集镇小道
-look=maps/liuxiu/liuxiu_12.txt
+look=liuxiu_12.txt
 west=13
 east=11
 south=6
 north=14
-localmaps=maps/liuxiu/liuxiu_localmaps.txt
-localmaps_gmcp=maps/liuxiu/liuxiu_localmaps_gmcp.txt
+localmaps=liuxiu_localmaps.txt
+localmaps_gmcp=liuxiu_localmaps_gmcp.txt
 
 [node]
 id=13
 name=铁匠铺
-look=maps/liuxiu/liuxiu_13.txt
-look@laohu=maps/liuxiu/liuxiu_13_laohu.txt
-list=maps/liuxiu/liuxiu_13_list.txt
+look=liuxiu_13.txt
+look@laohu=liuxiu_13_laohu.txt
+list=liuxiu_13_list.txt
 east=12
-localmaps=maps/liuxiu/liuxiu_localmaps.txt
-localmaps_gmcp=maps/liuxiu/liuxiu_localmaps_gmcp.txt
+localmaps=liuxiu_localmaps.txt
+localmaps_gmcp=liuxiu_localmaps_gmcp.txt
 
 [node]
 id=14
 name=山庄大门
-look=maps/liuxiu/liuxiu_14_1.txt
+look=liuxiu_14_1.txt
 look@gate=一扇红漆大门上有两个金环在阳光照耀下格外耀眼。似乎可以敲门。(knock gate)
 knock@gate=你轻轻地敲了敲门，只听吱地一声，一个小丫鬟将门打开了一道缝，露出脑袋，转着乌黑的大眼睛\n，笑嘻嘻打量着你。\n丫鬟走了过来。\n丫鬟说道：「这位小兄弟，你回来啦，快请进吧！」
 knock@gatedone=丫鬟走了过来。\n丫鬟上前把大门关了起来。
-look$1=maps/liuxiu/liuxiu_14_2.txt
-localmaps=maps/liuxiu/liuxiu_localmaps.txt
-localmaps_gmcp=maps/liuxiu/liuxiu_localmaps_gmcp.txt
+look$1=liuxiu_14_2.txt
+localmaps=liuxiu_localmaps.txt
+localmaps_gmcp=liuxiu_localmaps_gmcp.txt
 east=15
 west=16
 south=12
@@ -148,74 +148,74 @@ north$1=17
 [node]
 id=15
 name=票号
-look=maps/liuxiu/liuxiu_15.txt
-look@paizi=maps/liuxiu/liuxiu_15_paizi.txt
-look@liuzhuqian=maps/liuxiu/liuxiu_15_liuzhuqian.txt
+look=liuxiu_15.txt
+look@paizi=liuxiu_15_paizi.txt
+look@liuzhuqian=liuxiu_15_liuzhuqian.txt
 check=柳住钱翻了翻帐簿，告诉你：「您在敝商号没有存钱。」
 west=14
-localmaps=maps/liuxiu/liuxiu_localmaps.txt
-localmaps_gmcp=maps/liuxiu/liuxiu_localmaps_gmcp.txt
+localmaps=liuxiu_localmaps.txt
+localmaps_gmcp=liuxiu_localmaps_gmcp.txt
 
 [node]
 id=16
 name=当铺
-look=maps/liuxiu/liuxiu_16.txt
-look@huangzi=maps/liuxiu/liuxiu_16_huangzi.txt
-look@paizi=maps/liuxiu/liuxiu_16_paizi.txt
-look@tangnan=maps/liuxiu/liuxiu_16_tangnan.txt
-list=maps/liuxiu/liuxiu_16_list.txt
+look=liuxiu_16.txt
+look@huangzi=liuxiu_16_huangzi.txt
+look@paizi=liuxiu_16_paizi.txt
+look@tangnan=liuxiu_16_tangnan.txt
+list=liuxiu_16_list.txt
 east=14
-localmaps=maps/liuxiu/liuxiu_localmaps.txt
-localmaps_gmcp=maps/liuxiu/liuxiu_localmaps_gmcp.txt
+localmaps=liuxiu_localmaps.txt
+localmaps_gmcp=liuxiu_localmaps_gmcp.txt
 
 [node]
 id=17
 name=长廊
-look=maps/liuxiu/liuxiu_17.txt
+look=liuxiu_17.txt
 look@gate=一扇宏伟的红漆大门,出了这扇门就能离开山庄了，你可以打开大门。(open gate)
 open@gate=你使劲把大门打了开来。
 open@gatedone=丫鬟上前把大门关了起来。
 south$1=14
 north=18
-localmaps=maps/liuxiu/liuxiu_localmaps.txt
-localmaps_gmcp=maps/liuxiu/liuxiu_localmaps_gmcp.txt
+localmaps=liuxiu_localmaps.txt
+localmaps_gmcp=liuxiu_localmaps_gmcp.txt
 
 [node]
 id=18
 name=岩桂花园
-look=maps/liuxiu/liuxiu_18.txt
+look=liuxiu_18.txt
 south=17
 north=19
-localmaps=maps/liuxiu/liuxiu_localmaps.txt
-localmaps_gmcp=maps/liuxiu/liuxiu_localmaps_gmcp.txt
+localmaps=liuxiu_localmaps.txt
+localmaps_gmcp=liuxiu_localmaps_gmcp.txt
 
 [node]
 id=19
 name=柳秀山庄正厅
-look=maps/liuxiu/liuxiu_19.txt
+look=liuxiu_19.txt
 south=18
 north=24
 east=22
 west=20
-localmaps=maps/liuxiu/liuxiu_localmaps.txt
-localmaps_gmcp=maps/liuxiu/liuxiu_localmaps_gmcp.txt
+localmaps=liuxiu_localmaps.txt
+localmaps_gmcp=liuxiu_localmaps_gmcp.txt
 
 [node]
 id=20
 name=西厢房
-look=maps/liuxiu/liuxiu_20.txt
+look=liuxiu_20.txt
 look@bed=这是一张小床，你可以在上面安心睡个好觉。
 sleep=你往床上一躺，开始睡觉。\n不一会儿，你就进入了梦乡。
 sleep@done=你慢慢睁开眼睛，清醒了过来。\n\n\n慢慢地你终于又有了知觉....
 east=19
 north=21
-localmaps=maps/liuxiu/liuxiu_localmaps.txt
-localmaps_gmcp=maps/liuxiu/liuxiu_localmaps_gmcp.txt
+localmaps=liuxiu_localmaps.txt
+localmaps_gmcp=liuxiu_localmaps_gmcp.txt
 
 [node]
 id=21
 name=男浴室
-look=maps/liuxiu/liuxiu_21.txt
+look=liuxiu_21.txt
 look@yutong=快把脏衣服脱光了(remove cloth)\n，赶紧洗个澡。(bath)
 bath@1=你跳进木桶中，水溅了一地。
 bath@2=你使劲搓着身上的灰，水一会就黑了。
@@ -223,39 +223,39 @@ bath@3=你吩咐侍童打开木桶下的排水门，并再加一些热水。
 bath@4=水温刚刚好，你全身放松了下来。
 bath@done=你洗完了澡，感到精神百倍！
 south=20
-localmaps=maps/liuxiu/liuxiu_localmaps.txt
-localmaps_gmcp=maps/liuxiu/liuxiu_localmaps_gmcp.txt
+localmaps=liuxiu_localmaps.txt
+localmaps_gmcp=liuxiu_localmaps_gmcp.txt
 
 [node]
 id=22
 name=东厢房
-look=maps/liuxiu/liuxiu_22.txt
+look=liuxiu_22.txt
 west=19
 north=23
-localmaps=maps/liuxiu/liuxiu_localmaps.txt
-localmaps_gmcp=maps/liuxiu/liuxiu_localmaps_gmcp.txt
+localmaps=liuxiu_localmaps.txt
+localmaps_gmcp=liuxiu_localmaps_gmcp.txt
 
 [node]
 id=23
 name=女浴室
-look=maps/liuxiu/liuxiu_23.txt
+look=liuxiu_23.txt
 south=22
-localmaps=maps/liuxiu/liuxiu_localmaps.txt
-localmaps_gmcp=maps/liuxiu/liuxiu_localmaps_gmcp.txt
+localmaps=liuxiu_localmaps.txt
+localmaps_gmcp=liuxiu_localmaps_gmcp.txt
 
 [node]
 id=24
 name=尚武堂
-look=maps/liuxiu/liuxiu_24.txt
+look=liuxiu_24.txt
 south=19
 north=25
-localmaps=maps/liuxiu/liuxiu_localmaps.txt
-localmaps_gmcp=maps/liuxiu/liuxiu_localmaps_gmcp.txt
+localmaps=liuxiu_localmaps.txt
+localmaps_gmcp=liuxiu_localmaps_gmcp.txt
 
 [node]
 id=25
 name=藏书阁
-look=maps/liuxiu/liuxiu_25.txt
+look=liuxiu_25.txt
 south=24
-localmaps=maps/liuxiu/liuxiu_localmaps.txt
-localmaps_gmcp=maps/liuxiu/liuxiu_localmaps_gmcp.txt
+localmaps=liuxiu_localmaps.txt
+localmaps_gmcp=liuxiu_localmaps_gmcp.txt

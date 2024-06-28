@@ -1,14 +1,15 @@
 use std::{collections::HashMap, fs::read_to_string, io::Read, net::SocketAddr, rc::Rc};
 use crossbeam::channel::Sender;
 use utils::{get_id, show_color, Color};
-use crate::{channel::{wrap_message, wrap_message_climb, wrap_message_ext, Message, MessageType}, command::Command, map::Node, player::{self, Player}};
+use crate::{channel::{wrap_message, wrap_message_climb, wrap_message_ext, Message, MessageType}, command::Command, factory_mapfiles::MapFile, map::Node, player::{self, Player}};
 
 pub struct ClimbCommand<'a> {
     players: &'a HashMap<SocketAddr, Player>,
     s_service: &'a Sender<String>,
     msg: &'a Message,
     s_combat: &'a Sender<String>,
-    nodes: &'a HashMap<u32, Node>,    
+    nodes: &'a HashMap<u32, Node>, 
+    mapfiles: &'a HashMap<String, MapFile>,
 }
 
 impl<'a> ClimbCommand<'a> {
@@ -17,14 +18,16 @@ impl<'a> ClimbCommand<'a> {
         s_service: &'a Sender<String>,
         msg: &'a Message,
         s_combat: &'a Sender<String>,
-        nodes: &'a HashMap<u32, Node>
+        nodes: &'a HashMap<u32, Node>,
+        mapfiles: &'a HashMap<String, MapFile>,
         ) -> ClimbCommand<'a>  {
             ClimbCommand {
             players,
             s_service,
             msg,
             s_combat,
-            nodes
+            nodes,
+            mapfiles
         }
     }
 
@@ -90,9 +93,16 @@ impl<'a> ClimbCommand<'a> {
             None => {return "no map!".to_string()}
         };
 
-        let mut read = utils::load_file(&node.look);
+        // let mut read = utils::load_file(&node.look);
         let mut l_view = String::new();
-        read.read_to_string(&mut l_view);
+        // read.read_to_string(&mut l_view);
+
+        let factory = self.mapfiles;
+        let mapfile = match factory.get(&node.look){
+            Some(a) => a,
+            None => {return "".to_string()}
+        };
+        l_view = mapfile.content.clone();
 
         for p in self.players.iter() {
             println!("pos: {} player.pos: {}", p.1.pos, dest_pos);

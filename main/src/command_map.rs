@@ -2,7 +2,7 @@ use std::{collections::HashMap, io::Read, net::SocketAddr};
 
 use crossbeam::channel::Sender;
 
-use crate::{channel::{wrap_message, wrap_message_ext, Message, MessageType}, command::{Command, Gmcp}, map::Node, player::{self, Group, Groups, Player}};
+use crate::{channel::{wrap_message, wrap_message_ext, Message, MessageType}, command::{Command, Gmcp}, factory_mapfiles::MapFile, map::Node, player::{self, Group, Groups, Player}};
 
 pub struct MapCommand<'a> {
     pub players: &'a HashMap<SocketAddr, Player>,
@@ -10,6 +10,7 @@ pub struct MapCommand<'a> {
     pub msg: &'a Message,
     pub msg_type: String,
     pub nodes: &'a HashMap<u32, Node>,
+    pub mapfiles: &'a HashMap<String, MapFile>,
 }
 
 
@@ -19,13 +20,15 @@ impl<'a> MapCommand<'a> {
         s_service: &'a Sender<String>,
         msg: &'a Message,
         nodes: &'a HashMap<u32, Node>,
+        mapfiles: &'a HashMap<String, MapFile>,
         ) -> Self  {
             MapCommand {
             players,
             s_service,
             msg,
             msg_type: String::from(""),
-            nodes
+            nodes,
+            mapfiles
         }
     }
 }
@@ -44,9 +47,16 @@ impl<'a> Gmcp for MapCommand<'a> {
             None => {return "".to_string()}
         };
 
-        let mut read = utils::load_file(&cur_node.localmaps_gmcp);
+        // let mut read = utils::load_file(&cur_node.localmaps_gmcp);
         let mut content = String::new();
-        read.read_to_string(&mut content);
+        // read.read_to_string(&mut content);
+
+        let factory = self.mapfiles;
+        let mapfile = match factory.get(&cur_node.localmaps_gmcp){
+            Some(a) => a,
+            None => {return "".to_string()}
+        };
+        content = mapfile.content.clone();
 
         let old_str = &cur_node.name;
         let new_str = "<span style='color: yellow'>".to_owned()+old_str+"</span>";

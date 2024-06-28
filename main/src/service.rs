@@ -18,6 +18,8 @@ use crate::command_map::MapCommand;
 use crate::command_quest::QuestCommand;
 use crate::command_walk::WalkCommand;
 use crate::command_x::XCommand;
+use crate::factory_mapfiles;
+use crate::factory_mapfiles::MapFile;
 use crate::log::SINGLETON;
 use crate::login::LoginService;
 use crate::map;
@@ -85,7 +87,8 @@ pub struct Service<'a> {
     login_infos: HashMap<SocketAddr, LoginInfo>,
     players: HashMap<SocketAddr, Player>,
     nodes: HashMap<u32, Node>,
-    quests: HashMap<u32, Quest>
+    quests: HashMap<u32, Quest>,
+    mapfiles: HashMap<String, MapFile>,
 }
 
 impl<'a>  Service<'a> {
@@ -101,7 +104,8 @@ impl<'a>  Service<'a> {
             login_infos: HashMap::new(),
             players: HashMap::new(),
             nodes: map::init_map(),
-            quests: quest::init_quest()
+            quests: quest::init_quest(),
+            mapfiles: factory_mapfiles::init_mapfiles(),
         }
     }
 
@@ -154,13 +158,13 @@ impl<'a>  Service<'a> {
             "hp"|"who" => invoker.set(Box::new(HpCommand::new(&ps, &self.s_service, &ms))),
             "jq"|"jobquery" => invoker.set(Box::new(QuestCommand::new(&ps, &self.s_service, &ms, &self.quests))),
             "l"|"ls"|"look"|"localmaps"|"lm"
-                |"list"|"startgmcp"|"xgmcp"  => invoker.set(Box::new(LookCommand::new(&ps, &self.s_service, &ms, &self.nodes))),
+                |"list"|"startgmcp"|"xgmcp"  => invoker.set(Box::new(LookCommand::new(&ps, &self.s_service, &ms, &self.nodes, &self.mapfiles))),
             "fight" => invoker.set(Box::new(FightCommand::new(&ps, &self.s_service, &ms, &self.s_combat))),
-            "e"|"w"|"s"|"n"|"ne"|"sw"|"se"|"nw" => invoker.set(Box::new(WalkCommand::new(&ps, &self.s_service, &ms, &self.s_combat, &self.nodes))),
-            "climb"|"knock"|"open"|"sleep"|"bath" => invoker.set(Box::new(ClimbCommand::new(&ps, &self.s_service, &ms, &self.s_combat, &self.nodes))),
+            "e"|"w"|"s"|"n"|"ne"|"sw"|"se"|"nw" => invoker.set(Box::new(WalkCommand::new(&ps, &self.s_service, &ms, &self.s_combat, &self.nodes, &self.mapfiles))),
+            "climb"|"knock"|"open"|"sleep"|"bath" => invoker.set(Box::new(ClimbCommand::new(&ps, &self.s_service, &ms, &self.s_combat, &self.nodes, &self.mapfiles))),
             "chat"|"`" => invoker.set(Box::new(ChatCommand::new(&ps, &self.s_service, &ms))),
             "friend"|"group" => invoker.set(Box::new(FriendCommand::new(&ps, &self.s_service, &ms))),
-            "gmcp.localmap" => invoker.set(Box::new(MapCommand::new(&ps, &self.s_service, &ms, &self.nodes))),
+            "gmcp.localmap" => invoker.set(Box::new(MapCommand::new(&ps, &self.s_service, &ms, &self.nodes, &self.mapfiles))),
             _ => {
                 let nomatch = "要做什么?";
                 let val = wrap_message(msg.addr, nomatch.to_string());

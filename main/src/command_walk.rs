@@ -1,7 +1,7 @@
 use std::{collections::HashMap, io::Read, net::SocketAddr, rc::Rc};
 use crossbeam::channel::Sender;
 use utils::{show_color, Color};
-use crate::{channel::{wrap_message, wrap_message_ext, wrap_message_timer, Message, MessageType}, command::{Command, Gmcp}, map::Node, player::Player};
+use crate::{channel::{wrap_message, wrap_message_ext, wrap_message_timer, Message, MessageType}, command::{Command, Gmcp}, factory_mapfiles::MapFile, map::Node, player::Player};
 
 pub struct WalkCommand<'a> {
     players: &'a HashMap<SocketAddr, Player>,
@@ -9,7 +9,8 @@ pub struct WalkCommand<'a> {
     msg: &'a Message,
     s_combat: &'a Sender<String>,
     nodes: &'a HashMap<u32, Node>,
-    new_pos: u32
+    new_pos: u32,
+    mapfiles: &'a HashMap<String, MapFile>,
 }
 
 impl<'a> WalkCommand<'a> {
@@ -18,7 +19,8 @@ impl<'a> WalkCommand<'a> {
         s_service: &'a Sender<String>,
         msg: &'a Message,
         s_combat: &'a Sender<String>,
-        nodes: &'a HashMap<u32, Node>
+        nodes: &'a HashMap<u32, Node>,
+        mapfiles: &'a HashMap<String, MapFile>,
         ) -> WalkCommand<'a>  {
             WalkCommand {
             players,
@@ -26,7 +28,8 @@ impl<'a> WalkCommand<'a> {
             msg,
             s_combat,
             nodes,
-            new_pos: 0
+            new_pos: 0,
+            mapfiles
         }
     }
 }
@@ -125,9 +128,16 @@ impl<'a>  Command for WalkCommand<'a>  {
             None => &node.look,
         };
 
-        let mut read = utils::load_file(look_book);
+        // let mut read = utils::load_file(look_book);
         let mut l_view = String::new();
-        read.read_to_string(&mut l_view);
+        // read.read_to_string(&mut l_view);
+
+        let mut factory = self.mapfiles;
+        let mapfile = match factory.get(look_book){
+            Some(a) => a,
+            None => {return "not found factory key:".to_string() + look_book;}
+        };
+        l_view = mapfile.content.clone();
 
         for p in self.players.iter() {
             println!("pos: {} player.pos: {}", p.1.pos, new_pos);
@@ -164,9 +174,16 @@ impl<'a> Gmcp for WalkCommand<'a> {
             None => {return "".to_string()}
         };
 
-        let mut read = utils::load_file(&cur_node.localmaps_gmcp);
+        // let mut read = utils::load_file(&cur_node.localmaps_gmcp);
         let mut content = String::new();
-        read.read_to_string(&mut content);
+        // read.read_to_string(&mut content);
+
+        let factory = self.mapfiles;
+        let mapfile = match factory.get(&cur_node.localmaps_gmcp){
+            Some(a) => a,
+            None => {return "".to_string()}
+        };
+        content = mapfile.content.clone();
         
         let old_str = &cur_node.name;
         let new_str = "<span style='color: yellow'>".to_owned()+old_str+"</span>";
