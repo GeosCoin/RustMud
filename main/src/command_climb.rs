@@ -1,7 +1,7 @@
 use std::{collections::HashMap, fs::read_to_string, io::Read, net::SocketAddr, rc::Rc};
 use crossbeam::channel::Sender;
 use utils::{get_id, show_color, Color};
-use crate::{channel::{wrap_message, wrap_message_climb, wrap_message_ext, Message, MessageType}, command::Command, factory_mapfiles::MapFile, map::Node, player::{self, Player}};
+use crate::{channel::{wrap_message, wrap_message_climb, wrap_message_ext, Message, MessageType}, command::{Command, Gmcp}, factory_mapfiles::MapFile, map::Node, player::{self, Player}};
 
 pub struct ClimbCommand<'a> {
     players: &'a HashMap<SocketAddr, Player>,
@@ -10,6 +10,35 @@ pub struct ClimbCommand<'a> {
     s_combat: &'a Sender<String>,
     nodes: &'a HashMap<u32, Node>, 
     mapfiles: &'a HashMap<String, MapFile>,
+    new_pos: u32,
+}
+
+impl<'a> Gmcp for ClimbCommand<'a> {
+    fn send_msg(&self, addr: &SocketAddr, message: &str) -> String {
+        let cur_node = match self.nodes.get(&self.new_pos) {
+            Some(a) => a,
+            None => {return "".to_string()}
+        };
+
+        let mut content = String::new();
+
+        let factory = self.mapfiles;
+        let mapfile = match factory.get(&cur_node.localmaps_gmcp){
+            Some(a) => a,
+            None => {return "".to_string()}
+        };
+        content = mapfile.content.clone();
+        
+        let old_str = &cur_node.name;
+        let new_str = "<span style='color: yellow'>".to_owned()+old_str+"</span>";
+        let new_content = content.replace(old_str, &new_str);
+        let mut view = String::from("
+            Map ");
+        view = view + "{\"content\" : \""+&new_content+"\"}";
+        let val = wrap_message_ext(MessageType::IacDoGmcp, *addr, view.to_string());
+        self.s_service.send(val).unwrap();
+        "".to_string()
+    }
 }
 
 impl<'a> ClimbCommand<'a> {
@@ -27,11 +56,12 @@ impl<'a> ClimbCommand<'a> {
             msg,
             s_combat,
             nodes,
-            mapfiles
+            mapfiles,
+            new_pos: 0
         }
     }
 
-    pub fn do_climb(&self, 
+    pub fn do_climb(&mut self, 
         player: &Player,
         node: &Node) -> String {
 
@@ -93,9 +123,7 @@ impl<'a> ClimbCommand<'a> {
             None => {return "no map!".to_string()}
         };
 
-        // let mut read = utils::load_file(&node.look);
         let mut l_view = String::new();
-        // read.read_to_string(&mut l_view);
 
         let factory = self.mapfiles;
         let mapfile = match factory.get(&node.look){
@@ -103,6 +131,10 @@ impl<'a> ClimbCommand<'a> {
             None => {return "".to_string()}
         };
         l_view = mapfile.content.clone();
+
+        //发送到地图
+        self.new_pos = dest_pos;
+        self.send_msg(&self.msg.addr, "");
 
         for p in self.players.iter() {
             println!("pos: {} player.pos: {}", p.1.pos, dest_pos);
@@ -313,7 +345,7 @@ impl<'a>  Command for ClimbCommand<'a>  {
 
         let cmd = cmd_key.to_string().to_ascii_lowercase();
         match cmd.as_str() {
-            "climb" => {return ClimbCommand::<'a>::do_climb(&self, player, node)},
+            "climb" => {return ClimbCommand::<'a>::do_climb(self, player, node)},
             "knock"  => {
                 return ClimbCommand::<'a>::do_knock(&self, player, node)},
             "open" => {

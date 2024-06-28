@@ -37,7 +37,7 @@ pub enum Color {
 //read only
 pub fn load_file(filepath: &str) -> File {
     let path = Path::new(filepath);
-    return File::open(path).expect("Error: failed to load file");
+    return File::open(path).expect(&("Error: failed to load file ".to_owned()+filepath));
 }
 
 //write only
