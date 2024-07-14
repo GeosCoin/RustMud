@@ -1,0 +1,3 @@
+[power]
+id=162
+INCLUDE powers/base/items/health_potion.txt

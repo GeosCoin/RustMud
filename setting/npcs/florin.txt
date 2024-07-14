@@ -1,0 +1,20 @@
+name=Florin, Apothecary
+
+vendor=true
+constant_stock=2:10,412:5,4,5,6
+status_stock=cos_perdition_trader1,12,13,15
+status_stock=cos_perdition_trader2,64,65
+status_stock=cos_perdition_trader3,427,428
+
+talker=true
+
+[dialog]
+topic=Book of the Dead
+requires_status=emp_main_init
+requires_not_status=emp_main_underworld
+you=What can you tell me about the Book of the Dead?
+him=The Book of the Dead tells of redemption for those who sign their name in gravebloom ink. Your sins will be washed away, and you will be able to return to wherever you were banished from.
+you=So, where can I find gravebloom ink?
+him=Gravebloom ink is not something you find. You must make it yourself. Besides the Gravebloom flower, you will need to sacrifice your own blood with a special blade.
+him=Even if you can create some gravebloom ink, you won't be able to write with just anything. The ink won't stick to a normal quill. You will need to find something capable of holding the gravebloom ink.
+him=If you can perform the ritual to make gravebloom ink and find a suitable writing utensil, redemption may be yours.

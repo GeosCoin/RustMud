@@ -1,0 +1,9 @@
+# equipment intended for players level 13
+
+[item]
+id=311
+name=Plate Helmet
+INCLUDE items/base/armor/plate/head.txt
+level=13
+price=390
+resist=6

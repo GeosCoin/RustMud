@@ -1,0 +1,10 @@
+[item]
+id=197
+name=Amir Blade
+flavor=A remnant of those who guarded Fort Amir.
+INCLUDE items/base/weapons/melee/dagger.txt
+level=8
+quality=unique
+price=900
+dmg=melee,45,50
+bonus=accuracy,15

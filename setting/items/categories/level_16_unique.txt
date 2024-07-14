@@ -1,0 +1,18 @@
+
+[item]
+id=427
+name=Underworld Blade
+INCLUDE items/base/weapons/melee/dagger.txt
+level=16
+quality=unique
+price=3200
+dmg=melee,85,90
+
+[item]
+id=428
+name=Underworld Rifle
+INCLUDE items/base/weapons/ranged/rifle.txt
+level=16
+quality=unique
+price=3200
+dmg=ranged,85,90

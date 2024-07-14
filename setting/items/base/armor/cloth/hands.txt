@@ -1,0 +1,4 @@
+quality=normal
+item_type=hands
+icon=130
+

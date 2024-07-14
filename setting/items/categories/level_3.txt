@@ -1,0 +1,21 @@
+# equipment intended for players level 3
+
+[item]
+id=38
+name=Warrior Cloth Shirt
+INCLUDE items/base/armor/cloth/chest.txt
+level=3
+quality=epic
+price=225
+resist=2
+bonus=hp,50
+
+[item]
+id=39
+name=Ranger Cloth Shirt
+INCLUDE items/base/armor/cloth/chest.txt
+level=3
+quality=epic
+price=225
+resist=1,2
+bonus=accuracy,2

@@ -1,0 +1,9 @@
+# equipment intended for players level 8
+
+[item]
+id=168
+name=Warlord Leather Hood
+INCLUDE items/base/armor/leather/head.txt
+level=8
+quality=rare
+price=240

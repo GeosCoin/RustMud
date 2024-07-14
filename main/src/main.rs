@@ -32,12 +32,10 @@ mod process_walk;
 mod process_climb;
 mod log;
 mod map;
-mod factory_mapfiles;
+mod setting_maps;
+mod setting_engine;
 
 fn main() {
-
-    //初始化地图文件
-    factory_mapfiles::init_mapfiles();
 
     let server = Server::new();
     let listener = server.start("127.0.0.1", "7878");

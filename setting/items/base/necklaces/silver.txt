@@ -1,0 +1,3 @@
+quality=epic
+item_type=artifact
+icon=214

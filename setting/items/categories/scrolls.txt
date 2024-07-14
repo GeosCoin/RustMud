@@ -1,0 +1,11 @@
+# Scrolls #############################
+
+[item]
+id=412
+name=Base Scroll
+power=246
+power_desc=Use: Teleport to Base Harbor
+price=25
+price_per_level=25
+price_sell=12
+max_quantity=20

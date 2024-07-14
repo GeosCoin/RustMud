@@ -18,8 +18,8 @@ use crate::command_map::MapCommand;
 use crate::command_quest::QuestCommand;
 use crate::command_walk::WalkCommand;
 use crate::command_x::XCommand;
-use crate::factory_mapfiles;
-use crate::factory_mapfiles::MapFile;
+use crate::setting_maps;
+use crate::setting_maps::MapFile;
 use crate::log::SINGLETON;
 use crate::login::LoginService;
 use crate::map;
@@ -105,7 +105,7 @@ impl<'a>  Service<'a> {
             players: HashMap::new(),
             nodes: map::init_map(),
             quests: quest::init_quest(),
-            mapfiles: factory_mapfiles::init_mapfiles(),
+            mapfiles: setting_maps::init_mapfiles(),
         }
     }
 

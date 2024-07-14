@@ -1,0 +1,9 @@
+# true_avoidance = 100 - (accuracy - avoid) => missed  train shoot 
+# dmg = dmg* (100 - resist)  helmet
+# dmg = dmg * crit  
+# if missed dmg = dmg * missed 
+
+avoidance_percent=0,99
+resist_percent=0,90
+miss_damage_percent=25,50
+crit_damage_percent= 150,200

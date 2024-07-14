@@ -1,0 +1,5 @@
+quality=high
+icon=64
+item_type=consumable
+quality=one_time_use
+

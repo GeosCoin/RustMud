@@ -1,0 +1,16 @@
+[stat]
+id=strength
+name=Strength
+
+[stat]
+id=comprehension
+name=Comprehension
+
+[stat]
+id=appearance
+name=Appearance
+
+[stat]
+id=blessing
+name=Blessing
+

@@ -1,7 +1,7 @@
 use std::{collections::HashMap, fs::read_to_string, io::Read, net::SocketAddr, rc::Rc};
 use crossbeam::channel::Sender;
 use utils::{show_color, Color};
-use crate::{channel::{wrap_message, wrap_message_ext, Message, MessageType}, command::Command, factory_mapfiles::MapFile, map::{self, Node}, player::Player};
+use crate::{channel::{wrap_message, wrap_message_ext, Message, MessageType}, command::Command, setting_maps::MapFile, map::{self, Node}, player::Player};
 
 pub struct LookCommand<'a> {
     players: &'a HashMap<SocketAddr, Player>,
@@ -30,9 +30,7 @@ impl<'a> LookCommand<'a> {
 
     pub fn do_localmaps(&self, node: &Node) -> String{
         
-        // let mut read = utils::load_file(&node.localmaps);
         let mut l_view = String::new();
-        // read.read_to_string(&mut l_view);
 
         let factory = self.mapfiles;
         let mapfile = match factory.get(&node.localmaps){
@@ -74,10 +72,7 @@ impl<'a> LookCommand<'a> {
 
             //来自文件
             let mut l_view = String::new();
-            if view.contains(".txt") {                
-                // let mut read = utils::load_file(view);
-                // read.read_to_string(&mut l_view);
-                // view = &l_view;
+            if view.contains(".txt") {   
 
                 let mut factory = self.mapfiles;
                 let mapfile = match factory.get(view){
@@ -145,8 +140,6 @@ impl<'a> LookCommand<'a> {
         }
 
         let mut l_view = String::new();   
-        // let mut read = utils::load_file(&node.list);
-        // read.read_to_string(&mut l_view);
 
         let factory = self.mapfiles;
         let mapfile = match factory.get(&node.list){

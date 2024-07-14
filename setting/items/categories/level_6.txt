@@ -1,0 +1,10 @@
+# equipment intended for players level 6
+
+[item]
+id=110
+name=Fighting Leather Hood
+INCLUDE items/base/armor/leather/head.txt
+level=6
+quality=high
+price=180
+

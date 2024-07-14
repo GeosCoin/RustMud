@@ -1,0 +1,5 @@
+quality=high
+icon=69
+item_type=gem
+
+

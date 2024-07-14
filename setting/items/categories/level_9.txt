@@ -1,0 +1,8 @@
+# equipment intended for players level 9
+
+[item]
+id=204
+name=Chain Coif
+INCLUDE items/base/armor/chain/head.txt
+level=9
+price=270

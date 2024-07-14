@@ -1,0 +1,4 @@
+quality=normal
+item_type=chest
+icon=129
+

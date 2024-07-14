@@ -1,0 +1,11 @@
+# Mog Caverens
+[item]
+id=306
+INCLUDE items/base/weapons/ranged/rifle.txt
+name=Mog's Rifle
+flavor=Not as sleek as an arrow, but just as effective.
+level=12
+quality=unique
+price=1300
+dmg=ranged,65,70
+bonus=crit,5

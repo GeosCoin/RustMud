@@ -1,7 +1,7 @@
 use std::{collections::HashMap, io::Read, net::SocketAddr, rc::Rc};
 use crossbeam::channel::Sender;
 use utils::{show_color, Color};
-use crate::{channel::{wrap_message, wrap_message_ext, wrap_message_timer, Message, MessageType}, command::{Command, Gmcp}, factory_mapfiles::MapFile, map::Node, player::Player};
+use crate::{channel::{wrap_message, wrap_message_ext, wrap_message_timer, Message, MessageType}, command::{Command, Gmcp}, map::Node, player::Player, setting_maps::MapFile};
 
 pub struct WalkCommand<'a> {
     players: &'a HashMap<SocketAddr, Player>,
@@ -128,9 +128,7 @@ impl<'a>  Command for WalkCommand<'a>  {
             None => &node.look,
         };
 
-        // let mut read = utils::load_file(look_book);
         let mut l_view = String::new();
-        // read.read_to_string(&mut l_view);
 
         let mut factory = self.mapfiles;
         let mapfile = match factory.get(look_book){
@@ -174,9 +172,7 @@ impl<'a> Gmcp for WalkCommand<'a> {
             None => {return "".to_string()}
         };
 
-        // let mut read = utils::load_file(&cur_node.localmaps_gmcp);
         let mut content = String::new();
-        // read.read_to_string(&mut content);
 
         let factory = self.mapfiles;
         let mapfile = match factory.get(&cur_node.localmaps_gmcp){

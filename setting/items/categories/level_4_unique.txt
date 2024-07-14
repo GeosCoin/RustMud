@@ -1,0 +1,14 @@
+[item]
+id=90
+name=Krolan's Dagger
+flavor=An essential tool for any blacksmith.
+INCLUDE items/base/weapons/melee/dagger.txt
+level=4
+quality=unique
+price=500
+dmg=melee,25,30
+bonus=dmg_melee_min,20
+bonus=dmg_melee_max,20
+bonus=crit,1
+bonus=currency_find,10
+

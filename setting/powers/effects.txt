@@ -1,0 +1,15 @@
+## Status Effects
+
+[effect]
+id=bleeding
+name=Bleeding
+type=damage_percent
+icon=25
+color_mod=127,127,255
+
+[effect]
+id=slow
+name=Slow
+type=speed
+icon=24
+color_mod=0,127,255

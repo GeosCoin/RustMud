@@ -1,0 +1,4 @@
+description=The Rust Mud 1.0 Cosmos
+game=Cosmos
+version=0.0.01
+engine_version_min=0.0.01

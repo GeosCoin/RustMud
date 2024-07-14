@@ -1,0 +1,15 @@
+name=Shoot
+type=missile
+icon=3
+description=Basic ranged attack.
+new_state=shoot
+face=true
+use_hazard=true
+starting_pos=melee
+aim_assist=true
+base_damage=ranged
+lifespan=533ms
+radius=1.0
+speed=24
+requires_flags=ranged
+

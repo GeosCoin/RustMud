@@ -1,0 +1,31 @@
+
+[class]
+name=explorer
+description=UNCOVER ANCIENT RELICS AND HIDDEN PATHWAYS OUTSIDE OF THE KNOWN UNIVERSE
+equipment=1,2
+carried=3,4
+primary=strength,1
+primary=comprehension,1
+primary=appearance,1
+primary=blessing,5
+
+[class]
+name=industrialist
+description=HARVEST AND HARNESS THE BUILDING BLOCKS OF THE UNIVERSE AND SHAPE THEM INTO SHIPS, WEAPONS, AND CITIES IN SPACE
+equipment=1,2
+carried=3,4
+primary=strength,1
+primary=comprehension,5
+primary=appearance,1
+primary=blessing,1
+
+
+[class]
+name=soldier
+description=DELVE RIGHT INTO THE MOST DANGEROUS PLACES
+equipment=1,2
+carried=3,4
+primary=strength,5
+primary=comprehension,1
+primary=appearance,1
+primary=blessing,1

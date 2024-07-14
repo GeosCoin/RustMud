@@ -1,0 +1,21 @@
+# equipment intended for players level 4
+
+[item]
+id=64
+name=Warlord Cloth Shirt
+INCLUDE items/base/armor/cloth/chest.txt
+level=4
+quality=rare
+price=300
+resist=2,3
+bonus=hp,75
+
+[item]
+id=65
+name=Sniper Cloth Shirt
+INCLUDE items/base/armor/cloth/chest.txt
+level=4
+quality=rare
+price=300
+resist=2
+bonus=accuracy,3

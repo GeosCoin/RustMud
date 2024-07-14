@@ -1,0 +1,7 @@
+quality=normal
+item_type=main
+equip_flags=ranged
+icon=114
+
+INCLUDE items/base/weapons/ranged/ammo/bullet.txt
+

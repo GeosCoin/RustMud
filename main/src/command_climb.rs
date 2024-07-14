@@ -1,7 +1,7 @@
 use std::{collections::HashMap, fs::read_to_string, io::Read, net::SocketAddr, rc::Rc};
 use crossbeam::channel::Sender;
 use utils::{get_id, show_color, Color};
-use crate::{channel::{wrap_message, wrap_message_climb, wrap_message_ext, Message, MessageType}, command::{Command, Gmcp}, factory_mapfiles::MapFile, map::Node, player::{self, Player}};
+use crate::{channel::{wrap_message, wrap_message_climb, wrap_message_ext, Message, MessageType}, command::{Command, Gmcp}, setting_maps::MapFile, map::Node, player::{self, Player}};
 
 pub struct ClimbCommand<'a> {
     players: &'a HashMap<SocketAddr, Player>,

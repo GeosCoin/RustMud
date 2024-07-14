@@ -1,0 +1,4 @@
+# Miscellaneous engine settings
+
+save_prefix=cosmos
+currency_id=1

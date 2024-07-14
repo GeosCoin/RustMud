@@ -1,0 +1,3 @@
+quality=normal
+item_type=legs
+icon=147

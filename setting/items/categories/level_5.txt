@@ -1,0 +1,17 @@
+# equipment intended for players level 5
+
+[item]
+id=96
+name=Leather Hood
+INCLUDE items/base/armor/leather/head.txt
+level=5
+price=150
+resist=1,2
+
+[item]
+id=107
+name=Short Rifle
+INCLUDE items/base/weapons/ranged/rifle.txt
+level=5
+price=500
+dmg=ranged,45,50

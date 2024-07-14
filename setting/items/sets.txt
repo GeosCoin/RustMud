@@ -1,0 +1,8 @@
+[set]
+id=1
+name=St. Maria Garb
+color=255,64,255
+items=12,15
+bonus=2,hp,50
+bonus=2,hp_regen,50
+

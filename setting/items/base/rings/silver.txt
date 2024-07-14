@@ -1,0 +1,3 @@
+quality=epic
+item_type=ring
+icon=198

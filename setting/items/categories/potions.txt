@@ -1,0 +1,12 @@
+# Potions #############################
+
+[item]
+id=2
+name=Health Potion
+INCLUDE items/base/potion/hp.txt
+power=162
+power_desc=Restore 25% of maximum HP
+price=20
+price_sell=15
+max_quantity=20
+

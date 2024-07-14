@@ -1,0 +1,10 @@
+[item]
+id=750
+name=Empty Bottle
+item_type=crafting
+quality=crafting
+icon=512
+price=10
+price_per_level=10
+price_sell=2
+max_quantity=40

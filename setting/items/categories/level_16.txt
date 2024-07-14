@@ -1,0 +1,10 @@
+# equipment intended for players level 16
+
+[item]
+id=383
+name=Warlord Plate Helmet
+INCLUDE items/base/armor/plate/head.txt
+level=16
+quality=rare
+price=480
+resist=9

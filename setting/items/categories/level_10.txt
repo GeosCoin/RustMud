@@ -1,0 +1,10 @@
+# equipment intended for players level 10
+
+[item]
+id=218
+name=Fighting Chain Coif
+INCLUDE items/base/armor/chain/head.txt
+level=10
+quality=high
+price=300
+

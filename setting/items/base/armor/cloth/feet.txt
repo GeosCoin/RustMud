@@ -1,0 +1,5 @@
+quality=normal
+item_type=feet
+icon=132
+
+

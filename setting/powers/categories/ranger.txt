@@ -1,0 +1,8 @@
+####
+### Shoot
+####
+
+[power]
+id=42
+INCLUDE powers/base/ranger/shoot.txt
+meta_power=true

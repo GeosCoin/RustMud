@@ -1,0 +1,10 @@
+# equipment intended for players level 15
+
+[item]
+id=354
+name=Warrior Plate Helmet
+INCLUDE items/base/armor/plate/head.txt
+level=15
+quality=epic
+price=450
+resist=8

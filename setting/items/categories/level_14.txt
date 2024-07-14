@@ -1,0 +1,10 @@
+# equipment intended for players level 14
+
+[item]
+id=325
+name=Fighting Plate Helmet
+INCLUDE items/base/armor/plate/head.txt
+level=14
+quality=high
+price=420
+resist=7

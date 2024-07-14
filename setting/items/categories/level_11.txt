@@ -1,0 +1,9 @@
+# equipment intended for players level 11
+
+[item]
+id=247
+name=Warrior Chain Coif
+INCLUDE items/base/armor/chain/head.txt
+level=11
+quality=epic
+price=330

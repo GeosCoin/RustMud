@@ -1,0 +1,9 @@
+# equipment intended for players level 7
+
+[item]
+id=139
+name=Warrior Leather Hood
+INCLUDE items/base/armor/leather/head.txt
+level=7
+quality=epic
+price=210

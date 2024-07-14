@@ -1,0 +1,24 @@
+[title]
+level=20
+title=Grand Master
+
+[title]
+level=16
+title=Master
+
+[title]
+level=12
+title=Adventurer
+
+[title]
+level=8
+title=Wanderer
+
+[title]
+level=4
+title=Keeper
+
+# Starting
+
+[title]
+title=Newcomer

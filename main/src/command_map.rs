@@ -2,7 +2,7 @@ use std::{collections::HashMap, io::Read, net::SocketAddr};
 
 use crossbeam::channel::Sender;
 
-use crate::{channel::{wrap_message, wrap_message_ext, Message, MessageType}, command::{Command, Gmcp}, factory_mapfiles::MapFile, map::Node, player::{self, Group, Groups, Player}};
+use crate::{channel::{wrap_message, wrap_message_ext, Message, MessageType}, command::{Command, Gmcp}, map::Node, player::{self, Group, Groups, Player}, setting_maps::MapFile};
 
 pub struct MapCommand<'a> {
     pub players: &'a HashMap<SocketAddr, Player>,
@@ -47,9 +47,7 @@ impl<'a> Gmcp for MapCommand<'a> {
             None => {return "".to_string()}
         };
 
-        // let mut read = utils::load_file(&cur_node.localmaps_gmcp);
         let mut content = String::new();
-        // read.read_to_string(&mut content);
 
         let factory = self.mapfiles;
         let mapfile = match factory.get(&cur_node.localmaps_gmcp){

@@ -93,7 +93,7 @@ pub fn init_map() -> HashMap<u32, Node> {
 
     let mut nodes: HashMap<u32, Node> = HashMap::new();
 
-    let buf = match read_to_string("maps/liuxiu.node"){
+    let buf = match read_to_string("setting/maps/liuxiu.node"){
         Ok(a) => a,
         Err(_) => "".to_string(),
     };

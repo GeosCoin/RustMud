@@ -1,0 +1,33 @@
+# Avatar Attributes Definitions
+# Values should be integer
+
+stat_points_per_level=5
+max_points_per_stat=75
+
+stat=hp,200
+stat_per_level=hp,50
+
+stat=hp_regen,50
+stat_per_level=hp_regen,50
+
+stat=accuracy,85
+stat_per_level=accuracy,3
+
+stat=avoidance,15
+stat_per_level=avoidance,3
+
+stat=crit,1
+stat_per_level=crit,1
+
+stat=dmg_resist_min,0
+stat=dmg_resist_max,0
+
+stat=dmg_melee_min,0
+stat=dmg_melee_max,0
+
+stat=dmg_ranged_min,0
+stat=dmg_ranged_max,0
+
+cooldown_hit=1s
+
+categories=hero

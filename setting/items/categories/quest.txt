@@ -1,0 +1,9 @@
+[item]
+id=1001
+name=Krolan's Emerald
+INCLUDE items/base/gems/emerald.txt
+quest_item=true
+quality=unique
+item_type=gem
+pickup_status=cos_krolan_emerald
+
