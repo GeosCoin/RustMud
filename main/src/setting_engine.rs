@@ -1,19 +1,34 @@
-use std::{collections::HashMap, io::Read};
+use std::{collections::HashMap, fs::read_to_string, io::Read};
 
 use walkdir::WalkDir;
 
+use crate::utils_parsing::get_key_pair;
+
 #[derive(Debug, Clone)]
 pub struct XpTable {
-    level: u32,
-    upgrade_xp: u32,
+    xp_table: Vec<usize>,
 }
 
 impl XpTable {
     pub fn new() -> Self {
         XpTable {
-            level: 0,
-            upgrade_xp: 0,
+            xp_table: Vec::new()
         }
+    }
+
+    pub fn get_level_xp(&self, level: usize) -> usize {
+        let len = self.xp_table.len();
+        if level <= 1 || len == 0 {
+            0
+        } else if level > len {
+            self.xp_table[len - 1]
+        } else {
+            self.xp_table[level - 1]
+        }
+    }
+
+    pub fn get_max_level(&self) -> usize {
+        self.xp_table.len()
     }
 }
 
@@ -53,54 +68,96 @@ enum RoundMethod {
 }
 
 #[derive(Debug, Clone)]
-pub struct Combat {
-    min_absorb: f32,
-    max_absorb: f32,
+pub struct Combat {    
     min_resist: f32,
     max_resist: f32,
-    min_block: f32,
-    max_block: f32,
     min_avoidance: f32,
     max_avoidance: f32,
     min_miss_damage: f32,
     max_miss_damage: f32,
     min_crit_damage: f32,
     max_crit_damage: f32,
-    min_overhit_damage: f32,
-    max_overhit_damage: f32,
     resource_round_method: RoundMethod,
 }
 
 impl Combat {
     pub fn new() -> Self {
         Combat {
-            min_absorb: 0.0,
-            max_absorb: 0.0,
             min_resist: 0.0,
-            max_resist: 0.0,
-            min_block: 0.0,
-            max_block: 0.0,
+            max_resist: 0.0,            
             min_avoidance: 0.0,
             max_avoidance: 0.0,
             min_miss_damage: 0.0,
             max_miss_damage: 0.0,
             min_crit_damage: 0.0,
             max_crit_damage: 0.0,
-            min_overhit_damage: 0.0,
-            max_overhit_damage: 0.0,
             resource_round_method: RoundMethod::CEIL,
+        }
+    }
+
+    pub fn load(&mut self) {
+        let min_resist = 0;
+        let max_resist = 100;        
+        let min_avoidance = 0;
+        let max_avoidance = 100;
+        let min_miss_damage = 0;
+        let max_miss_damage = 0;
+        let min_crit_damage = 200;
+        let max_crit_damage = 200;
+        
+        let resource_round_method = RoundMethod::ROUND;
+
+        for line in 
+         read_to_string("setting/engine/combat.txt").unwrap().lines() {
+            let mut key: String= "".to_string();
+            let mut val: String= "".to_string();
+            get_key_pair(line, &mut key, &mut val);
+            println!("{} : {}", key, val);
+        }
+
+        
+
+    }
+
+    pub fn resource_round(resource_val: f32) -> f32 {
+        0.0
+    }
+}
+
+#[derive(Debug, Clone)]
+pub struct DamageType {
+    id: String,
+    name: String,
+    name_min: String,
+    name_max: String,
+    description: String,
+    min: String,
+    max: String,
+}
+
+impl DamageType {
+    pub fn new() -> Self {
+        DamageType {
+            id: String::from(""),
+            name: String::from(""),
+            name_min: String::from(""),
+            name_max: String::from(""),
+            description: String::from(""),
+            min: String::from(""),
+            max: String::from(""),
         }
     }
 }
 
 #[derive(Debug, Clone)]
 pub struct EngineSetting {
-    xp_talbe: HashMap<u32, XpTable>,
+    xp_table: HashMap<u32, XpTable>,
     classes: Classes,
     combat: Combat,
+    damage_type: DamageType,
 }
 
-pub fn init_xp_table() -> Result<HashMap<u32, u32>, _> {
+pub fn init_xp_table() -> String {
     let xp_table = XpTable::new();
 
     for entry in WalkDir::new("D:\\mwnd\\RustMud\\setting\\engine")
@@ -116,5 +173,5 @@ pub fn init_xp_table() -> Result<HashMap<u32, u32>, _> {
         }
     }
 
-    Ok(factory)
+    String::from("")
 }

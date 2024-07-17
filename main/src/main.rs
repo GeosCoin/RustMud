@@ -3,6 +3,8 @@
 #[macro_use]
 extern crate lazy_static;
 
+use setting_engine::Combat;
+
 use crate::channel::Server;
 use crate::channel::ServerHandler;
 
@@ -34,8 +36,12 @@ mod log;
 mod map;
 mod setting_maps;
 mod setting_engine;
+mod utils_parsing;
+mod file_parser;
 
 fn main() {
+    let mut combat = Combat::new();
+    combat.load();
 
     let server = Server::new();
     let listener = server.start("127.0.0.1", "7878");
