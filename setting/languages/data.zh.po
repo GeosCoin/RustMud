@@ -29,7 +29,7 @@ msgid "DEV Boots"
 msgstr "开发者专用靴"
 
 #: ../items/items.txt:63
-msgid "Use: Teleport to target position."
+msgid "Use: Teleport to Base Harbor"
 msgstr "用途：传送到目标位置"
 
 #: ../items/items.txt:67
