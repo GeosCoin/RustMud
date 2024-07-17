@@ -2,7 +2,7 @@ use std::{collections::HashMap, fs::read_to_string, io::Read};
 
 use walkdir::WalkDir;
 
-use crate::utils_parsing::get_key_pair;
+use crate::utils_parsing::{get_key_pair, get_section_title, to_int};
 
 #[derive(Debug, Clone)]
 pub struct XpTable {
@@ -112,7 +112,16 @@ impl Combat {
             let mut key: String= "".to_string();
             let mut val: String= "".to_string();
             get_key_pair(line, &mut key, &mut val);
+            let section_title = get_section_title(line);
+            if section_title != "" {
+                println!("section: {}", section_title);
+            }
             println!("{} : {}", key, val);
+
+            let a = "12";
+            let b = to_int::<u32>(a);
+
+            println!("{}", b);
         }
 
         

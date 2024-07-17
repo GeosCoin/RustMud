@@ -3,6 +3,7 @@
 # dmg = dmg * crit  
 # if missed dmg = dmg * missed 
 
+[abc]
 avoidance_percent=0,99
 resist_percent=0,90
 miss_damage_percent=25,50
