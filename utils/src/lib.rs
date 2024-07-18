@@ -3,15 +3,19 @@
 use std::{fs::File, io::{self, BufRead}, net::SocketAddr, path::Path, sync::atomic::{AtomicUsize, Ordering}};
 use chrono::Local;
 
+
+
+
 // 起：  [1;31m   尾：   [0;00m
+// 4-bit SGR 
+// TODO: 24-bit SGR
 pub enum Color {
     RED,  //[1;31m
     GREEN,
     YELLOW,
-    DARKBLUE,
+    BLUE,    
     PINK,
-    BLUE,
-    GRAY,
+    DARKBLUE,
     WHITEBGRED,
 }
 
@@ -72,6 +76,7 @@ pub fn show_color(content: &str, color: Color) -> String {
         },
         Color::YELLOW => {
             return "[1;33m".to_owned() + content + "[0;00m";
+            // return "[38;2;255;0;0m [48;2;12;200;12m".to_owned() + content + "[0;00m";
         },
         Color::DARKBLUE => {
             return "[1;34m".to_owned() + content + "[0;00m";
@@ -81,9 +86,6 @@ pub fn show_color(content: &str, color: Color) -> String {
         },
         Color::BLUE => {
             return "[1;36m".to_owned() + content + "[0;00m";
-        },
-        Color::GRAY => {
-            return "[1;38m".to_owned() + content + "[0;00m";
         },
         Color::WHITEBGRED => {
             return "[1;41m".to_owned() + content + "[0;00m";

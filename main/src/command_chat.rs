@@ -37,7 +37,7 @@ impl<'a> Gmcp for ChatCommand<'a> {
 
         let mut message_0a = message.clone().to_string();
         
-        message_0a = utils::insert_line(&message_0a, 19);
+        message_0a = utils::insert_line(&message_0a, 20);
 
         let view = "
         Chat {".to_owned() + "
