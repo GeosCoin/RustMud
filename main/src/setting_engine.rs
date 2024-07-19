@@ -1,8 +1,9 @@
-use std::{collections::HashMap, fs::read_to_string, io::Read};
+use std::{collections::HashMap, fs::read_to_string, io::Read, vec};
 
+use pathfinding::num_traits::ToPrimitive;
 use walkdir::WalkDir;
 
-use crate::utils_parsing::{get_key_pair, get_section_title, strip_carriage_return, to_float, to_int};
+use crate::utils_parsing::{get_key_pair, get_section_title, pop_first_float, pop_first_int, pop_first_string, skip_line, strip_carriage_return, to_float, to_int, trim};
 
 #[derive(Debug, Clone)]
 pub struct XpTable {
@@ -14,6 +15,35 @@ impl XpTable {
         XpTable {
             xp_table: Vec::new()
         }
+    }
+
+    pub fn load(&mut self) {
+        self.xp_table.clear();
+        self.xp_table.push(0); //占位符
+
+        let filename = "setting/engine/xp_table.txt";
+        
+        for line in read_to_string(filename).unwrap().lines() {
+            if skip_line(line) {
+                continue;
+            }
+            
+            let mut key = "".to_string();
+            let mut val = "".to_string();
+            get_key_pair(line, &mut key, &mut val);
+
+            if val.is_empty() {
+                continue;
+            }
+
+            if key == "level" {
+                let (outs, remains) = pop_first_int(&val);
+                let (outs, remains) = pop_first_int(&remains);
+                self.xp_table.push(outs.to_usize().unwrap());
+            }
+        }
+
+        // println!("{}", &self.xp_table[20]);
     }
 
     pub fn get_level_xp(&self, level: usize) -> usize {
@@ -31,6 +61,88 @@ impl XpTable {
         self.xp_table.len()
     }
 }
+
+#[derive(Debug, Clone)]
+pub struct PrimaryStat {
+    id: String,
+    name: String,
+}
+
+impl PrimaryStat {
+    pub fn new() -> Self {
+        PrimaryStat {
+            id: "".to_string(),
+            name: "".to_string()
+        }
+    }
+}
+
+#[derive(Debug, Clone)]
+pub struct PrimaryStats {
+    list: Vec<PrimaryStat>
+}
+
+impl PrimaryStats {
+    pub fn new() -> Self {
+        PrimaryStats {
+            list: Vec::new()
+        }
+    }
+
+    pub fn load(&mut self) {
+        self.list.clear();
+
+        let filename = "setting/engine/primary_stats.txt";
+        
+        for line in read_to_string(filename).unwrap().lines() {
+            if skip_line(line) {
+                continue;
+            }
+            
+            let mut key = "".to_string();
+            let mut val = "".to_string();
+            get_key_pair(line, &mut key, &mut val);
+
+            if val.is_empty() {
+                continue;
+            }
+
+            match key.as_str() {
+                "id" => {
+                    let mut ps = PrimaryStat::new();
+                    let (outs, remains) = pop_first_string(&val);                    
+                    ps.id = outs;
+                    self.list.push(ps);
+                },
+                "name" => {
+                    let mut ps = PrimaryStat::new();
+                    let last = self.list.pop().unwrap();
+                    ps.id = last.id;
+                    let (outs, remains) = pop_first_string(&val);                
+                    ps.name = outs;
+                    self.list.push(ps);
+                },
+                _ => {},
+            }
+        }
+
+        // for i in self.list.iter() {
+        //     println!("{}-{}", i.id, i.name);
+        // }
+    }
+
+    pub fn get_index_by_id(&self, id:&str) -> usize {
+        let mut i = 0;
+        for ps in self.list.iter() {            
+            if ps.id == id {
+                break;
+            }
+            i = i + 1;
+        }
+        i
+    }
+}
+
 
 #[derive(Debug, Clone)]
 pub struct Classes {
@@ -59,7 +171,7 @@ impl Classes {
     }
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq)]
 enum RoundMethod {
     NO = 0,
     ROUND,
@@ -95,41 +207,89 @@ impl Combat {
         }
     }
 
-    pub fn load(&mut self) {
-        let min_resist = 0;
-        let max_resist = 100;        
-        let min_avoidance = 0;
-        let max_avoidance = 100;
-        let min_miss_damage = 0;
-        let max_miss_damage = 0;
-        let min_crit_damage = 200;
-        let max_crit_damage = 200;
+    pub fn load(&mut self) {  
+        let filename = "setting/engine/combat.txt";
         
-        let resource_round_method = RoundMethod::ROUND;
-
-        for line in 
-         read_to_string("setting/engine/combat.txt").unwrap().lines() {
+        for line in read_to_string(filename).unwrap().lines() {
+            if skip_line(line) {
+                continue;
+            }
+            
             let mut key: String= "".to_string();
             let mut val: String= "".to_string();
             get_key_pair(line, &mut key, &mut val);
-            let section_title = get_section_title(line);
-            if section_title != "" {
-                println!("section: {}", section_title);
+
+            if val.is_empty() {
+                continue;
             }
-            println!("{} : {}", key, val);
 
-            let a = "[38;2;255;0;255m     [48;2;0;255;0m #23432 11[0m#\r\n".to_string();
-            let b = strip_carriage_return(&a);
-
-            println!("{}", b);
+            match key.as_str() {
+                "avoidance_percent" => {
+                    let (outs, remains) = pop_first_float(&val);                
+                    self.min_avoidance = outs;
+                    let (outs, remains) = pop_first_float(&remains);                
+                    self.max_avoidance = outs;
+                },
+                "resist_percent" => {
+                    let (outs, remains) = pop_first_float(&val);                
+                    self.min_resist = outs;
+                    let (outs, remains) = pop_first_float(&remains);                
+                    self.max_resist = outs;
+                },
+                "miss_damage_percent" => {
+                    let (outs, remains) = pop_first_float(&val);                
+                    self.min_miss_damage = outs;
+                    let (outs, remains) = pop_first_float(&remains);                
+                    self.max_miss_damage = outs;
+                },
+                "crit_damage_percent" => {
+                    let (outs, remains) = pop_first_float(&val);                
+                    self.min_crit_damage = outs;
+                    let (outs, remains) = pop_first_float(&remains);                
+                    self.max_crit_damage = outs;
+                },
+                "resource_round_method" => {
+                    match val.as_str() {                        
+                        "round" => {
+                            self.resource_round_method = RoundMethod::ROUND;
+                        },
+                        "floor" => {
+                            self.resource_round_method = RoundMethod::FLOOR;
+                        },
+                        "ceil" => {
+                            self.resource_round_method = RoundMethod::CEIL;
+                        },
+                        _ => {
+                            self.resource_round_method = RoundMethod::ROUND;
+                        }
+                    }
+                },
+                _ => (),
+            }
+            
         }
 
-        
+        println!("{}-{},{}-{},{}-{},{}-{},{:?}",
+                self.min_avoidance,
+                self.max_avoidance,
+                self.min_resist,
+                self.max_resist,
+                self.min_miss_damage,
+                self.max_miss_damage,
+                self.min_crit_damage,
+                self.max_crit_damage,
+                self.resource_round_method
+            );
 
     }
 
-    pub fn resource_round(resource_val: f32) -> f32 {
-        0.0
+    pub fn resource_round(&self, resource_val: f32) -> f32 {
+        match self.resource_round_method {
+            RoundMethod::ROUND => return resource_val.round(),
+            RoundMethod::CEIL => return resource_val.ceil(),
+            RoundMethod::FLOOR => return resource_val.floor(),
+            _ => resource_val
+        }
     }
 }
 
