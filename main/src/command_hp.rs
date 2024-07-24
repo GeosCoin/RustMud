@@ -1,7 +1,7 @@
 use std::{collections::HashMap, net::SocketAddr, rc::Rc};
 use crossbeam::channel::Sender;
 use utils::{show_color, Color};
-use crate::{channel::{wrap_message, wrap_message_ext, wrap_message_raw, Message, MessageType}, command::{Command, Gmcp}, player::Player};
+use crate::{channel::{wrap_message, wrap_message_ext, wrap_message_raw, Message, MessageType}, command::{Command, Gmcp}, player::Player, settings::{load_settings, set_name, SETTINGS}};
 
 pub struct HpCommand<'a> {
     pub players: &'a HashMap<SocketAddr, Player>,
@@ -32,6 +32,10 @@ impl<'a> HpCommand<'a> {
         let max_mp = show_color(&player.max_mp.to_string(), Color::YELLOW);
         let max_fp = show_color(&player.max_fp.to_string(), Color::YELLOW);
         let max_xp = show_color(&player.max_xp.to_string(), Color::YELLOW);
+        set_name("看好了！");
+        let settings = SETTINGS.get().unwrap().lock().unwrap();
+        
+        println!("{}", settings.game);
 
         let hpframe = r"
     ┌─── ".to_owned() + &name + "状态────────────

@@ -20,7 +20,6 @@ use crate::command_walk::WalkCommand;
 use crate::command_x::XCommand;
 use crate::setting_maps;
 use crate::setting_maps::MapFile;
-use crate::log::SINGLETON;
 use crate::login::LoginService;
 use crate::map;
 use crate::map::Node;

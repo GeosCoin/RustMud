@@ -145,28 +145,26 @@ impl PrimaryStats {
 
 
 #[derive(Debug, Clone)]
-pub struct Classes {
+pub struct HeroClass {
     name: String,
     description: String,
     equipment: Vec<u32>, 
     carried: Vec<u32>,
     primary: HashMap<String, u32>, 
     powers: u32,
-    actionbar: Vec<u32>,
-    default_power_tab: u32,
 }
 
-impl Classes {
+impl HeroClass {
     pub fn new() -> Self {
-        Classes {
+        HeroClass {
             name: String::from(""),
             description: String::from(""),
             equipment: Vec::new(), 
             carried: Vec::new(),
             primary: HashMap::new(), 
             powers: 0,
-            actionbar: Vec::new(),
-            default_power_tab: 0,
+            // actionbar: Vec::new(),
+            // default_power_tab: 0,
         }
     }
 }
@@ -321,7 +319,7 @@ impl DamageType {
 #[derive(Debug, Clone)]
 pub struct EngineSetting {
     xp_table: HashMap<u32, XpTable>,
-    classes: Classes,
+    // classes: Classes,
     combat: Combat,
     damage_type: DamageType,
 }
